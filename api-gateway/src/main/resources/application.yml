@@ -1,0 +1,97 @@
+spring:
+  application:
+    name: api-gateway
+---
+server:
+  port: 9090
+
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    urls:
+      - name: booking-service
+        url: /booking-service/v3/api-docs
+
+      - name: user-service
+        url: /user-service/v3/api-docs
+
+      - name: movie-service
+        url: /movie-service/v3/api-docs
+
+      - name: payment-service
+        url: /payment-service/v3/api-docs
+
+      - name: schedule-service
+        url: /schedule-service/v3/api-docs
+
+      - name: notification-service
+        url: /notification-service/v3/api-docs
+
+      - name: identification-service
+        url: /identification-service/v3/api-docs
+---
+spring:
+  cloud:
+    gateway:
+      routes:
+        # BOOKING_SERVICE
+        - id: booking-service
+          uri: http://localhost:8085
+          predicates:
+            - Path=/booking-service/**
+          filters:
+            - StripPrefix=1
+
+        # USER_SERVICE
+        - id: user-service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/user-service/**
+          filters:
+            - StripPrefix=1
+
+        # NOTIFICATION_SERVICE
+        - id: notification-service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/notification-service/**
+          filters:
+            - StripPrefix=1
+
+        # MOVIE_SERVICE
+        - id: movie-service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/movie-service/**
+          filters:
+            - StripPrefix=1
+
+        # SCHEDULE_SERVICE
+        - id: schedule-service
+          uri: http://localhost:8084
+          predicates:
+            - Path=/schedule-service/**
+          filters:
+            - StripPrefix=1
+
+        # PAYMENT_SERVICE
+        - id: payment-service
+          uri: http://localhost:8086
+          predicates:
+            - Path=/payment-service/**
+          filters:
+            - StripPrefix=1
+
+        # IDENTIFICATION_SERVICE
+        - id: identification-service
+          uri: http://localhost:8087
+          predicates:
+            - Path=/identification-service/**
+          filters:
+            - StripPrefix=1
+---
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka
