@@ -20,36 +20,35 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final AuthService authService;
+  private final AuthService authService;
 
-    private final String[] WHITE_LISTS = {
-            "/swagger-ui/**",
-            "/v3/api-docs/**",
-    };
+  private final String[] WHITE_LISTS = {
+    "/swagger-ui/**", "/v3/api-docs/**",
+  };
 
-    @Bean
-    public AuthenticationTokenProviderInterceptor authenticationTokenProviderInterceptor() {
-        return new AuthenticationTokenProviderInterceptor(this.authService);
-    }
+  @Bean
+  public AuthenticationTokenProviderInterceptor authenticationTokenProviderInterceptor() {
+    return new AuthenticationTokenProviderInterceptor(this.authService);
+  }
 
-    @Bean
-    @SneakyThrows
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) {
-        return configuration.getAuthenticationManager();
-    }
+  @Bean
+  @SneakyThrows
+  public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) {
+    return configuration.getAuthenticationManager();
+  }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
-                .formLogin(AbstractHttpConfigurer::disable)
-                .sessionManagement(
-                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(
-                        request ->
-                                request.requestMatchers(WHITE_LISTS).permitAll().anyRequest().authenticated());
-        http.addFilterBefore(
-                this.authenticationTokenProviderInterceptor(), UsernamePasswordAuthenticationFilter.class);
-        return http.build();
-    }
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    http.csrf(AbstractHttpConfigurer::disable)
+        .cors(AbstractHttpConfigurer::disable)
+        .formLogin(AbstractHttpConfigurer::disable)
+        .sessionManagement(
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authorizeHttpRequests(
+            request ->
+                request.requestMatchers(WHITE_LISTS).permitAll().anyRequest().authenticated());
+    http.addFilterBefore(
+        this.authenticationTokenProviderInterceptor(), UsernamePasswordAuthenticationFilter.class);
+    return http.build();
+  }
 }

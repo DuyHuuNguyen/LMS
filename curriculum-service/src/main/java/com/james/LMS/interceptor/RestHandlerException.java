@@ -13,32 +13,30 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 public class RestHandlerException {
 
-    @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<BaseResponse<ExceptionResponse>> handleEntityNotFoundException(
-            EntityNotFoundException exception) {
-        return new ResponseEntity<>(
-                BaseResponse.build(
-                        new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
-                HttpStatus.NOT_FOUND);
-    }
+  @ExceptionHandler(EntityNotFoundException.class)
+  public ResponseEntity<BaseResponse<ExceptionResponse>> handleEntityNotFoundException(
+      EntityNotFoundException exception) {
+    return new ResponseEntity<>(
+        BaseResponse.build(
+            new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
+        HttpStatus.NOT_FOUND);
+  }
 
-    @ExceptionHandler(PermissionDeniedException.class)
-    public ResponseEntity<BaseResponse<ExceptionResponse>> handlePermissionDeniedException(
-            PermissionDeniedException exception) {
-        return new ResponseEntity<>(
-                BaseResponse.build(
-                        new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
-                HttpStatus.BAD_REQUEST);
-    }
+  @ExceptionHandler(PermissionDeniedException.class)
+  public ResponseEntity<BaseResponse<ExceptionResponse>> handlePermissionDeniedException(
+      PermissionDeniedException exception) {
+    return new ResponseEntity<>(
+        BaseResponse.build(
+            new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
+        HttpStatus.BAD_REQUEST);
+  }
 
-    @ExceptionHandler(InvalidTokenException.class)
-    public ResponseEntity<BaseResponse<ExceptionResponse>> handleInvalidTokenException(
-            InvalidTokenException exception) {
-        return new ResponseEntity<>(
-                BaseResponse.build(
-                        new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
-                HttpStatus.BAD_REQUEST);
-    }
-
-
+  @ExceptionHandler(InvalidTokenException.class)
+  public ResponseEntity<BaseResponse<ExceptionResponse>> handleInvalidTokenException(
+      InvalidTokenException exception) {
+    return new ResponseEntity<>(
+        BaseResponse.build(
+            new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
+        HttpStatus.BAD_REQUEST);
+  }
 }

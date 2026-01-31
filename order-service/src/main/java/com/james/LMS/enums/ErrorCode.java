@@ -6,8 +6,8 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorCode {
-    DEMO("string","string");
+  DEMO("string", "string");
 
-    private final String code;
-    private final String message;
+  private final String code;
+  private final String message;
 }

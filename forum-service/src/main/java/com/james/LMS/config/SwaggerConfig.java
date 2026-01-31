@@ -1,6 +1,5 @@
 package com.james.LMS.config;
 
-
 import com.james.LMS.interceptor.AuthenticationTokenProviderInterceptor;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
@@ -14,20 +13,20 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @OpenAPIDefinition(servers = {@Server(url = "/")})
 @SecurityScheme(
-        name = "Bearer Authentication",
-        type = SecuritySchemeType.HTTP,
-        bearerFormat = "JWT",
-        scheme = "bearer",
-        in = SecuritySchemeIn.HEADER,
-        paramName = AuthenticationTokenProviderInterceptor.AUTHORIZATION)
+    name = "Bearer Authentication",
+    type = SecuritySchemeType.HTTP,
+    bearerFormat = "JWT",
+    scheme = "bearer",
+    in = SecuritySchemeIn.HEADER,
+    paramName = AuthenticationTokenProviderInterceptor.AUTHORIZATION)
 public class SwaggerConfig {
-    @Bean
-    public GroupedOpenApi openApi() {
-        String[] paths = {"/api/**"};
-        return GroupedOpenApi.builder()
-                .group("LMS-service")
-                .packagesToScan("com.james.LMS.controller")
-                .pathsToMatch(paths)
-                .build();
-    }
+  @Bean
+  public GroupedOpenApi openApi() {
+    String[] paths = {"/api/**"};
+    return GroupedOpenApi.builder()
+        .group("LMS-service")
+        .packagesToScan("com.james.LMS.controller")
+        .pathsToMatch(paths)
+        .build();
+  }
 }
