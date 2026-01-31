@@ -28,14 +28,12 @@ public class User extends BaseEntity {
   @Column(name = "email", nullable = false)
   private String email;
 
-  @Column(name = "avatar_key")
-  private String avatarKey;
+  @Column(name = "avatar_url")
+  private String avatarUrl;
 
-  @Column(name = "date_of_birth", nullable = false)
-  private Long dateOfBirth;
-
-  @Column(name = "is_loyal_customer", nullable = false)
-  private Boolean isLoyalCustomer;
+  @OneToOne(cascade = CascadeType.ALL)
+  @JoinColumn(name = "instructor_id", referencedColumnName = "id")
+  private Instructor instructor;
 
   @ManyToMany(fetch = FetchType.EAGER)
   @JoinTable(

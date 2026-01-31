@@ -11,8 +11,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PaginationResponse<T> {
-    private List<T> data;
-    private Integer currentPage;
-    private Integer totalElements;
-    private Integer totalPages;
+  private List<T> data;
+  private Integer currentPage;
+  private Integer totalElements;
+  private Integer totalPages;
 }
