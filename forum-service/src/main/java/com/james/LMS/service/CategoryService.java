@@ -1,4 +1,3 @@
 package com.james.LMS.service;
 
-public interface CategoryService {
-}
+public interface CategoryService {}

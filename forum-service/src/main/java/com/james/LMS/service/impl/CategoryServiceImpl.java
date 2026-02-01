@@ -8,5 +8,5 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
-    private final CategoryRepository categoryRepository;
+  private final CategoryRepository categoryRepository;
 }

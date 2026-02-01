@@ -8,5 +8,5 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class PostLikeServiceImpl implements PostLikeService {
-    private final PostRepository postRepository;
+  private final PostRepository postRepository;
 }

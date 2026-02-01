@@ -7,17 +7,16 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Entity
-@Table(name = "post_topics")
+@Table(name = "order_details")
 @Getter
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostTopic extends BaseEntity {
-
-  @Column(name = "forum_topic_id")
-  private Long forumTopicId;
-
+public class OrderDetail extends BaseEntity {
   @ManyToOne
-  @JoinColumn(name = "forum_post_id")
-  private ForumPost forumPost;
+  @JoinColumn(name = "order_id")
+  private Order order;
+
+  @Column(name = "curriculum_id")
+  private String curriculumId;
 }

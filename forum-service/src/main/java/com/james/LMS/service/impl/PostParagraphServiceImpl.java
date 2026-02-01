@@ -8,5 +8,5 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class PostParagraphServiceImpl implements PostParagraphService {
-    private final PostParagraphRepository postParagraphRepository;
+  private final PostParagraphRepository postParagraphRepository;
 }

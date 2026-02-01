@@ -8,5 +8,5 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class PostFacadeImpl implements PostFacade {
-    private final PostService postService;
+  private final PostService postService;
 }

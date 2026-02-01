@@ -1,3 +1,3 @@
 package com.james.LMS.facade;
 
-public interface PostFacade {}
+public interface CartFacade {}
