@@ -12,14 +12,14 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostLike extends BaseEntity{
-    @Column(name = "user_id")
-    private Long userId;
+public class PostLike extends BaseEntity {
+  @Column(name = "user_id")
+  private Long userId;
 
-    @Column(name = "is_like")
-    private Boolean isLike;
+  @Column(name = "is_like")
+  private Boolean isLike;
 
-    @ManyToOne
-    @JoinColumn(name = "post_id")
-    private Post post;
+  @ManyToOne
+  @JoinColumn(name = "post_id")
+  private Post post;
 }

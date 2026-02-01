@@ -28,8 +28,7 @@ public class SecurityConfig {
   private final CacheService cacheService;
 
   private final String[] WHITE_LISTS = {
-    "/swagger-ui/**",
-    "/v3/api-docs/**",
+    "/swagger-ui/**", "/v3/api-docs/**",
   };
 
   @Bean

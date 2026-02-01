@@ -9,15 +9,13 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Entity
-@Table(name = "forum_categories")
+@Table(name = "payment_methods")
 @Getter
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Category extends BaseEntity {
+public class PaymentMethod extends BaseEntity {
+
   @Column(name = "name", nullable = false)
   private String name;
-
-  @Column(name = "description")
-  private String description;
 }

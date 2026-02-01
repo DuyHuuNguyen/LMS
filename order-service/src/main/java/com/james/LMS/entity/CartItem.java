@@ -7,17 +7,17 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Entity
-@Table(name = "post_topics")
+@Table(name = "cart_items")
 @Getter
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostTopic extends BaseEntity {
-
-  @Column(name = "forum_topic_id")
-  private Long forumTopicId;
+public class CartItem extends BaseEntity {
 
   @ManyToOne
-  @JoinColumn(name = "forum_post_id")
-  private ForumPost forumPost;
+  @JoinColumn(name = "cart_id", referencedColumnName = "id")
+  private Cart cart;
+
+  @Column(name = "curriculum_id", nullable = false)
+  private Long curriculumId;
 }

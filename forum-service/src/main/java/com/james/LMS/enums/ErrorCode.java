@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum ErrorCode {
   FORUM_POST_NOT_FOUND("2000", "Forum post not found"),
-  TOPIC_NOT_FOUND("2001","Topic not found"),
+  TOPIC_NOT_FOUND("2001", "Topic not found"),
   ;
 
   private final String code;
