@@ -12,7 +12,10 @@ public enum ErrorCode {
   JWT_INVALID("1003", "Jwt invalid"),
   NOT_MATCHED_PASSWORD("1004", "Password doesn't match"),
   USER_ALREADY_EXISTS("1005", "User already exists"),
-  SPAM_FORGOT_PASSWORD("1006", "Spam forgot password");
+  SPAM_FORGOT_PASSWORD("1006", "Spam forgot password"),
+  OTP_TIMEOUT("1007","OTP timeout" ),
+  NOT_MATCHED_OTP("1008","OPT doesn't match" );
+
   private final String code;
   private final String message;
 }

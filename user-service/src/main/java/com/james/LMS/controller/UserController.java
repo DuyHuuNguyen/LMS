@@ -3,10 +3,7 @@ package com.james.LMS.controller;
 import com.james.LMS.config.SecurityConfig;
 import com.james.LMS.facade.UserFacade;
 import com.james.LMS.request.*;
-import com.james.LMS.response.BaseResponse;
-import com.james.LMS.response.ForgotPasswordResponse;
-import com.james.LMS.response.LoginResponse;
-import com.james.LMS.response.RefreshTokenResponse;
+import com.james.LMS.response.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -50,7 +47,7 @@ public class UserController {
 
   @PostMapping("/logout")
   @ResponseStatus(HttpStatus.OK)
-  @Operation(tags = {"Auth APIs"})
+  @Operation(tags = {"User APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("isAuthenticated()")
   public BaseResponse<Void> logout() {
@@ -59,7 +56,7 @@ public class UserController {
 
   @PostMapping("/reset-password")
   @ResponseStatus(HttpStatus.OK)
-  @Operation(tags = {"Auth APIs"})
+  @Operation(tags = {"User APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("isAuthenticated()")
   public BaseResponse<Void> resetPassword(
@@ -69,9 +66,16 @@ public class UserController {
 
   @PostMapping("/forgot-password")
   @ResponseStatus(HttpStatus.OK)
-  @Operation(tags = {"Auth APIs"})
+  @Operation(tags = {"User APIs"})
   public BaseResponse<ForgotPasswordResponse> forgotPassword(
       @Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest) {
     return this.userFacade.forgotPassword(forgotPasswordRequest);
+  }
+
+  @PostMapping("/verify-otp")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"User APIs"})
+  public BaseResponse<VerifyOTPResponse> verify(@Valid @RequestBody VerifyOTPRequest verifyOTPRequest){
+    return this.userFacade.verify(verifyOTPRequest);
   }
 }

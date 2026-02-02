@@ -8,16 +8,10 @@ import com.james.LMS.enums.ErrorCode;
 import com.james.LMS.enums.ResetPasswordKey;
 import com.james.LMS.enums.RoleEnum;
 import com.james.LMS.enums.TokenType;
-import com.james.LMS.exception.EntityNotFoundException;
-import com.james.LMS.exception.PermissionDeniedException;
-import com.james.LMS.exception.SpamForgotPasswordException;
-import com.james.LMS.exception.UserAlreadyExistException;
+import com.james.LMS.exception.*;
 import com.james.LMS.facade.UserFacade;
 import com.james.LMS.request.*;
-import com.james.LMS.response.BaseResponse;
-import com.james.LMS.response.ForgotPasswordResponse;
-import com.james.LMS.response.LoginResponse;
-import com.james.LMS.response.RefreshTokenResponse;
+import com.james.LMS.response.*;
 import com.james.LMS.service.*;
 import com.james.LMS.util.MailUtil;
 import com.james.LMS.util.OTPGeneratorUtil;
@@ -178,4 +172,28 @@ public class UserFacadeImpl implements UserFacade {
 
     return BaseResponse.build(ForgotPasswordResponse.builder().build(), true);
   }
+
+  @Override
+  public BaseResponse<VerifyOTPResponse> verify(VerifyOTPRequest verifyOTPRequest) {
+    User user =
+            userService
+                    .findByEmail(verifyOTPRequest.getEmail())
+                    .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
+
+    String otpKey = String.format(ResetPasswordKey.OTP_KEY.getContent(), user.getEmail());
+
+    Object otp = this.cacheService.retrieve(otpKey);
+
+    boolean isValidOTP =  otp != null;
+    if(!isValidOTP)  throw new OTPTimeOutException(ErrorCode.OTP_TIMEOUT);
+
+    boolean isMatchedOtp = otp.equals(verifyOTPRequest.getOtp());
+    if(!isMatchedOtp) throw new PermissionDeniedException(ErrorCode.NOT_MATCHED_OTP);
+
+    String resetPasswordToken = this.jwtService.generateResetPasswordToken(user.getEmail());
+
+    return BaseResponse.build(VerifyOTPResponse.builder().resetPasswordToken(resetPasswordToken).build(),true);
+  }
+
+
 }

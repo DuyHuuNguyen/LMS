@@ -1,10 +1,8 @@
 package com.james.LMS.facade;
 
 import com.james.LMS.request.*;
-import com.james.LMS.response.BaseResponse;
-import com.james.LMS.response.ForgotPasswordResponse;
-import com.james.LMS.response.LoginResponse;
-import com.james.LMS.response.RefreshTokenResponse;
+import com.james.LMS.response.*;
+import jakarta.validation.Valid;
 
 public interface UserFacade {
   BaseResponse<LoginResponse> login(LoginRequest loginRequest);
@@ -18,4 +16,6 @@ public interface UserFacade {
   BaseResponse<Void> resetPassword(ResetPasswordRequest resetPasswordRequest);
 
   BaseResponse<ForgotPasswordResponse> forgotPassword(ForgotPasswordRequest forgotPasswordRequest);
+
+  BaseResponse<VerifyOTPResponse> verify( VerifyOTPRequest verifyOTPRequest);
 }

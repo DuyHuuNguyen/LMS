@@ -41,7 +41,8 @@ public class AuthTokenProviderInterceptor extends OncePerRequestFilter {
           "/api/v1/users/login",
           "/api/v1/users/sign-up",
           "/api/v1/users/forgot-password",
-          "/api/v1/users/refresh-token");
+          "/api/v1/users/refresh-token",
+          "/api/v1/users/verify-otp");
 
   @Override
   protected void doFilterInternal(

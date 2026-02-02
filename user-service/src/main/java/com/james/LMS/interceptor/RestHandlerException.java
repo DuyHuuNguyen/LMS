@@ -67,6 +67,14 @@ public class RestHandlerException {
             new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
         HttpStatus.BAD_REQUEST);
   }
+  @ExceptionHandler(OTPTimeOutException.class)
+  public ResponseEntity<BaseResponse<ExceptionResponse>> OTPTimeOutException(
+          OTPTimeOutException exception) {
+    return new ResponseEntity<>(
+            BaseResponse.build(
+                    new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
+            HttpStatus.BAD_REQUEST);
+  }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)
   public ResponseEntity<?> handleValidation(MethodArgumentNotValidException ex) {
