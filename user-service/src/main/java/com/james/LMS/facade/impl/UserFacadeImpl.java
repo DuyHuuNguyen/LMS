@@ -12,6 +12,7 @@ import com.james.LMS.exception.UserAlreadyExistException;
 import com.james.LMS.facade.UserFacade;
 import com.james.LMS.request.LoginRequest;
 import com.james.LMS.request.RefreshTokenRequest;
+import com.james.LMS.request.ResetPasswordRequest;
 import com.james.LMS.request.UpsertUserRequest;
 import com.james.LMS.response.BaseResponse;
 import com.james.LMS.response.LoginResponse;
@@ -109,17 +110,39 @@ public class UserFacadeImpl implements UserFacade {
   @Override
   public BaseResponse<Void> logout() {
     SecurityUserDetails principal =
-            (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
     String accessTokenCacheKey =
-            String.format(TokenType.ACCESS_TOKEN.getCacheKeyTemplate(), principal.getUsername());
+        String.format(TokenType.ACCESS_TOKEN.getCacheKeyTemplate(), principal.getUsername());
     String refreshTokenCacheKey =
-            String.format(TokenType.REFRESH_TOKEN.getCacheKeyTemplate(), principal.getUsername());
+        String.format(TokenType.REFRESH_TOKEN.getCacheKeyTemplate(), principal.getUsername());
 
     cacheService.delete(accessTokenCacheKey);
     cacheService.delete(refreshTokenCacheKey);
 
     SecurityContextHolder.clearContext();
+    return BaseResponse.ok();
+  }
+
+  @Override
+  public BaseResponse<Void> resetPassword(ResetPasswordRequest resetPasswordRequest) {
+    var isValidPassword =
+        resetPasswordRequest.getNewPassword().equals(resetPasswordRequest.getConfirmPassword());
+    if (!isValidPassword) throw new PermissionDeniedException(ErrorCode.NOT_MATCHED_PASSWORD);
+
+    SecurityUserDetails principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+    User user =
+        userService
+            .findByEmail(principal.getUsername())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
+
+    var newPasswordEncoded = passwordEncoder.encode(resetPasswordRequest.getNewPassword());
+    user.changePassword(newPasswordEncoded);
+
+    userService.save(user);
+
     return BaseResponse.ok();
   }
 }

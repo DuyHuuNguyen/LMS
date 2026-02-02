@@ -29,7 +29,6 @@ public class SecurityConfig {
 
   public static final String SECURITY_REQUIREMENT = "Bearer Authentication";
 
-
   private final String[] WHITE_LISTS = {
     "/swagger-ui/**",
     "/v3/api-docs/**",

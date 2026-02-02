@@ -2,6 +2,7 @@ package com.james.LMS.facade;
 
 import com.james.LMS.request.LoginRequest;
 import com.james.LMS.request.RefreshTokenRequest;
+import com.james.LMS.request.ResetPasswordRequest;
 import com.james.LMS.request.UpsertUserRequest;
 import com.james.LMS.response.BaseResponse;
 import com.james.LMS.response.LoginResponse;
@@ -15,4 +16,6 @@ public interface UserFacade {
   BaseResponse<RefreshTokenResponse> refreshToken(RefreshTokenRequest refreshTokenRequest);
 
   BaseResponse<Void> logout();
+
+  BaseResponse<Void> resetPassword(ResetPasswordRequest resetPasswordRequest);
 }
