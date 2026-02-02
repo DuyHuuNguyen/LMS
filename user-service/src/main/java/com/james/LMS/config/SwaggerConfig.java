@@ -25,7 +25,7 @@ public class SwaggerConfig {
     String[] paths = {"/api/**"};
     return GroupedOpenApi.builder()
         .group("demos-service")
-        .packagesToScan("src.main.java.com.james.LMS.controller")
+        .packagesToScan("com.james.LMS.controller")
         .pathsToMatch(paths)
         .build();
   }

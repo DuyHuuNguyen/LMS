@@ -36,7 +36,7 @@ public class AuthTokenProviderInterceptor extends OncePerRequestFilter {
   public static final String AUTHORIZATION = "Authorization";
   private static final int START_OF_TOKEN = 7;
   private static final List<String> SWAGGER_URLS = List.of("/swagger-ui/", "/v3/api-docs");
-  private static final List<String> PUBLIC_ENDPOINTS = List.of("/");
+  private static final List<String> PUBLIC_ENDPOINTS = List.of("/api/v1/users/login");
 
   @Override
   protected void doFilterInternal(

@@ -8,8 +8,12 @@ import com.james.LMS.response.BaseResponse;
 import com.james.LMS.response.ExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @ControllerAdvice
 public class RestHandlerException {
@@ -48,5 +52,17 @@ public class RestHandlerException {
         BaseResponse.build(
             new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
         HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<?> handleValidation(MethodArgumentNotValidException ex) {
+
+    Map<String, String> errors = new HashMap<>();
+    ex.getBindingResult().getFieldErrors()
+            .forEach(e -> errors.put(e.getField(), e.getDefaultMessage()));
+
+    return new ResponseEntity<>(
+            BaseResponse.build( errors, false),
+            HttpStatus.BAD_REQUEST);
   }
 }
