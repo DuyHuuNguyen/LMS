@@ -27,7 +27,13 @@ public class SecurityConfig {
   private final JwtService jwtService;
   private final CacheService cacheService;
 
-  private final String[] WHITE_LISTS = {"/swagger-ui/**", "/v3/api-docs/**", "/api/v1/users/sign-up", "/api/v1/users/login"};
+  private final String[] WHITE_LISTS = {
+    "/swagger-ui/**",
+    "/v3/api-docs/**",
+    "/api/v1/users/sign-up",
+    "/api/v1/users/login",
+    "/api/v1/users/refresh-token",
+  };
 
   @Bean
   public PasswordEncoder passwordEncoder() {

@@ -6,12 +6,15 @@ import com.james.LMS.enums.ErrorCode;
 import com.james.LMS.enums.RoleEnum;
 import com.james.LMS.enums.TokenType;
 import com.james.LMS.exception.EntityNotFoundException;
+import com.james.LMS.exception.PermissionDeniedException;
 import com.james.LMS.exception.UserAlreadyExistException;
 import com.james.LMS.facade.UserFacade;
 import com.james.LMS.request.LoginRequest;
+import com.james.LMS.request.RefreshTokenRequest;
 import com.james.LMS.request.UpsertUserRequest;
 import com.james.LMS.response.BaseResponse;
 import com.james.LMS.response.LoginResponse;
+import com.james.LMS.response.RefreshTokenResponse;
 import com.james.LMS.service.CacheService;
 import com.james.LMS.service.JwtService;
 import com.james.LMS.service.RoleService;
@@ -65,7 +68,7 @@ public class UserFacadeImpl implements UserFacade {
   public BaseResponse<Void> signUp(UpsertUserRequest upsertUserRequest) {
 
     boolean isExistUser = this.userService.existsUserByEmail(upsertUserRequest.getEmail());
-    if(isExistUser) throw new UserAlreadyExistException(ErrorCode.USER_ALREADY_EXISTS);
+    if (isExistUser) throw new UserAlreadyExistException(ErrorCode.USER_ALREADY_EXISTS);
 
     String passwordEncoded = this.passwordEncoder.encode(upsertUserRequest.getPassword());
     User user =
@@ -84,5 +87,21 @@ public class UserFacadeImpl implements UserFacade {
     this.userService.save(user);
 
     return BaseResponse.ok();
+  }
+
+  @Override
+  public BaseResponse<RefreshTokenResponse> refreshToken(RefreshTokenRequest refreshTokenRequest) {
+
+    String email = this.jwtService.getEmailFromJwtToken(refreshTokenRequest.getRefreshToken());
+    String refreshTokenKey = String.format(TokenType.REFRESH_TOKEN.getCacheKeyTemplate(), email);
+
+    boolean isInvalidRefreshToken = !this.cacheService.hasKey(refreshTokenKey);
+    if (isInvalidRefreshToken) throw new PermissionDeniedException(ErrorCode.JWT_INVALID);
+
+    String accessToken = this.jwtService.generateAccessToken(email);
+
+    RefreshTokenResponse refreshTokenResponse =
+        RefreshTokenResponse.builder().accessToken(accessToken).build();
+    return BaseResponse.build(refreshTokenResponse, true);
   }
 }

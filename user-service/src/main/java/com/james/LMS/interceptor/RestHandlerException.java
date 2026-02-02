@@ -52,11 +52,11 @@ public class RestHandlerException {
 
   @ExceptionHandler(UserAlreadyExistException.class)
   public ResponseEntity<BaseResponse<ExceptionResponse>> UserAlreadyException(
-          UserAlreadyExistException exception) {
+      UserAlreadyExistException exception) {
     return new ResponseEntity<>(
-            BaseResponse.build(
-                    new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
-            HttpStatus.BAD_REQUEST);
+        BaseResponse.build(
+            new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
+        HttpStatus.BAD_REQUEST);
   }
 
   @ExceptionHandler(MethodArgumentNotValidException.class)

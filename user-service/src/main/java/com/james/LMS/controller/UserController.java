@@ -2,9 +2,11 @@ package com.james.LMS.controller;
 
 import com.james.LMS.facade.UserFacade;
 import com.james.LMS.request.LoginRequest;
+import com.james.LMS.request.RefreshTokenRequest;
 import com.james.LMS.request.UpsertUserRequest;
 import com.james.LMS.response.BaseResponse;
 import com.james.LMS.response.LoginResponse;
+import com.james.LMS.response.RefreshTokenResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -30,9 +32,17 @@ public class UserController {
   @PostMapping("/sign-up")
   @ResponseStatus(HttpStatus.OK)
   @Operation(
-          summary = "Sign up to system by email, user name and password",
-          tags = {"User APIs"})
-  public  BaseResponse<Void> signUp(@Valid @RequestBody UpsertUserRequest upsertUserRequest){
+      summary = "Sign up to system by email, user name and password",
+      tags = {"User APIs"})
+  public BaseResponse<Void> signUp(@Valid @RequestBody UpsertUserRequest upsertUserRequest) {
     return this.userFacade.signUp(upsertUserRequest);
+  }
+
+  @PostMapping("/refresh-token")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"User APIs"})
+  public BaseResponse<RefreshTokenResponse> refreshToken(
+      @RequestBody RefreshTokenRequest refreshTokenRequest) {
+    return this.userFacade.refreshToken(refreshTokenRequest);
   }
 }

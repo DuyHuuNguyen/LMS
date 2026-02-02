@@ -10,7 +10,8 @@ public enum ErrorCode {
   PERMISSION_DENIES("1001", "Permission denied exception"),
   ROLE_NOT_FOUND("1002", "Role not found"),
   JWT_INVALID("1003", "Jwt invalid"),
-  NOT_MATCHED_PASSWORD("1004", "Password doesn't match"), USER_ALREADY_EXISTS("1005","User already exists");
+  NOT_MATCHED_PASSWORD("1004", "Password doesn't match"),
+  USER_ALREADY_EXISTS("1005", "User already exists");
   private final String code;
   private final String message;
 }

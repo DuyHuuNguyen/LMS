@@ -20,7 +20,7 @@ public class AuthenticationFilter implements GlobalFilter {
   private static final List<String> PUBLIC_APIS =
       List.of(
           "/api/v1/users/login",
-          "/api/v1/auth/authorization",
+          "/api/v1/users/refresh-token",
           "/api/v1/auth/forgot-password",
           "/api/v1/auth/verify-otp",
           "/api/v1/users/sign-up");
