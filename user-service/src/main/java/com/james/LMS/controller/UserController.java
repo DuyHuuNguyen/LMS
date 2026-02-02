@@ -2,10 +2,9 @@ package com.james.LMS.controller;
 
 import com.james.LMS.config.SecurityConfig;
 import com.james.LMS.facade.UserFacade;
-import com.james.LMS.request.LoginRequest;
-import com.james.LMS.request.RefreshTokenRequest;
-import com.james.LMS.request.UpsertUserRequest;
+import com.james.LMS.request.*;
 import com.james.LMS.response.BaseResponse;
+import com.james.LMS.response.ForgotPasswordResponse;
 import com.james.LMS.response.LoginResponse;
 import com.james.LMS.response.RefreshTokenResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -56,5 +55,23 @@ public class UserController {
   @PreAuthorize("isAuthenticated()")
   public BaseResponse<Void> logout() {
     return this.userFacade.logout();
+  }
+
+  @PostMapping("/reset-password")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Auth APIs"})
+  @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
+  @PreAuthorize("isAuthenticated()")
+  public BaseResponse<Void> resetPassword(
+      @Valid @RequestBody ResetPasswordRequest resetPasswordRequest) {
+    return this.userFacade.resetPassword(resetPasswordRequest);
+  }
+
+  @PostMapping("/forgot-password")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Auth APIs"})
+  public BaseResponse<ForgotPasswordResponse> forgotPassword(
+      @Valid @RequestBody ForgotPasswordRequest forgotPasswordRequest) {
+    return this.userFacade.forgotPassword(forgotPasswordRequest);
   }
 }

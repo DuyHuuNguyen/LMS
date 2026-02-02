@@ -1,26 +1,26 @@
 package com.james.LMS.facade.impl;
 
 import com.james.LMS.config.SecurityUserDetails;
+import com.james.LMS.dto.MessageMailDTO;
 import com.james.LMS.entity.Role;
 import com.james.LMS.entity.User;
 import com.james.LMS.enums.ErrorCode;
+import com.james.LMS.enums.ResetPasswordKey;
 import com.james.LMS.enums.RoleEnum;
 import com.james.LMS.enums.TokenType;
 import com.james.LMS.exception.EntityNotFoundException;
 import com.james.LMS.exception.PermissionDeniedException;
+import com.james.LMS.exception.SpamForgotPasswordException;
 import com.james.LMS.exception.UserAlreadyExistException;
 import com.james.LMS.facade.UserFacade;
-import com.james.LMS.request.LoginRequest;
-import com.james.LMS.request.RefreshTokenRequest;
-import com.james.LMS.request.ResetPasswordRequest;
-import com.james.LMS.request.UpsertUserRequest;
+import com.james.LMS.request.*;
 import com.james.LMS.response.BaseResponse;
+import com.james.LMS.response.ForgotPasswordResponse;
 import com.james.LMS.response.LoginResponse;
 import com.james.LMS.response.RefreshTokenResponse;
-import com.james.LMS.service.CacheService;
-import com.james.LMS.service.JwtService;
-import com.james.LMS.service.RoleService;
-import com.james.LMS.service.UserService;
+import com.james.LMS.service.*;
+import com.james.LMS.util.MailUtil;
+import com.james.LMS.util.OTPGeneratorUtil;
 import jakarta.transaction.Transactional;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +41,7 @@ public class UserFacadeImpl implements UserFacade {
   private final AuthenticationManager authenticationManager;
   private final PasswordEncoder passwordEncoder;
   private final RoleService roleService;
+  private final MailProducerService mailProducerService;
 
   @Override
   public BaseResponse<LoginResponse> login(LoginRequest loginRequest) {
@@ -87,6 +88,8 @@ public class UserFacadeImpl implements UserFacade {
     user.addRole(userRole);
 
     this.userService.save(user);
+
+    this.mailProducerService.send(MailUtil.buildMessageMailDTOForNewUser(user.getEmail()));
 
     return BaseResponse.ok();
   }
@@ -144,5 +147,35 @@ public class UserFacadeImpl implements UserFacade {
     userService.save(user);
 
     return BaseResponse.ok();
+  }
+
+  @Override
+  public BaseResponse<ForgotPasswordResponse> forgotPassword(
+      ForgotPasswordRequest forgotPasswordRequest) {
+
+    String timeOutRetryKey =
+        String.format(
+            ResetPasswordKey.TIMEOUT_RETRY_KEY.getContent(), forgotPasswordRequest.getEmail());
+    boolean isValidForgotPassword = this.cacheService.hasKey(timeOutRetryKey);
+
+    if (isValidForgotPassword)
+      throw new SpamForgotPasswordException(ErrorCode.SPAM_FORGOT_PASSWORD);
+
+    User user =
+        userService
+            .findByEmail(forgotPasswordRequest.getEmail())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
+
+    String otp = OTPGeneratorUtil.generaRandomCode();
+    MessageMailDTO messageMailDTO = MailUtil.buildMessageMailDTOForOTP(user.getEmail(), otp);
+
+    this.mailProducerService.send(messageMailDTO);
+    String otpKey = String.format(ResetPasswordKey.OTP_KEY.getContent(), user.getEmail());
+
+    this.cacheService.store(
+        timeOutRetryKey, forgotPasswordRequest.getEmail(), 10, TimeUnit.MINUTES);
+    this.cacheService.store(otpKey, otp, 10, TimeUnit.MINUTES);
+
+    return BaseResponse.build(ForgotPasswordResponse.builder().build(), true);
   }
 }

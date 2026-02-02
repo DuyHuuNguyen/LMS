@@ -51,8 +51,17 @@ public class RestHandlerException {
   }
 
   @ExceptionHandler(UserAlreadyExistException.class)
-  public ResponseEntity<BaseResponse<ExceptionResponse>> UserAlreadyException(
+  public ResponseEntity<BaseResponse<ExceptionResponse>> userAlreadyException(
       UserAlreadyExistException exception) {
+    return new ResponseEntity<>(
+        BaseResponse.build(
+            new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
+        HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(SpamForgotPasswordException.class)
+  public ResponseEntity<BaseResponse<ExceptionResponse>> spamForgotPasswordException(
+      SpamForgotPasswordException exception) {
     return new ResponseEntity<>(
         BaseResponse.build(
             new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
