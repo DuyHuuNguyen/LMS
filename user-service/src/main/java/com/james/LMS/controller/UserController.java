@@ -2,6 +2,7 @@ package com.james.LMS.controller;
 
 import com.james.LMS.facade.UserFacade;
 import com.james.LMS.request.LoginRequest;
+import com.james.LMS.request.UpsertUserRequest;
 import com.james.LMS.response.BaseResponse;
 import com.james.LMS.response.LoginResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,5 +25,14 @@ public class UserController {
       tags = {"User APIs"})
   private BaseResponse<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
     return this.userFacade.login(loginRequest);
+  }
+
+  @PostMapping("/sign-up")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(
+          summary = "Sign up to system by email, user name and password",
+          tags = {"User APIs"})
+  public  BaseResponse<Void> signUp(@Valid @RequestBody UpsertUserRequest upsertUserRequest){
+    return this.userFacade.signUp(upsertUserRequest);
   }
 }

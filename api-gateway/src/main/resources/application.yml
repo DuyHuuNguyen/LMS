@@ -45,7 +45,7 @@ spring:
 
         # USER_SERVICE
         - id: user-service
-          uri: http://localhost:8082
+          uri: http://localhost:8080
           predicates:
             - Path=/user-service/**
           filters:

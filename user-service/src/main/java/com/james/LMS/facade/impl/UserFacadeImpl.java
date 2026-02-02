@@ -1,14 +1,22 @@
 package com.james.LMS.facade.impl;
 
+import com.james.LMS.entity.Role;
+import com.james.LMS.entity.User;
+import com.james.LMS.enums.ErrorCode;
+import com.james.LMS.enums.RoleEnum;
 import com.james.LMS.enums.TokenType;
+import com.james.LMS.exception.EntityNotFoundException;
+import com.james.LMS.exception.UserAlreadyExistException;
 import com.james.LMS.facade.UserFacade;
 import com.james.LMS.request.LoginRequest;
+import com.james.LMS.request.UpsertUserRequest;
 import com.james.LMS.response.BaseResponse;
 import com.james.LMS.response.LoginResponse;
 import com.james.LMS.service.CacheService;
 import com.james.LMS.service.JwtService;
+import com.james.LMS.service.RoleService;
 import com.james.LMS.service.UserService;
-import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +35,7 @@ public class UserFacadeImpl implements UserFacade {
   private final CacheService cacheService;
   private final AuthenticationManager authenticationManager;
   private final PasswordEncoder passwordEncoder;
+  private final RoleService roleService;
 
   @Override
   public BaseResponse<LoginResponse> login(LoginRequest loginRequest) {
@@ -49,5 +58,31 @@ public class UserFacadeImpl implements UserFacade {
 
     return BaseResponse.build(
         LoginResponse.builder().accessToken(accessToken).refreshToken(refreshToken).build(), true);
+  }
+
+  @Override
+  @Transactional
+  public BaseResponse<Void> signUp(UpsertUserRequest upsertUserRequest) {
+
+    boolean isExistUser = this.userService.existsUserByEmail(upsertUserRequest.getEmail());
+    if(isExistUser) throw new UserAlreadyExistException(ErrorCode.USER_ALREADY_EXISTS);
+
+    String passwordEncoded = this.passwordEncoder.encode(upsertUserRequest.getPassword());
+    User user =
+        User.builder()
+            .username(upsertUserRequest.getUsername())
+            .email(upsertUserRequest.getEmail())
+            .password(passwordEncoded)
+            .build();
+
+    Role userRole =
+        this.roleService
+            .findByRoleName(RoleEnum.USER)
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.ROLE_NOT_FOUND));
+    user.addRole(userRole);
+
+    this.userService.save(user);
+
+    return BaseResponse.ok();
   }
 }

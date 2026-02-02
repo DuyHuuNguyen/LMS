@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@OpenAPIDefinition(servers = {@Server(url = "/"), @Server(url = "/demo-service")})
+@OpenAPIDefinition(servers = {@Server(url = "/"), @Server(url = "/user-service")})
 @SecurityScheme(
     name = "Bearer Authentication",
     type = SecuritySchemeType.HTTP,

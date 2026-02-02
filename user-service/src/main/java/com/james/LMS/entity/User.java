@@ -33,7 +33,7 @@ public class User extends BaseEntity {
   @JoinColumn(name = "instructor_id", referencedColumnName = "id")
   private Instructor instructor;
 
-  @ManyToMany(fetch = FetchType.EAGER)
+  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   @JoinTable(
       name = "user_roles",
       joinColumns = @JoinColumn(name = "user_id"),
@@ -43,5 +43,9 @@ public class User extends BaseEntity {
 
   public void changePassword(String newPasswordEncoded) {
     this.password = newPasswordEncoded;
+  }
+
+  public void addRole(Role role) {
+    this.roles.add(role);
   }
 }
