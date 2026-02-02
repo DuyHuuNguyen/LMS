@@ -13,4 +13,6 @@ public interface UserFacade {
   BaseResponse<Void> signUp(UpsertUserRequest upsertUserRequest);
 
   BaseResponse<RefreshTokenResponse> refreshToken(RefreshTokenRequest refreshTokenRequest);
+
+  BaseResponse<Void> logout();
 }

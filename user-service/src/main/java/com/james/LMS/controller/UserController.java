@@ -1,5 +1,6 @@
 package com.james.LMS.controller;
 
+import com.james.LMS.config.SecurityConfig;
 import com.james.LMS.facade.UserFacade;
 import com.james.LMS.request.LoginRequest;
 import com.james.LMS.request.RefreshTokenRequest;
@@ -8,9 +9,11 @@ import com.james.LMS.response.BaseResponse;
 import com.james.LMS.response.LoginResponse;
 import com.james.LMS.response.RefreshTokenResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -44,5 +47,14 @@ public class UserController {
   public BaseResponse<RefreshTokenResponse> refreshToken(
       @RequestBody RefreshTokenRequest refreshTokenRequest) {
     return this.userFacade.refreshToken(refreshTokenRequest);
+  }
+
+  @PostMapping("/logout")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Auth APIs"})
+  @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
+  @PreAuthorize("isAuthenticated()")
+  public BaseResponse<Void> logout() {
+    return this.userFacade.logout();
   }
 }

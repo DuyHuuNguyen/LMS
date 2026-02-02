@@ -27,6 +27,9 @@ public class SecurityConfig {
   private final JwtService jwtService;
   private final CacheService cacheService;
 
+  public static final String SECURITY_REQUIREMENT = "Bearer Authentication";
+
+
   private final String[] WHITE_LISTS = {
     "/swagger-ui/**",
     "/v3/api-docs/**",

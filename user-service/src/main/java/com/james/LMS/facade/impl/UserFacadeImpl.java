@@ -1,5 +1,6 @@
 package com.james.LMS.facade.impl;
 
+import com.james.LMS.config.SecurityUserDetails;
 import com.james.LMS.entity.Role;
 import com.james.LMS.entity.User;
 import com.james.LMS.enums.ErrorCode;
@@ -103,5 +104,22 @@ public class UserFacadeImpl implements UserFacade {
     RefreshTokenResponse refreshTokenResponse =
         RefreshTokenResponse.builder().accessToken(accessToken).build();
     return BaseResponse.build(refreshTokenResponse, true);
+  }
+
+  @Override
+  public BaseResponse<Void> logout() {
+    SecurityUserDetails principal =
+            (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+    String accessTokenCacheKey =
+            String.format(TokenType.ACCESS_TOKEN.getCacheKeyTemplate(), principal.getUsername());
+    String refreshTokenCacheKey =
+            String.format(TokenType.REFRESH_TOKEN.getCacheKeyTemplate(), principal.getUsername());
+
+    cacheService.delete(accessTokenCacheKey);
+    cacheService.delete(refreshTokenCacheKey);
+
+    SecurityContextHolder.clearContext();
+    return BaseResponse.ok();
   }
 }
