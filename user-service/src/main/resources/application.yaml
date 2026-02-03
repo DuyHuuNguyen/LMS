@@ -42,3 +42,7 @@ rabbitmq:
   user-mail-queue: lms-queue
 server:
   port: 8083
+cloudinary:
+  cloudinary-name: dvynemzxx
+  api-key: 368324453129176
+  api-secret: FyxpYajXxv58KvfsbG9mYuYWOh8

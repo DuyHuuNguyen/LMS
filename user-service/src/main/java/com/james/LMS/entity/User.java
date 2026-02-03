@@ -55,4 +55,8 @@ public class User extends BaseEntity {
     this.instructor = instructor;
     this.instructor.addUser(this);
   }
+
+  public void addAvatarUrl(String avatarUrl) {
+    this.avatarUrl = avatarUrl;
+  }
 }

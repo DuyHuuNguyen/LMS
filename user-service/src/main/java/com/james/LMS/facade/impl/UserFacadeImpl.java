@@ -5,10 +5,7 @@ import com.james.LMS.dto.MessageMailDTO;
 import com.james.LMS.entity.Instructor;
 import com.james.LMS.entity.Role;
 import com.james.LMS.entity.User;
-import com.james.LMS.enums.ErrorCode;
-import com.james.LMS.enums.ResetPasswordKey;
-import com.james.LMS.enums.RoleEnum;
-import com.james.LMS.enums.TokenType;
+import com.james.LMS.enums.*;
 import com.james.LMS.exception.*;
 import com.james.LMS.facade.UserFacade;
 import com.james.LMS.request.*;
@@ -39,6 +36,7 @@ public class UserFacadeImpl implements UserFacade {
   private final PasswordEncoder passwordEncoder;
   private final RoleService roleService;
   private final MailProducerService mailProducerService;
+  private final CloudinaryService cloudinaryService;
 
   @Override
   public BaseResponse<LoginResponse> login(LoginRequest loginRequest) {
@@ -281,5 +279,19 @@ public class UserFacadeImpl implements UserFacade {
             .instructorName(user.getInstructor().getName())
             .build();
     return BaseResponse.build(userDetailResponse, true);
+  }
+
+  @Override
+  @Transactional
+  public BaseResponse<String> uploadFile(byte[] bytes) {
+    SecurityUserDetails principal =
+            (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    User user =
+            userService
+                    .findByEmail(principal.getUsername())
+                    .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
+    String avatarUrl = this.cloudinaryService.uploadFile(bytes,FileType.IMAGE);
+    user.addAvatarUrl(avatarUrl);
+    return BaseResponse.build(avatarUrl, true);
   }
 }

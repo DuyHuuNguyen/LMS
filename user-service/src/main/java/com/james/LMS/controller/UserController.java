@@ -1,6 +1,7 @@
 package com.james.LMS.controller;
 
 import com.james.LMS.config.SecurityConfig;
+import com.james.LMS.enums.FileType;
 import com.james.LMS.facade.UserFacade;
 import com.james.LMS.request.*;
 import com.james.LMS.response.*;
@@ -8,10 +9,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -107,5 +110,18 @@ public class UserController {
   @PreAuthorize("hasRole('ROLE_USER')")
   public BaseResponse<UserDetailResponse> findDetailById(@PathVariable Long id) {
     return this.userFacade.findDetailById(id);
+  }
+
+  @PostMapping(value = "/avatar", consumes = "multipart/form-data", produces = "application/json")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(
+          summary = "Upload image",
+          tags = {"User APIs"})
+  @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
+  @PreAuthorize("isAuthenticated()")
+  @SneakyThrows
+  public BaseResponse<String> uploadImage(
+          @RequestPart("image") MultipartFile image) {
+    return this.userFacade.uploadFile(image.getBytes());
   }
 }

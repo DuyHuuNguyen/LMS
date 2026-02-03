@@ -15,7 +15,7 @@ public enum ErrorCode {
   SPAM_FORGOT_PASSWORD("1006", "Spam forgot password"),
   OTP_TIMEOUT("1007", "OTP timeout"),
   NOT_MATCHED_OTP("1008", "OPT doesn't match"),
-  INSTRUCTOR_ALREADY_EXISTS("1009", "Instructor already exists");
+  INSTRUCTOR_ALREADY_EXISTS("1009", "Instructor already exists"), FILE_ERROR_UPLOAD("1010","Upload error" );
 
   private final String code;
   private final String message;

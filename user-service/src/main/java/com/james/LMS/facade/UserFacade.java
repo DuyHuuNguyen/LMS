@@ -1,5 +1,6 @@
 package com.james.LMS.facade;
 
+import com.james.LMS.enums.FileType;
 import com.james.LMS.request.*;
 import com.james.LMS.response.*;
 
@@ -23,4 +24,6 @@ public interface UserFacade {
   BaseResponse<UserDetailResponse> findProfile();
 
   BaseResponse<UserDetailResponse> findDetailById(Long id);
+
+  BaseResponse<String> uploadFile(byte[] bytes);
 }
