@@ -13,8 +13,9 @@ public enum ErrorCode {
   NOT_MATCHED_PASSWORD("1004", "Password doesn't match"),
   USER_ALREADY_EXISTS("1005", "User already exists"),
   SPAM_FORGOT_PASSWORD("1006", "Spam forgot password"),
-  OTP_TIMEOUT("1007","OTP timeout" ),
-  NOT_MATCHED_OTP("1008","OPT doesn't match" );
+  OTP_TIMEOUT("1007", "OTP timeout"),
+  NOT_MATCHED_OTP("1008", "OPT doesn't match"),
+  INSTRUCTOR_ALREADY_EXISTS("1009", "Instructor already exists");
 
   private final String code;
   private final String message;

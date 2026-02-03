@@ -1,8 +1,6 @@
 package com.james.LMS.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,4 +18,11 @@ public class Instructor extends BaseEntity {
 
   @Column(name = "about_instructor")
   private String about;
+
+  @OneToOne(mappedBy = "instructor")
+  private User user;
+
+  public void addUser(User user) {
+    this.user = user;
+  }
 }

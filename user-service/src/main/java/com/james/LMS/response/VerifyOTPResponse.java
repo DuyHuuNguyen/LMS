@@ -8,5 +8,5 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class VerifyOTPResponse {
-    private String resetPasswordToken;
+  private String resetPasswordToken;
 }

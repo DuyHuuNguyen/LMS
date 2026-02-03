@@ -5,12 +5,12 @@ import lombok.Getter;
 
 @Getter
 public class OTPTimeOutException extends RuntimeException {
-    private String errorCode;
-    private String message;
-    public OTPTimeOutException(ErrorCode errorCode) {
-        super(errorCode.getMessage());
-        this.errorCode =errorCode.getCode();
-        this.message =errorCode.getMessage();
+  private String errorCode;
+  private String message;
 
-    }
+  public OTPTimeOutException(ErrorCode errorCode) {
+    super(errorCode.getMessage());
+    this.errorCode = errorCode.getCode();
+    this.message = errorCode.getMessage();
+  }
 }

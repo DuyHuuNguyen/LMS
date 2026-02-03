@@ -8,10 +8,19 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.core.ApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.ApplicationListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
@@ -24,7 +33,7 @@ public class UserController {
   @Operation(
       summary = "Login to system by email and password",
       tags = {"User APIs"})
-  private BaseResponse<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
+  public BaseResponse<LoginResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
     return this.userFacade.login(loginRequest);
   }
 
@@ -75,7 +84,17 @@ public class UserController {
   @PostMapping("/verify-otp")
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"User APIs"})
-  public BaseResponse<VerifyOTPResponse> verify(@Valid @RequestBody VerifyOTPRequest verifyOTPRequest){
+  public BaseResponse<VerifyOTPResponse> verify(
+      @Valid @RequestBody VerifyOTPRequest verifyOTPRequest) {
     return this.userFacade.verify(verifyOTPRequest);
+  }
+
+  @PostMapping("/instructor")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"User APIs"})
+  @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public BaseResponse<Void> instruct(@Valid @RequestBody InstructionRequest instructionRequest) {
+    return this.userFacade.instruct(instructionRequest);
   }
 }

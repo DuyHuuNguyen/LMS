@@ -29,7 +29,7 @@ public class User extends BaseEntity {
   @Column(name = "avatar_url")
   private String avatarUrl;
 
-  @OneToOne(cascade = CascadeType.ALL)
+  @OneToOne(cascade = CascadeType.MERGE)
   @JoinColumn(name = "instructor_id", referencedColumnName = "id")
   private Instructor instructor;
 
@@ -47,5 +47,10 @@ public class User extends BaseEntity {
 
   public void addRole(Role role) {
     this.roles.add(role);
+  }
+
+  public void addInstructor(Instructor instructor) {
+    this.instructor = instructor;
+    this.instructor.addUser(this);
   }
 }

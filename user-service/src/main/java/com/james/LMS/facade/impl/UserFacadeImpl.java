@@ -2,6 +2,7 @@ package com.james.LMS.facade.impl;
 
 import com.james.LMS.config.SecurityUserDetails;
 import com.james.LMS.dto.MessageMailDTO;
+import com.james.LMS.entity.Instructor;
 import com.james.LMS.entity.Role;
 import com.james.LMS.entity.User;
 import com.james.LMS.enums.ErrorCode;
@@ -15,12 +16,14 @@ import com.james.LMS.response.*;
 import com.james.LMS.service.*;
 import com.james.LMS.util.MailUtil;
 import com.james.LMS.util.OTPGeneratorUtil;
+import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -176,24 +179,54 @@ public class UserFacadeImpl implements UserFacade {
   @Override
   public BaseResponse<VerifyOTPResponse> verify(VerifyOTPRequest verifyOTPRequest) {
     User user =
-            userService
-                    .findByEmail(verifyOTPRequest.getEmail())
-                    .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
+        userService
+            .findByEmail(verifyOTPRequest.getEmail())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
 
     String otpKey = String.format(ResetPasswordKey.OTP_KEY.getContent(), user.getEmail());
 
     Object otp = this.cacheService.retrieve(otpKey);
 
-    boolean isValidOTP =  otp != null;
-    if(!isValidOTP)  throw new OTPTimeOutException(ErrorCode.OTP_TIMEOUT);
+    boolean isValidOTP = otp != null;
+    if (!isValidOTP) throw new OTPTimeOutException(ErrorCode.OTP_TIMEOUT);
 
     boolean isMatchedOtp = otp.equals(verifyOTPRequest.getOtp());
-    if(!isMatchedOtp) throw new PermissionDeniedException(ErrorCode.NOT_MATCHED_OTP);
+    if (!isMatchedOtp) throw new PermissionDeniedException(ErrorCode.NOT_MATCHED_OTP);
 
     String resetPasswordToken = this.jwtService.generateResetPasswordToken(user.getEmail());
 
-    return BaseResponse.build(VerifyOTPResponse.builder().resetPasswordToken(resetPasswordToken).build(),true);
+    return BaseResponse.build(
+        VerifyOTPResponse.builder().resetPasswordToken(resetPasswordToken).build(), true);
   }
 
+  @Override
+  @Transactional
+  public BaseResponse<Void> instruct(InstructionRequest instructionRequest) {
+    SecurityUserDetails principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    boolean isAlreadyInstructor =
+        principal.getAuthorities().stream()
+            .map(GrantedAuthority::getAuthority)
+            .anyMatch(RoleEnum.INSTRUCTOR.getContent()::equals);
+    if (isAlreadyInstructor)
+      throw new PermissionDeniedException(ErrorCode.INSTRUCTOR_ALREADY_EXISTS);
 
+    User user =
+        userService
+            .findByEmail(principal.getUsername())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
+    Instructor instructor =
+        Instructor.builder()
+            .name(instructionRequest.getName())
+            .about(instructionRequest.getAbout())
+            .build();
+    user.addInstructor(instructor);
+    this.userService.save(user);
+    return BaseResponse.ok();
+  }
+
+  @PostConstruct
+  void run(){
+    log.info("✅ UserFacadeImpl bean CREATED {}",this.userService.findByEmail("duynguyenavg@gmail.com"));
+  }
 }

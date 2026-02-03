@@ -40,3 +40,5 @@ rabbitmq:
   exchange-name: demo
   user-mail-routing-key: demo
   user-mail-queue: lms-queue
+server:
+  port: 8083
