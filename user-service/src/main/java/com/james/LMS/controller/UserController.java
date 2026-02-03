@@ -9,16 +9,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.core.ApplicationContext;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.ApplicationListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Arrays;
 
 @Slf4j
 @RestController
@@ -96,5 +89,13 @@ public class UserController {
   @PreAuthorize("hasRole('ROLE_USER')")
   public BaseResponse<Void> instruct(@Valid @RequestBody InstructionRequest instructionRequest) {
     return this.userFacade.instruct(instructionRequest);
+  }
+
+  @PostMapping("/profile")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"User APIs"})
+  @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
+  public BaseResponse<UserDetailResponse> findProfile() {
+    return this.userFacade.findProfile();
   }
 }

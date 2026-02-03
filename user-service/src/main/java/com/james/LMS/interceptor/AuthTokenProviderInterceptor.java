@@ -1,12 +1,14 @@
 package com.james.LMS.interceptor;
 
 import com.james.LMS.config.SecurityUserDetails;
+import com.james.LMS.entity.Role;
 import com.james.LMS.enums.ErrorCode;
 import com.james.LMS.enums.TokenType;
 import com.james.LMS.exception.EntityNotFoundException;
 import com.james.LMS.exception.InvalidTokenException;
 import com.james.LMS.service.CacheService;
 import com.james.LMS.service.JwtService;
+import com.james.LMS.service.RoleService;
 import com.james.LMS.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -32,15 +34,16 @@ public class AuthTokenProviderInterceptor extends OncePerRequestFilter {
   private final UserService userService;
   private final CacheService cacheService;
   private final JwtService jwtService;
+  private final RoleService roleService;
 
   public static final String AUTHORIZATION = "Authorization";
   private static final int START_OF_TOKEN = 7;
   private static final List<String> SWAGGER_URLS = List.of("/swagger-ui/", "/v3/api-docs");
   private static final List<String> PUBLIC_ENDPOINTS =
       List.of(
-              "/api/v1/users/demo",
-              "/actuator/health",
-              "/actuator/beans",
+          "/api/v1/users/demo",
+          "/actuator/health",
+          "/actuator/beans",
           "/api/v1/users/login",
           "/api/v1/users/sign-up",
           "/api/v1/users/forgot-password",
@@ -90,9 +93,9 @@ public class AuthTokenProviderInterceptor extends OncePerRequestFilter {
         userService
             .findByEmail(email)
             .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
-
+    List<Role> roles = this.roleService.findAllByUserId(user.getId());
     List<GrantedAuthority> authorityList =
-        user.getRoles().stream()
+        roles.stream()
             .map(role -> new SimpleGrantedAuthority(role.getRoleName().getContent()))
             .collect(Collectors.toList());
 

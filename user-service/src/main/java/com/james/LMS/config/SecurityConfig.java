@@ -4,6 +4,7 @@ import com.james.LMS.interceptor.AuthTokenProviderInterceptor;
 import com.james.LMS.interceptor.UserDetailsAuthenticationProviderInterceptor;
 import com.james.LMS.service.CacheService;
 import com.james.LMS.service.JwtService;
+import com.james.LMS.service.RoleService;
 import com.james.LMS.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -26,6 +27,7 @@ public class SecurityConfig {
   private final UserService userService;
   private final JwtService jwtService;
   private final CacheService cacheService;
+  private final RoleService roleService;
 
   public static final String SECURITY_REQUIREMENT = "Bearer Authentication";
 
@@ -37,8 +39,8 @@ public class SecurityConfig {
     "/api/v1/users/refresh-token",
     "/api/v1/users/forgot-password",
     "/api/v1/users/verify-otp",
-          "/actuator/**",
-          "/api/v1/users/demo",
+    "/actuator/**",
+    "/api/v1/users/demo",
   };
 
   @Bean
@@ -56,12 +58,13 @@ public class SecurityConfig {
   public UserDetailsAuthenticationProviderInterceptor
       userDetailsAuthenticationProviderInterceptor() {
     return new UserDetailsAuthenticationProviderInterceptor(
-        this.userService, this.passwordEncoder());
+        this.userService, this.passwordEncoder(), this.roleService);
   }
 
   @Bean
   public AuthTokenProviderInterceptor authTokenProviderInterceptor() {
-    return new AuthTokenProviderInterceptor(userService, cacheService, jwtService);
+    return new AuthTokenProviderInterceptor(
+        this.userService, this.cacheService, this.jwtService, this.roleService);
   }
 
   @Bean

@@ -14,10 +14,9 @@ import com.james.LMS.facade.UserFacade;
 import com.james.LMS.request.*;
 import com.james.LMS.response.*;
 import com.james.LMS.service.*;
+import com.james.LMS.util.DateUtil;
 import com.james.LMS.util.MailUtil;
 import com.james.LMS.util.OTPGeneratorUtil;
-import jakarta.annotation.PostConstruct;
-import jakarta.transaction.Transactional;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +26,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -221,12 +221,51 @@ public class UserFacadeImpl implements UserFacade {
             .about(instructionRequest.getAbout())
             .build();
     user.addInstructor(instructor);
+
+    Role instructorRole =
+        this.roleService
+            .findByRoleName(RoleEnum.INSTRUCTOR)
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.ROLE_NOT_FOUND));
+
+    user.addRole(instructorRole);
+
     this.userService.save(user);
     return BaseResponse.ok();
   }
 
-  @PostConstruct
-  void run(){
-    log.info("✅ UserFacadeImpl bean CREATED {}",this.userService.findByEmail("duynguyenavg@gmail.com"));
+  @Override
+  @Transactional(readOnly = true)
+  public BaseResponse<UserDetailResponse> findProfile() {
+    SecurityUserDetails principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    User user =
+        userService
+            .findByEmail(principal.getUsername())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
+    boolean isInstructor =
+        principal.getAuthorities().stream()
+            .map(GrantedAuthority::getAuthority)
+            .anyMatch(RoleEnum.INSTRUCTOR.getContent()::equals);
+    String instructorName = null;
+    String instructorAbout = null;
+
+    if (isInstructor) {
+      Instructor instructor = user.getInstructor();
+      instructorName = instructor.getName();
+      instructorAbout = instructor.getAbout();
+    }
+
+    UserDetailResponse userDetailResponse =
+        UserDetailResponse.builder()
+            .id(user.getId())
+            .username(user.getUsername())
+            .email(user.getEmail())
+            .avatarUrl(user.getAvatarUrl())
+            .isInstructor(isInstructor)
+            .createdAt(DateUtil.convertToLocalDate(user.getCreatedAt()))
+            .instructorAbout(instructorAbout)
+            .instructorName(instructorName)
+            .build();
+    return BaseResponse.build(userDetailResponse, true);
   }
 }

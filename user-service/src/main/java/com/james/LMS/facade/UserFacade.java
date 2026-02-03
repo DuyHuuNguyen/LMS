@@ -19,4 +19,6 @@ public interface UserFacade {
   BaseResponse<VerifyOTPResponse> verify(VerifyOTPRequest verifyOTPRequest);
 
   BaseResponse<Void> instruct(InstructionRequest instructionRequest);
+
+  BaseResponse<UserDetailResponse> findProfile();
 }

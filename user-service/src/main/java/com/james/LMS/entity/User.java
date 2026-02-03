@@ -29,7 +29,9 @@ public class User extends BaseEntity {
   @Column(name = "avatar_url")
   private String avatarUrl;
 
-  @OneToOne(cascade = CascadeType.MERGE)
+  @OneToOne(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   @JoinColumn(name = "instructor_id", referencedColumnName = "id")
   private Instructor instructor;
 
