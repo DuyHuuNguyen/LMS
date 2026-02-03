@@ -59,4 +59,16 @@ public class User extends BaseEntity {
   public void addAvatarUrl(String avatarUrl) {
     this.avatarUrl = avatarUrl;
   }
+
+  public void changeUsername(String username) {
+    this.username = username;
+  }
+
+  public void changeInstructorName(String instructorName) {
+    this.instructor.changeInstructorName(instructorName);
+  }
+
+  public void changeInstructorAbout(String instructorAbout) {
+    this.instructor.changeInstructorAbout(instructorAbout);
+  }
 }

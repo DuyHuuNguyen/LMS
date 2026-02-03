@@ -1,7 +1,6 @@
 package com.james.LMS.controller;
 
 import com.james.LMS.config.SecurityConfig;
-import com.james.LMS.enums.FileType;
 import com.james.LMS.facade.UserFacade;
 import com.james.LMS.request.*;
 import com.james.LMS.response.*;
@@ -115,13 +114,22 @@ public class UserController {
   @PostMapping(value = "/avatar", consumes = "multipart/form-data", produces = "application/json")
   @ResponseStatus(HttpStatus.OK)
   @Operation(
-          summary = "Upload image",
-          tags = {"User APIs"})
+      summary = "Upload image",
+      tags = {"User APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("isAuthenticated()")
   @SneakyThrows
-  public BaseResponse<String> uploadImage(
-          @RequestPart("image") MultipartFile image) {
+  public BaseResponse<String> uploadImage(@RequestPart("image") MultipartFile image) {
     return this.userFacade.uploadFile(image.getBytes());
+  }
+
+  @PutMapping("/profile")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"User APIs"})
+  @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public BaseResponse<Void> updateProfile(
+      @RequestBody UpdateUserProfileRequest updateUserProfileRequest) {
+    return this.userFacade.updateProfile(updateUserProfileRequest);
   }
 }

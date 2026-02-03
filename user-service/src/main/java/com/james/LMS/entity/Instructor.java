@@ -25,4 +25,12 @@ public class Instructor extends BaseEntity {
   public void addUser(User user) {
     this.user = user;
   }
+
+  public void changeInstructorName(String instructorName) {
+    this.name = instructorName;
+  }
+
+  public void changeInstructorAbout(String instructorAbout) {
+    this.about = instructorAbout;
+  }
 }

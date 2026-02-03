@@ -285,13 +285,34 @@ public class UserFacadeImpl implements UserFacade {
   @Transactional
   public BaseResponse<String> uploadFile(byte[] bytes) {
     SecurityUserDetails principal =
-            (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     User user =
-            userService
-                    .findByEmail(principal.getUsername())
-                    .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
-    String avatarUrl = this.cloudinaryService.uploadFile(bytes,FileType.IMAGE);
+        userService
+            .findByEmail(principal.getUsername())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
+    String avatarUrl = this.cloudinaryService.uploadFile(bytes, FileType.IMAGE);
     user.addAvatarUrl(avatarUrl);
     return BaseResponse.build(avatarUrl, true);
+  }
+
+  @Override
+  @Transactional
+  public BaseResponse<Void> updateProfile(UpdateUserProfileRequest updateUserProfileRequest) {
+    SecurityUserDetails principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    User user =
+        userService
+            .findByEmail(principal.getUsername())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
+    user.changeUsername(updateUserProfileRequest.getUsername());
+
+    boolean isInstructor = user.getInstructor() != null;
+    if(isInstructor) {
+      user.changeInstructorName(updateUserProfileRequest.getInstructorName());
+      user.changeInstructorAbout(updateUserProfileRequest.getInstructorAbout());
+    }
+
+    this.userService.save(user);
+    return BaseResponse.ok();
   }
 }
