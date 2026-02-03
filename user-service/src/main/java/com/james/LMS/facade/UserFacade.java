@@ -21,4 +21,6 @@ public interface UserFacade {
   BaseResponse<Void> instruct(InstructionRequest instructionRequest);
 
   BaseResponse<UserDetailResponse> findProfile();
+
+  BaseResponse<UserDetailResponse> findDetailById(Long id);
 }

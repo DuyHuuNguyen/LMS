@@ -242,18 +242,8 @@ public class UserFacadeImpl implements UserFacade {
         userService
             .findByEmail(principal.getUsername())
             .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
-    boolean isInstructor =
-        principal.getAuthorities().stream()
-            .map(GrantedAuthority::getAuthority)
-            .anyMatch(RoleEnum.INSTRUCTOR.getContent()::equals);
-    String instructorName = null;
-    String instructorAbout = null;
 
-    if (isInstructor) {
-      Instructor instructor = user.getInstructor();
-      instructorName = instructor.getName();
-      instructorAbout = instructor.getAbout();
-    }
+    boolean isInstructor = user.getInstructor() != null;
 
     UserDetailResponse userDetailResponse =
         UserDetailResponse.builder()
@@ -263,8 +253,32 @@ public class UserFacadeImpl implements UserFacade {
             .avatarUrl(user.getAvatarUrl())
             .isInstructor(isInstructor)
             .createdAt(DateUtil.convertToLocalDate(user.getCreatedAt()))
-            .instructorAbout(instructorAbout)
-            .instructorName(instructorName)
+            .instructorAbout(user.getInstructor().getAbout())
+            .instructorName(user.getInstructor().getName())
+            .build();
+    return BaseResponse.build(userDetailResponse, true);
+  }
+
+  @Override
+  @Transactional(readOnly = true)
+  public BaseResponse<UserDetailResponse> findDetailById(Long id) {
+    User user =
+        userService
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
+
+    boolean isInstructor = user.getInstructor() != null;
+
+    UserDetailResponse userDetailResponse =
+        UserDetailResponse.builder()
+            .id(user.getId())
+            .username(user.getUsername())
+            .email(user.getEmail())
+            .avatarUrl(user.getAvatarUrl())
+            .isInstructor(isInstructor)
+            .createdAt(DateUtil.convertToLocalDate(user.getCreatedAt()))
+            .instructorAbout(user.getInstructor().getAbout())
+            .instructorName(user.getInstructor().getName())
             .build();
     return BaseResponse.build(userDetailResponse, true);
   }

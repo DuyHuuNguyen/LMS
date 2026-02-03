@@ -91,11 +91,21 @@ public class UserController {
     return this.userFacade.instruct(instructionRequest);
   }
 
-  @PostMapping("/profile")
+  @GetMapping("/profile")
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"User APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
+  @PreAuthorize("hasRole('ROLE_USER')")
   public BaseResponse<UserDetailResponse> findProfile() {
     return this.userFacade.findProfile();
+  }
+
+  @GetMapping("/detail/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"User APIs"})
+  @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public BaseResponse<UserDetailResponse> findDetailById(@PathVariable Long id) {
+    return this.userFacade.findDetailById(id);
   }
 }
