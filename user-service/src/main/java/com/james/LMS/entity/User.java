@@ -16,11 +16,9 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User extends BaseEntity {
-  @Column(name = "first_name", nullable = false)
-  private String firstName;
 
-  @Column(name = "last_name", nullable = false)
-  private String lastName;
+  @Column(name = "username", nullable = false)
+  private String username;
 
   @Column(name = "password", nullable = false)
   private String password;
@@ -31,11 +29,13 @@ public class User extends BaseEntity {
   @Column(name = "avatar_url")
   private String avatarUrl;
 
-  @OneToOne(cascade = CascadeType.ALL)
+  @OneToOne(
+      fetch = FetchType.LAZY,
+      cascade = {CascadeType.MERGE, CascadeType.PERSIST})
   @JoinColumn(name = "instructor_id", referencedColumnName = "id")
   private Instructor instructor;
 
-  @ManyToMany(fetch = FetchType.EAGER)
+  @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
   @JoinTable(
       name = "user_roles",
       joinColumns = @JoinColumn(name = "user_id"),
@@ -45,5 +45,30 @@ public class User extends BaseEntity {
 
   public void changePassword(String newPasswordEncoded) {
     this.password = newPasswordEncoded;
+  }
+
+  public void addRole(Role role) {
+    this.roles.add(role);
+  }
+
+  public void addInstructor(Instructor instructor) {
+    this.instructor = instructor;
+    this.instructor.addUser(this);
+  }
+
+  public void addAvatarUrl(String avatarUrl) {
+    this.avatarUrl = avatarUrl;
+  }
+
+  public void changeUsername(String username) {
+    this.username = username;
+  }
+
+  public void changeInstructorName(String instructorName) {
+    this.instructor.changeInstructorName(instructorName);
+  }
+
+  public void changeInstructorAbout(String instructorAbout) {
+    this.instructor.changeInstructorAbout(instructorAbout);
   }
 }

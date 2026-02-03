@@ -23,8 +23,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: hduy09092005@gmail.com
-    password: srwmlebtfrsfdxkl
+    username: hotrotoyworld@gmail.com
+    password: tknm zdhx fiox vazw
     properties:
       mail:
         smtp:
@@ -40,3 +40,9 @@ rabbitmq:
   exchange-name: demo
   user-mail-routing-key: demo
   user-mail-queue: lms-queue
+server:
+  port: 8083
+cloudinary:
+  cloudinary-name: dvynemzxx
+  api-key: 368324453129176
+  api-secret: FyxpYajXxv58KvfsbG9mYuYWOh8

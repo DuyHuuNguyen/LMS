@@ -19,5 +19,5 @@ public class PostTopic extends BaseEntity {
 
   @ManyToOne
   @JoinColumn(name = "forum_post_id")
-  private ForumPost forumPost;
+  private Post forumPost;
 }

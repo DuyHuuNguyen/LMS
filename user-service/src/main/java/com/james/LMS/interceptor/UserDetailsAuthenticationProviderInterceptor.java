@@ -1,9 +1,11 @@
 package com.james.LMS.interceptor;
 
 import com.james.LMS.config.SecurityUserDetails;
+import com.james.LMS.entity.Role;
 import com.james.LMS.enums.ErrorCode;
 import com.james.LMS.exception.EntityNotFoundException;
 import com.james.LMS.exception.PermissionDeniedException;
+import com.james.LMS.service.RoleService;
 import com.james.LMS.service.UserService;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,6 +23,7 @@ public class UserDetailsAuthenticationProviderInterceptor
     extends AbstractUserDetailsAuthenticationProvider {
   private final UserService userService;
   private final PasswordEncoder passwordEncoder;
+  private final RoleService roleService;
 
   @Override
   protected void additionalAuthenticationChecks(
@@ -43,8 +46,9 @@ public class UserDetailsAuthenticationProviderInterceptor
 
     if (isNotMatchedPassword) throw new PermissionDeniedException(ErrorCode.NOT_MATCHED_PASSWORD);
 
+    List<Role> roles = this.roleService.findAllByUserId(user.getId());
     List<GrantedAuthority> authorityList =
-        user.getRoles().stream()
+        roles.stream()
             .map(role -> new SimpleGrantedAuthority(role.getRoleName().getContent()))
             .collect(Collectors.toList());
     return SecurityUserDetails.build(user, authorityList);

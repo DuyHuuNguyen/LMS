@@ -1,13 +1,13 @@
 package com.james.LMS.interceptor;
 
-import com.james.LMS.exception.EntityNotFoundException;
-import com.james.LMS.exception.InvalidOTPException;
-import com.james.LMS.exception.InvalidTokenException;
-import com.james.LMS.exception.PermissionDeniedException;
+import com.james.LMS.exception.*;
 import com.james.LMS.response.BaseResponse;
 import com.james.LMS.response.ExceptionResponse;
+import java.util.HashMap;
+import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -48,5 +48,43 @@ public class RestHandlerException {
         BaseResponse.build(
             new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
         HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(UserAlreadyExistException.class)
+  public ResponseEntity<BaseResponse<ExceptionResponse>> userAlreadyException(
+      UserAlreadyExistException exception) {
+    return new ResponseEntity<>(
+        BaseResponse.build(
+            new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
+        HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(SpamForgotPasswordException.class)
+  public ResponseEntity<BaseResponse<ExceptionResponse>> spamForgotPasswordException(
+      SpamForgotPasswordException exception) {
+    return new ResponseEntity<>(
+        BaseResponse.build(
+            new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
+        HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(OTPTimeOutException.class)
+  public ResponseEntity<BaseResponse<ExceptionResponse>> OTPTimeOutException(
+      OTPTimeOutException exception) {
+    return new ResponseEntity<>(
+        BaseResponse.build(
+            new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
+        HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(MethodArgumentNotValidException.class)
+  public ResponseEntity<?> handleValidation(MethodArgumentNotValidException ex) {
+
+    Map<String, String> errors = new HashMap<>();
+    ex.getBindingResult()
+        .getFieldErrors()
+        .forEach(e -> errors.put(e.getField(), e.getDefaultMessage()));
+
+    return new ResponseEntity<>(BaseResponse.build(errors, false), HttpStatus.BAD_REQUEST);
   }
 }

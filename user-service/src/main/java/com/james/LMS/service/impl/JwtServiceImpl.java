@@ -75,10 +75,14 @@ public class JwtServiceImpl implements JwtService {
 
   @Override
   public String getEmailFromJwtToken(String token) {
-    return Jwts.parser()
-        .setSigningKey(SECRET_KEY)
-        .parseClaimsJws(token)
-        .getBody()
-        .get("sub", String.class);
+    try {
+      return Jwts.parser()
+          .setSigningKey(SECRET_KEY)
+          .parseClaimsJws(token)
+          .getBody()
+          .get("sub", String.class);
+    } catch (Exception e) {
+      throw new InvalidTokenException(ErrorCode.JWT_INVALID);
+    }
   }
 }
