@@ -46,3 +46,7 @@ cloudinary:
   cloudinary-name: dvynemzxx
   api-key: 368324453129176
   api-secret: FyxpYajXxv58KvfsbG9mYuYWOh8
+grpc:
+  server:
+    security:
+      enabled: false

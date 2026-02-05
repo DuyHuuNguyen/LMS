@@ -307,7 +307,7 @@ public class UserFacadeImpl implements UserFacade {
     user.changeUsername(updateUserProfileRequest.getUsername());
 
     boolean isInstructor = user.getInstructor() != null;
-    if(isInstructor) {
+    if (isInstructor) {
       user.changeInstructorName(updateUserProfileRequest.getInstructorName());
       user.changeInstructorAbout(updateUserProfileRequest.getInstructorAbout());
     }

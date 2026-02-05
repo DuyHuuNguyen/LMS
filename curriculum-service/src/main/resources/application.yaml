@@ -11,3 +11,11 @@ spring:
     properties:
       hibernate:
         format_sql: true
+server:
+  port: 8085
+---
+grpc:
+  client:
+    parse-token:
+      address: 'static://localhost:9090'
+      negotiationType: plaintext

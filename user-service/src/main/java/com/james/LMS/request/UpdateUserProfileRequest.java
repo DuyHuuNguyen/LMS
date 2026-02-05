@@ -13,5 +13,4 @@ public class UpdateUserProfileRequest {
   private String username;
   private String instructorName;
   private String instructorAbout;
-
 }

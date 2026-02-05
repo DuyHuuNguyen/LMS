@@ -11,9 +11,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@OpenAPIDefinition(servers = {@Server(url = "/")})
+@OpenAPIDefinition(servers = {@Server(url = "/"), @Server(url = "/curriculum-service")})
 @SecurityScheme(
-    name = "Bearer Authentication",
+    name = SecurityConfig.SECURITY_REQUIREMENT,
     type = SecuritySchemeType.HTTP,
     bearerFormat = "JWT",
     scheme = "bearer",
@@ -24,7 +24,7 @@ public class SwaggerConfig {
   public GroupedOpenApi openApi() {
     String[] paths = {"/api/**"};
     return GroupedOpenApi.builder()
-        .group("LMS-service")
+        .group("curriculum-service")
         .packagesToScan("com.james.LMS.controller")
         .pathsToMatch(paths)
         .build();
