@@ -93,7 +93,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
                               DurationConverterUtil.toStringDuration(
                                   Duration.ofSeconds(totalDurationSeconds)))
                           .totalLectures(sessionContentDTOSEachSession.size())
-                          .lectures(sessionContentDTOSEachSession)
+                          .lectures(sessionContentDTOSEachSession.stream().sorted().toList())
                           .build();
 
                   return sessionDTO;
