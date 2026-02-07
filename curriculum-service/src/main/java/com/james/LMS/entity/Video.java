@@ -1,7 +1,6 @@
 package com.james.LMS.entity;
 
 import jakarta.persistence.*;
-import java.sql.Time;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,11 +14,8 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 public class Video extends BaseSessionContent {
 
-  @Column(name = "name", nullable = false)
-  private String name;
-
-  @Column(name = "duration", nullable = false)
-  private Time duration;
+  @Column(name = "duration_seconds", nullable = false)
+  private Long durationSeconds;
 
   @Column(name = "thumbnail")
   private String thumbnail;
@@ -30,13 +26,10 @@ public class Video extends BaseSessionContent {
   @Column(name = "size", nullable = false)
   private Integer size;
 
-  @Column(name = "is_preview")
-  private Boolean isPreview;
-
   @Column(name = "video_url", unique = true, nullable = false)
   private String videoUrl;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "session_id")
   private Session session;
 }

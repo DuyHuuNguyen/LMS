@@ -1,3 +1,8 @@
 package com.james.LMS.service;
 
-public interface SessionService {}
+import com.james.LMS.entity.Session;
+import java.util.List;
+
+public interface SessionService {
+  List<Session> findAllByCurriculumId(Long curriculumId);
+}

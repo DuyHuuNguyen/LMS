@@ -15,4 +15,10 @@ import lombok.experimental.SuperBuilder;
 public class BaseSessionContent extends BaseEntity {
   @Column(name = "index", nullable = false)
   private Integer index;
+
+  @Column(name = "name")
+  private String name;
+
+  @Column(name = "is_preview")
+  private Boolean isPreview;
 }

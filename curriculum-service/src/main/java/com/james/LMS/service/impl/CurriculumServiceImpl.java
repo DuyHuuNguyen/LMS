@@ -1,7 +1,9 @@
 package com.james.LMS.service.impl;
 
+import com.james.LMS.entity.Curriculum;
 import com.james.LMS.repository.CurriculumRepository;
 import com.james.LMS.service.CurriculumService;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -9,4 +11,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CurriculumServiceImpl implements CurriculumService {
   private final CurriculumRepository curriculumRepository;
+
+  @Override
+  public Optional<Curriculum> findById(Long id) {
+    return this.curriculumRepository.findById(id);
+  }
 }
