@@ -13,7 +13,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public abstract class BaseSessionContentDTO implements Comparable<BaseSessionContentDTO>{
+public abstract class BaseSessionContentDTO implements Comparable<BaseSessionContentDTO> {
   private Long id;
   private String name;
   private Boolean isPreView;
@@ -24,7 +24,7 @@ public abstract class BaseSessionContentDTO implements Comparable<BaseSessionCon
 
   @Override
   public int compareTo(BaseSessionContentDTO baseSessionContentDTO) {
-    return this.index -  baseSessionContentDTO.index;
+    return this.index - baseSessionContentDTO.index;
   }
 
   @JsonIgnore
