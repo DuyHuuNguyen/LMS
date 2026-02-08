@@ -33,6 +33,9 @@ public class Curriculum extends BaseEntity {
   @Column(name = "requirement")
   private String name;
 
+  @Column(name = "thumbnail")
+  private String thumbnail;
+
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "channel_id")
   private Channel channel;

@@ -176,6 +176,7 @@ public class UserFacadeImpl implements UserFacade {
 
   @Override
   public BaseResponse<VerifyOTPResponse> verify(VerifyOTPRequest verifyOTPRequest) {
+    log.info("{}",verifyOTPRequest.toString());
     User user =
         userService
             .findByEmail(verifyOTPRequest.getEmail())

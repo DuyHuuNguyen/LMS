@@ -6,6 +6,7 @@ import com.james.LMS.enums.ErrorCode;
 import com.james.LMS.exception.EntityNotFoundException;
 import com.james.LMS.facade.CurriculumFacade;
 import com.james.LMS.response.BaseResponse;
+import com.james.LMS.response.CurriculumHomeResponse;
 import com.james.LMS.response.CurriculumReviewResponse;
 import com.james.LMS.service.*;
 import com.james.LMS.util.DurationConverterUtil;
@@ -28,6 +29,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
   private final VideoService videoService;
   private final SessionService sessionService;
   private final TopicService topicService;
+  private final CacheService cacheService;
 
   private static final Integer ZERO_LECTURE = 0;
 
@@ -74,7 +76,12 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
         true);
   }
 
-  private List<BaseSessionContentDTO> buildSessionContentDTO(List<Long> sessionIds) {
+    @Override
+    public BaseResponse<CurriculumHomeResponse> findCurriculumForHome() {
+        return null;
+    }
+
+    private List<BaseSessionContentDTO> buildSessionContentDTO(List<Long> sessionIds) {
     CompletableFuture<List<VideoDTO>> videosFuture =
         CompletableFuture.supplyAsync(() -> this.videoService.findVideoDTOBySessionIds(sessionIds));
     CompletableFuture<List<ExamDTO>> examsFuture =

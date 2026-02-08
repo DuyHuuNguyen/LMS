@@ -1,14 +1,13 @@
-package com.james.LMS.response;
+package com.james.LMS.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 @Getter
-public class VerifyOTPResponse {
-  private String resetPasswordToken;
+public class UserTopicDTO {
+    private Long userId;
+    private Long topicId;
 }
