@@ -1,4 +1,3 @@
 package com.james.LMS.service;
 
-public interface CacheService {
-}
+public interface CacheService {}

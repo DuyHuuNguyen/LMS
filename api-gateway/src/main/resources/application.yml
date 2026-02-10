@@ -40,6 +40,9 @@ spring:
             allowedOrigins:
               - "http://localhost:5173"
               - "http://localhost:3000"
+              - "https://*.trycloudflare.com"
+              - "https://potatoes-earnings-william-car.trycloudflare.com"
+              - "https://reservoir-treasure-pixels-technical.trycloudflare.com"
             allowedMethods:
               - GET
               - POST

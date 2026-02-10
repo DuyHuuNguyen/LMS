@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class UserTopicDTO {
-    private Long userId;
-    private Long topicId;
+  private Long userId;
+  private Long topicId;
 }

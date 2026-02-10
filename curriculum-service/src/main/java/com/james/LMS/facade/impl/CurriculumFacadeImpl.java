@@ -76,12 +76,12 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
         true);
   }
 
-    @Override
-    public BaseResponse<CurriculumHomeResponse> findCurriculumForHome() {
-        return null;
-    }
+  @Override
+  public BaseResponse<CurriculumHomeResponse> findCurriculumForHome() {
+    return null;
+  }
 
-    private List<BaseSessionContentDTO> buildSessionContentDTO(List<Long> sessionIds) {
+  private List<BaseSessionContentDTO> buildSessionContentDTO(List<Long> sessionIds) {
     CompletableFuture<List<VideoDTO>> videosFuture =
         CompletableFuture.supplyAsync(() -> this.videoService.findVideoDTOBySessionIds(sessionIds));
     CompletableFuture<List<ExamDTO>> examsFuture =
