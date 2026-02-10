@@ -15,10 +15,10 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Exam extends BaseSessionContent {
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "session_id")
   private Session session;
 
-  @OneToMany(mappedBy = "exam")
+  @OneToMany(mappedBy = "exam", fetch = FetchType.LAZY)
   private List<Test> tests = new ArrayList<>();
 }

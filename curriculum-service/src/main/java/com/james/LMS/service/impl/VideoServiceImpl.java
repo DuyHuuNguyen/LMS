@@ -1,7 +1,10 @@
 package com.james.LMS.service.impl;
 
+import com.james.LMS.dto.VideoDTO;
+import com.james.LMS.entity.Video;
 import com.james.LMS.repository.VideoRepository;
 import com.james.LMS.service.VideoService;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -9,4 +12,14 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class VideoServiceImpl implements VideoService {
   private final VideoRepository videoRepository;
+
+  @Override
+  public List<Video> findAllBySessionIds(List<Long> sessionIds) {
+    return this.videoRepository.findAllBySessionIds(sessionIds);
+  }
+
+  @Override
+  public List<VideoDTO> findVideoDTOBySessionIds(List<Long> sessionIds) {
+    return this.videoRepository.findVideoDTOBySessionId(sessionIds);
+  }
 }

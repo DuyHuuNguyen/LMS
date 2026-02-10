@@ -3,15 +3,15 @@ spring:
     name: api-gateway
 ---
 server:
-  port: 9090
+  port: 9091
 
 springdoc:
   api-docs:
     enabled: true
   swagger-ui:
     urls:
-      - name: booking-service
-        url: /booking-service/v3/api-docs
+      - name: curriculum-service
+        url: /curriculum-service/v3/api-docs
 
       - name: user-service
         url: /user-service/v3/api-docs
@@ -56,10 +56,10 @@ spring:
     gateway:
       routes:
         # BOOKING_SERVICE
-        - id: booking-service
+        - id: curriculum-service
           uri: http://localhost:8085
           predicates:
-            - Path=/booking-service/**
+            - Path=/curriculum-service/**
           filters:
             - StripPrefix=1
 

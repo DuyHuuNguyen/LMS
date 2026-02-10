@@ -14,10 +14,10 @@ public class MailUtil {
     return messageMailDTO;
   }
 
-  public static MessageMailDTO buildMessageMailDTOForOTP(String to, String opt) {
-    String content = "Your otp :".concat(opt.toString());
+  public static MessageMailDTO buildMessageMailDTOForOTP(String to, String otp) {
+    String content = "Your otp :"+ otp;
     MessageMailDTO messageMailDTO =
-        MessageMailDTO.builder().to(to).subject("OPT LMS system").subject(content).build();
+        MessageMailDTO.builder().to(to).subject("OPT LMS system").subject(content).content(content).build();
     return messageMailDTO;
   }
 }

@@ -26,6 +26,8 @@ public class SecurityConfig {
     "/swagger-ui/**", "/v3/api-docs/**",
   };
 
+  public static final String SECURITY_REQUIREMENT = "Bearer Authentication";
+
   @Bean
   public AuthenticationTokenProviderInterceptor authenticationTokenProviderInterceptor() {
     return new AuthenticationTokenProviderInterceptor(this.authService);

@@ -176,6 +176,7 @@ public class UserFacadeImpl implements UserFacade {
 
   @Override
   public BaseResponse<VerifyOTPResponse> verify(VerifyOTPRequest verifyOTPRequest) {
+    log.info("{}",verifyOTPRequest.toString());
     User user =
         userService
             .findByEmail(verifyOTPRequest.getEmail())
@@ -307,7 +308,7 @@ public class UserFacadeImpl implements UserFacade {
     user.changeUsername(updateUserProfileRequest.getUsername());
 
     boolean isInstructor = user.getInstructor() != null;
-    if(isInstructor) {
+    if (isInstructor) {
       user.changeInstructorName(updateUserProfileRequest.getInstructorName());
       user.changeInstructorAbout(updateUserProfileRequest.getInstructorAbout());
     }
