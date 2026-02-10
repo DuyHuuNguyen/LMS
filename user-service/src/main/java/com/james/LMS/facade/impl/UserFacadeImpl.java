@@ -40,6 +40,7 @@ public class UserFacadeImpl implements UserFacade {
 
   @Override
   public BaseResponse<LoginResponse> login(LoginRequest loginRequest) {
+    log.info("Login {}", loginRequest);
     var authentication =
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(
@@ -57,6 +58,7 @@ public class UserFacadeImpl implements UserFacade {
     cacheService.store(accessTokenCacheKey, accessToken, 1, TimeUnit.HOURS);
     cacheService.store(refreshTokenCacheKey, refreshToken, 14, TimeUnit.DAYS);
 
+    log.info("Login response");
     return BaseResponse.build(
         LoginResponse.builder().accessToken(accessToken).refreshToken(refreshToken).build(), true);
   }
@@ -64,7 +66,7 @@ public class UserFacadeImpl implements UserFacade {
   @Override
   @Transactional
   public BaseResponse<Void> signUp(UpsertUserRequest upsertUserRequest) {
-
+    log.info("Signup {}", upsertUserRequest);
     boolean isExistUser = this.userService.existsUserByEmail(upsertUserRequest.getEmail());
     if (isExistUser) throw new UserAlreadyExistException(ErrorCode.USER_ALREADY_EXISTS);
 
@@ -85,13 +87,13 @@ public class UserFacadeImpl implements UserFacade {
     this.userService.save(user);
 
     this.mailProducerService.send(MailUtil.buildMessageMailDTOForNewUser(user.getEmail()));
-
+    log.info("Signup response");
     return BaseResponse.ok();
   }
 
   @Override
   public BaseResponse<RefreshTokenResponse> refreshToken(RefreshTokenRequest refreshTokenRequest) {
-
+    log.info("refresh token  {}", refreshTokenRequest);
     String email = this.jwtService.getEmailFromJwtToken(refreshTokenRequest.getRefreshToken());
     String refreshTokenKey = String.format(TokenType.REFRESH_TOKEN.getCacheKeyTemplate(), email);
 
@@ -102,11 +104,13 @@ public class UserFacadeImpl implements UserFacade {
 
     RefreshTokenResponse refreshTokenResponse =
         RefreshTokenResponse.builder().accessToken(accessToken).build();
+    log.info("refresh token response");
     return BaseResponse.build(refreshTokenResponse, true);
   }
 
   @Override
   public BaseResponse<Void> logout() {
+    log.info("Logout");
     SecurityUserDetails principal =
         (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -119,11 +123,14 @@ public class UserFacadeImpl implements UserFacade {
     cacheService.delete(refreshTokenCacheKey);
 
     SecurityContextHolder.clearContext();
+    log.info("Logout done");
     return BaseResponse.ok();
   }
 
   @Override
+  @Transactional
   public BaseResponse<Void> resetPassword(ResetPasswordRequest resetPasswordRequest) {
+    log.info("Reset password {}", resetPasswordRequest);
     var isValidPassword =
         resetPasswordRequest.getNewPassword().equals(resetPasswordRequest.getConfirmPassword());
     if (!isValidPassword) throw new PermissionDeniedException(ErrorCode.NOT_MATCHED_PASSWORD);
@@ -140,14 +147,14 @@ public class UserFacadeImpl implements UserFacade {
     user.changePassword(newPasswordEncoded);
 
     userService.save(user);
-
+    log.info("Reset password response");
     return BaseResponse.ok();
   }
 
   @Override
   public BaseResponse<ForgotPasswordResponse> forgotPassword(
       ForgotPasswordRequest forgotPasswordRequest) {
-
+    log.info("Forgot password {}", forgotPasswordRequest);
     String timeOutRetryKey =
         String.format(
             ResetPasswordKey.TIMEOUT_RETRY_KEY.getContent(), forgotPasswordRequest.getEmail());
@@ -170,13 +177,13 @@ public class UserFacadeImpl implements UserFacade {
     this.cacheService.store(
         timeOutRetryKey, forgotPasswordRequest.getEmail(), 10, TimeUnit.MINUTES);
     this.cacheService.store(otpKey, otp, 10, TimeUnit.MINUTES);
-
+    log.info("Forgot password response");
     return BaseResponse.build(ForgotPasswordResponse.builder().build(), true);
   }
 
   @Override
   public BaseResponse<VerifyOTPResponse> verify(VerifyOTPRequest verifyOTPRequest) {
-    log.info("{}",verifyOTPRequest.toString());
+    log.info("{}", verifyOTPRequest.toString());
     User user =
         userService
             .findByEmail(verifyOTPRequest.getEmail())
@@ -201,6 +208,7 @@ public class UserFacadeImpl implements UserFacade {
   @Override
   @Transactional
   public BaseResponse<Void> instruct(InstructionRequest instructionRequest) {
+    log.info("Create instructor {}", instructionRequest);
     SecurityUserDetails principal =
         (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     boolean isAlreadyInstructor =
@@ -229,12 +237,14 @@ public class UserFacadeImpl implements UserFacade {
     user.addRole(instructorRole);
 
     this.userService.save(user);
+    log.info("Create instructor response");
     return BaseResponse.ok();
   }
 
   @Override
   @Transactional(readOnly = true)
   public BaseResponse<UserDetailResponse> findProfile() {
+    log.info("Get profile");
     SecurityUserDetails principal =
         (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     User user =
@@ -255,12 +265,14 @@ public class UserFacadeImpl implements UserFacade {
             .instructorAbout(user.getInstructor().getAbout())
             .instructorName(user.getInstructor().getName())
             .build();
+    log.info("Get profile response");
     return BaseResponse.build(userDetailResponse, true);
   }
 
   @Override
   @Transactional(readOnly = true)
   public BaseResponse<UserDetailResponse> findDetailById(Long id) {
+    log.info("Find user by id {} ", id);
     User user =
         userService
             .findById(id)
@@ -279,12 +291,14 @@ public class UserFacadeImpl implements UserFacade {
             .instructorAbout(user.getInstructor().getAbout())
             .instructorName(user.getInstructor().getName())
             .build();
+    log.info("User detail  {}", userDetailResponse);
     return BaseResponse.build(userDetailResponse, true);
   }
 
   @Override
   @Transactional
   public BaseResponse<String> uploadFile(byte[] bytes) {
+    log.info("update avatar");
     SecurityUserDetails principal =
         (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     User user =
@@ -293,12 +307,14 @@ public class UserFacadeImpl implements UserFacade {
             .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
     String avatarUrl = this.cloudinaryService.uploadFile(bytes, FileType.IMAGE);
     user.addAvatarUrl(avatarUrl);
+    log.info("update avatar response");
     return BaseResponse.build(avatarUrl, true);
   }
 
   @Override
   @Transactional
   public BaseResponse<Void> updateProfile(UpdateUserProfileRequest updateUserProfileRequest) {
+    log.info("Update profile {}", updateUserProfileRequest);
     SecurityUserDetails principal =
         (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     User user =
@@ -314,6 +330,7 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     this.userService.save(user);
+    log.info("update profile response");
     return BaseResponse.ok();
   }
 }

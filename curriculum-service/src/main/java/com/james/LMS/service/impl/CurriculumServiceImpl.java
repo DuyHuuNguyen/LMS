@@ -4,7 +4,6 @@ import com.james.LMS.dto.CurriculumDTO;
 import com.james.LMS.entity.Curriculum;
 import com.james.LMS.repository.CurriculumRepository;
 import com.james.LMS.service.CurriculumService;
-
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +20,8 @@ public class CurriculumServiceImpl implements CurriculumService {
   }
 
   @Override
-  public List<CurriculumDTO> findAllInTopicOfUser(List<Long> topicIdsOfUser, Integer currentPage, Integer limit) {
+  public List<CurriculumDTO> findAllInTopicOfUser(
+      List<Long> topicIdsOfUser, Integer currentPage, Integer limit) {
     return List.of();
   }
 }

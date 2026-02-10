@@ -1,6 +1,5 @@
 package com.james.LMS.entity;
 
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,11 +12,11 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserTopic extends BaseEntity{
-    @Column(name = "user_id")
-    private Long userId;
+public class UserTopic extends BaseEntity {
+  @Column(name = "user_id")
+  private Long userId;
 
-    @ManyToOne
-    @JoinColumn(name = "topic_id")
-    private Topic topic;
+  @ManyToOne
+  @JoinColumn(name = "topic_id")
+  private Topic topic;
 }

@@ -6,5 +6,6 @@ import com.james.LMS.response.CurriculumReviewResponse;
 
 public interface CurriculumFacade {
   BaseResponse<CurriculumReviewResponse> findCurriculumForReviewById(Long id);
+
   BaseResponse<CurriculumHomeResponse> findCurriculumForHome();
 }

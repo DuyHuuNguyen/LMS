@@ -80,10 +80,11 @@ public class AuthTokenProviderInterceptor extends OncePerRequestFilter {
       authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
       SecurityContextHolder.getContext().setAuthentication(authentication);
-
+      log.info("request OK");
       filterChain.doFilter(request, response);
 
     } catch (InvalidTokenException invalidTokenException) {
+      log.info("request unauthorized");
       response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
     }
   }
