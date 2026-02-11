@@ -7,6 +7,8 @@ import com.james.LMS.service.CurriculumService;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,5 +25,12 @@ public class CurriculumServiceImpl implements CurriculumService {
   public List<CurriculumDTO> findAllInTopicOfUser(
       List<Long> topicIdsOfUser, Integer currentPage, Integer limit) {
     return List.of();
+  }
+
+  @Override
+  public Page<CurriculumDTO> findAllCurriculumsByFollowedTopicIdsOfUser(
+      List<Long> followedTopicIds, Pageable pageable) {
+    return this.curriculumRepository.findAllCurriculumsByFollowedTopicIdsOfUser(
+        followedTopicIds, pageable);
   }
 }

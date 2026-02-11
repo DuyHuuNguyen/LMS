@@ -11,6 +11,15 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  cache:
+    type: redis
+    redis:
+      time-to-live: 600000ms
+  rabbitmq:
+    port: 5672
+    host: localhost
+    username: guest
+    password: guest
 server:
   port: 8085
 ---
@@ -19,3 +28,11 @@ grpc:
     parse-token:
       address: 'static://localhost:9090'
       negotiationType: plaintext
+    instructor:
+      address: 'static://localhost:9090'
+      negotiationType: plaintext
+---
+rabbitmq:
+  exchange-name: ache-lecturers-data
+  cache-data-routing-key: cache-lecturers-data
+  cache-data-queue: cache-data-queue

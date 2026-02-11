@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package com.example.auth;
+
+option java_multiple_files = true;
+option java_package = "com.example.server.instructor";
+option java_outer_classname = "InstructorProto";
+
+message InstructorResponse{
+  int64 userId = 1;
+  string username = 2;
+  string avatar =  3;
+  string instructorName = 4;
+
+}
+
+message  InstructorRequest{
+  int64 userId = 1;
+}
+
+service  InstructorService{
+  rpc  findInstructorByUserId(InstructorRequest) returns (InstructorResponse);
+}

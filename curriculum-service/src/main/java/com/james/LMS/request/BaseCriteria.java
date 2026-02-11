@@ -3,11 +3,9 @@ package com.james.LMS.request;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.experimental.SuperBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
-@SuperBuilder
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

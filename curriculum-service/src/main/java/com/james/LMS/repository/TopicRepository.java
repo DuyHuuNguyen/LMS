@@ -2,6 +2,7 @@ package com.james.LMS.repository;
 
 import com.james.LMS.dto.TopicDTO;
 import com.james.LMS.entity.Topic;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -18,8 +19,15 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
         )
     from Topic t
     join CurriculumTopic  ct on ct.topic.id = t.id
-    where ct.curriculum.id = :curriculumId
+    where ct.curriculum.id = :curriculumId and t.isActive = true and ct.isActive = true
     """)
     List<TopicDTO> findAllTopicDTOByCurriculumId(Long curriculumId);
 
+
+    @Query(value = """
+    select ut.topic.id
+    from UserTopic ut
+    where ut.userId =:userId and ut.isActive = true
+    """)
+    List<Long> findAllTopicIdsByUserId(Long userId, Pageable pageable);
 }

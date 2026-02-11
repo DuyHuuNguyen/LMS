@@ -40,6 +40,12 @@ rabbitmq:
   exchange-name: demo
   user-mail-routing-key: demo
   user-mail-queue: lms-queue
+
+  exchange-cache-data-name: ache-lecturers-data
+  cache-data-routing-key: cache-lecturers-data
+  cache-data-queue: cache-data-queue
+
+
 server:
   port: 8083
 cloudinary:
