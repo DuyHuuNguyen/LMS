@@ -18,8 +18,8 @@ class LmsApplicationTests {
   void contextLoads() {
     //    var list = videoService.findAllBySessionIds(List.of(1L));
     //    list.forEach(System.out::println);
-    //    var topicIds = this.topicRepository.findAllTopicIdsByUserId(1L, PageRequest.of(0, 10));
-    //    System.out.println(topicIds);
+    //        var topicIds = this.topicRepository.findAll( PageRequest.of(0, 10));
+    //        System.out.println(topicIds.get().toList());
     //    var cur = this.curriculumRepository.findAllInTopicOfUser(List.of(1L,2L,3L),
     // PageRequest.of(0,10));
     //    cur.stream().forEach(System.out::println);

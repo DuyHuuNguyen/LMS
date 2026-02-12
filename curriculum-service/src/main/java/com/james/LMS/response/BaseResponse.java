@@ -1,11 +1,12 @@
 package com.james.LMS.response;
 
+import java.io.Serializable;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class BaseResponse<T> {
+public class BaseResponse<T> implements Serializable {
   private boolean isSuccess;
   private T metadata;
 

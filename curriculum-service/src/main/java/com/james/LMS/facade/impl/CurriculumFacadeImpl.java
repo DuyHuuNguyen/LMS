@@ -12,9 +12,8 @@ import com.james.LMS.facade.CurriculumFacade;
 import com.james.LMS.message.BaseMessage;
 import com.james.LMS.message.LoadLecturerIntoCachePayload;
 import com.james.LMS.request.CurriculumHomeRequest;
-import com.james.LMS.response.BaseResponse;
-import com.james.LMS.response.CurriculumHomeResponse;
-import com.james.LMS.response.CurriculumReviewResponse;
+import com.james.LMS.request.TopicCriteria;
+import com.james.LMS.response.*;
 import com.james.LMS.service.*;
 import com.james.LMS.util.DurationConverterUtil;
 import java.time.Duration;
@@ -105,8 +104,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
             principal.getId(),
             PageRequest.of(INITIAL_HOME_PAGE, curriculumHomeRequest.getTopicSize()));
     boolean isNotSelectTopics = followedTopicIds == null || followedTopicIds.isEmpty();
-    if(isNotSelectTopics)
-      throw new EntityNotFoundException(ErrorCode.USER_TOPIC_NOT_FOUND);
+    if (isNotSelectTopics) throw new EntityNotFoundException(ErrorCode.USER_TOPIC_NOT_FOUND);
 
     Pageable pageable =
         PageRequest.of(
@@ -136,6 +134,31 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
     return BaseResponse.build(
         CurriculumHomeResponse.builder()
             .topicNamePaginationDTOMap(topicNamePaginationDTOMap)
+            .build(),
+        true);
+  }
+
+  @Override
+  public BaseResponse<PaginationResponse<TopicResponse>> findAllTopicByCriteria(
+      TopicCriteria topicCriteria) {
+    log.info("Query DB for topics...");
+    Pageable pageable =
+        PageRequest.of(topicCriteria.getCurrentPage() - 1, topicCriteria.getPageSize());
+    Page<TopicDTO> topicDTOPage = this.topicService.findAll(pageable);
+    List<TopicResponse> topicResponses =
+        topicDTOPage
+            .get()
+            .map(
+                topicDTO ->
+                    TopicResponse.builder().id(topicDTO.getId()).name(topicDTO.getName()).build())
+            .toList();
+
+    return BaseResponse.build(
+        PaginationResponse.<TopicResponse>builder()
+            .currentPage(topicCriteria.getCurrentPage())
+            .totalPages(topicDTOPage.getTotalPages())
+            .totalElements(topicDTOPage.getNumberOfElements())
+            .data(topicResponses)
             .build(),
         true);
   }

@@ -1,5 +1,6 @@
 package com.james.LMS.request;
 
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,8 +11,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @AllArgsConstructor
 @NoArgsConstructor
 public abstract class BaseCriteria {
-  private Integer currentPage;
-  private Integer pageSize;
+  @Positive private Integer currentPage;
+  @Positive private Integer pageSize;
 
   @Override
   public String toString() {

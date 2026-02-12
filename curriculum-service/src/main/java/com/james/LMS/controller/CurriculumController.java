@@ -3,11 +3,11 @@ package com.james.LMS.controller;
 import com.james.LMS.config.SecurityConfig;
 import com.james.LMS.facade.CurriculumFacade;
 import com.james.LMS.request.CurriculumHomeRequest;
-import com.james.LMS.response.BaseResponse;
-import com.james.LMS.response.CurriculumHomeResponse;
-import com.james.LMS.response.CurriculumReviewResponse;
+import com.james.LMS.request.TopicCriteria;
+import com.james.LMS.response.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,7 +35,17 @@ public class CurriculumController {
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("isAuthenticated()")
   public BaseResponse<CurriculumHomeResponse> findCurriculumForHome(
-      CurriculumHomeRequest curriculumHomeRequest) {
+      @Valid CurriculumHomeRequest curriculumHomeRequest) {
     return this.curriculumFacade.findCurriculumForHome(curriculumHomeRequest);
+  }
+
+  @GetMapping("/topics")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Curriculum APIs"})
+  @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
+  @PreAuthorize("isAuthenticated()")
+  public BaseResponse<PaginationResponse<TopicResponse>> findAllTopics(
+      @Valid TopicCriteria topicCriteria) {
+    return this.curriculumFacade.findAllTopicByCriteria(topicCriteria);
   }
 }

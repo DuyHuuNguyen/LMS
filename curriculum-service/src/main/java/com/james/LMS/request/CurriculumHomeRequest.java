@@ -1,5 +1,6 @@
 package com.james.LMS.request;
 
+import jakarta.validation.constraints.Positive;
 import lombok.*;
 
 @AllArgsConstructor
@@ -7,5 +8,5 @@ import lombok.*;
 @Data
 // @ToString(callSuper = true)
 public class CurriculumHomeRequest extends BaseCriteria {
-  private Integer topicSize;
+  @Positive private Integer topicSize;
 }
