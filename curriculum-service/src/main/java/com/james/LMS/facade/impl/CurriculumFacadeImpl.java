@@ -56,7 +56,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
     Curriculum curriculum =
         this.curriculumService
             .findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.DEMO));
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.CURRICULUM_NOT_FOUND));
     List<Session> sessions = this.sessionService.findAllByCurriculumId(curriculum.getId());
 
     List<Long> sessionIds = sessions.stream().map(BaseEntity::getId).toList();
@@ -104,6 +104,9 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
         this.topicService.findAllTopicIdsByUserId(
             principal.getId(),
             PageRequest.of(INITIAL_HOME_PAGE, curriculumHomeRequest.getTopicSize()));
+    boolean isNotSelectTopics = followedTopicIds == null || followedTopicIds.isEmpty();
+    if(isNotSelectTopics)
+      throw new EntityNotFoundException(ErrorCode.USER_TOPIC_NOT_FOUND);
 
     Pageable pageable =
         PageRequest.of(
