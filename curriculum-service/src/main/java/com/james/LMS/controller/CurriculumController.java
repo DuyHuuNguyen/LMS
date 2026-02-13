@@ -6,6 +6,7 @@ import com.james.LMS.request.CurriculumByTopicRequest;
 import com.james.LMS.request.CurriculumHomeRequest;
 import com.james.LMS.request.TopicCriteria;
 import com.james.LMS.response.*;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -40,6 +41,7 @@ public class CurriculumController {
     return this.curriculumFacade.findCurriculumForHomeNewFlow(curriculumHomeRequest);
   }
 
+  @Hidden
   @GetMapping("/topics")
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"Curriculum APIs"})
@@ -50,7 +52,7 @@ public class CurriculumController {
     return this.curriculumFacade.findAllTopicByCriteria(topicCriteria);
   }
 
-  @GetMapping("/sub-catagoy-curriculums")
+  @GetMapping
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"Curriculum APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)

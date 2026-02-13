@@ -19,4 +19,9 @@ public class UserTopic extends BaseEntity {
   @ManyToOne
   @JoinColumn(name = "topic_id")
   private Topic topic;
+
+  public void addTopic(Topic topic) {
+    this.topic = topic;
+    topic.addUserTopic(this);
+  }
 }

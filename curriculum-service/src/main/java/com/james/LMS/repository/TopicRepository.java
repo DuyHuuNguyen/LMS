@@ -41,4 +41,16 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
     where t.isActive = true
     """)
     Page<TopicDTO> findAllTopicDTOs(Pageable pageable);
+
+
+    @Query(value = """
+    select new com.james.LMS.dto.TopicDTO(
+        t.id,
+        t.name
+        )
+    from Topic t
+    join UserTopic  ut on t.id = ut.topic.id
+    where t.isActive = true and ut.isActive = true and ut.userId = :userId
+    """)
+    Page<TopicDTO> findAllByUserId(Long userId, Pageable pageable);
 }
