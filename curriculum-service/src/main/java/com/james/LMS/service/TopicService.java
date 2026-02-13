@@ -11,4 +11,6 @@ public interface TopicService {
   List<Long> findAllTopicIdsByUserId(Long userId, Pageable pageable);
 
   Page<TopicDTO> findAll(Pageable pageable);
+
+  Boolean existsById(Long id);
 }

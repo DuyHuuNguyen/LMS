@@ -28,4 +28,9 @@ public class TopicServiceImpl implements TopicService {
   public Page<TopicDTO> findAll(Pageable pageable) {
     return this.topicRepository.findAllTopicDTOs(pageable);
   }
+
+  @Override
+  public Boolean existsById(Long id) {
+    return this.topicRepository.existsById(id);
+  }
 }

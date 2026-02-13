@@ -2,6 +2,7 @@ package com.james.LMS.controller;
 
 import com.james.LMS.config.SecurityConfig;
 import com.james.LMS.facade.CurriculumFacade;
+import com.james.LMS.request.CurriculumByTopicRequest;
 import com.james.LMS.request.CurriculumHomeRequest;
 import com.james.LMS.request.TopicCriteria;
 import com.james.LMS.response.*;
@@ -36,7 +37,7 @@ public class CurriculumController {
   @PreAuthorize("isAuthenticated()")
   public BaseResponse<CurriculumHomeResponse> findCurriculumForHome(
       @Valid CurriculumHomeRequest curriculumHomeRequest) {
-    return this.curriculumFacade.findCurriculumForHome(curriculumHomeRequest);
+    return this.curriculumFacade.findCurriculumForHomeNewFlow(curriculumHomeRequest);
   }
 
   @GetMapping("/topics")
@@ -47,5 +48,15 @@ public class CurriculumController {
   public BaseResponse<PaginationResponse<TopicResponse>> findAllTopics(
       @Valid TopicCriteria topicCriteria) {
     return this.curriculumFacade.findAllTopicByCriteria(topicCriteria);
+  }
+
+  @GetMapping("/sub-catagoy-curriculums")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Curriculum APIs"})
+  @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
+  @PreAuthorize("isAuthenticated()")
+  public BaseResponse<PaginationResponse<CurriculumResponse>> findCurriculumByTopicId(
+      CurriculumByTopicRequest curriculumByTopicRequest) {
+    return this.curriculumFacade.findCurriculumByTopicId(curriculumByTopicRequest);
   }
 }

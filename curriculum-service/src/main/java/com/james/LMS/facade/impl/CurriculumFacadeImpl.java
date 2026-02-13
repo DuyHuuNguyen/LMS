@@ -11,6 +11,7 @@ import com.james.LMS.exception.EntityNotFoundException;
 import com.james.LMS.facade.CurriculumFacade;
 import com.james.LMS.message.BaseMessage;
 import com.james.LMS.message.LoadLecturerIntoCachePayload;
+import com.james.LMS.request.CurriculumByTopicRequest;
 import com.james.LMS.request.CurriculumHomeRequest;
 import com.james.LMS.request.TopicCriteria;
 import com.james.LMS.response.*;
@@ -18,10 +19,7 @@ import com.james.LMS.service.*;
 import com.james.LMS.util.DurationConverterUtil;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -159,6 +157,100 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
             .totalPages(topicDTOPage.getTotalPages())
             .totalElements(topicDTOPage.getNumberOfElements())
             .data(topicResponses)
+            .build(),
+        true);
+  }
+
+  @Override
+  public BaseResponse<CurriculumHomeResponse> findCurriculumForHomeNewFlow(
+      CurriculumHomeRequest curriculumHomeRequest) {
+    log.info("Curriculum Home request {} ", curriculumHomeRequest);
+    SecurityUserDetails principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    List<Long> followedTopicIds =
+        this.topicService.findAllTopicIdsByUserId(
+            principal.getId(),
+            PageRequest.of(INITIAL_HOME_PAGE, curriculumHomeRequest.getTopicSize()));
+    boolean isNotSelectTopics = followedTopicIds == null || followedTopicIds.isEmpty();
+    if (isNotSelectTopics) throw new EntityNotFoundException(ErrorCode.USER_TOPIC_NOT_FOUND);
+
+    Map<String, PaginationDTO<CurriculumDTO>> topicNameCurriculumDTOMap = new HashMap<>();
+    Pageable pageable =
+        PageRequest.of(
+            curriculumHomeRequest.getCurrentPage() - 1, curriculumHomeRequest.getPageSize());
+
+    for (var topicId : followedTopicIds) {
+      Page<CurriculumDTO> curriculumDTOPage =
+          this.curriculumService.findAllCurriculumByTopicId(topicId, pageable);
+
+      boolean isNotFoundCurriculum = curriculumDTOPage.isEmpty();
+      if (isNotFoundCurriculum) continue;
+
+      List<CurriculumDTO> curriculumDTOS =
+          this.addLecturerIntoCurriculum(curriculumDTOPage.toList());
+      String topicName = curriculumDTOS.getFirst().getTopicName();
+      PaginationDTO<CurriculumDTO> curriculumDTOPaginationDTO =
+          PaginationDTO.<CurriculumDTO>builder()
+              .totalItems(curriculumDTOS.size())
+              .currentPage(curriculumHomeRequest.getCurrentPage())
+              .pageSize(curriculumHomeRequest.getPageSize())
+              .data(curriculumDTOS)
+              .build();
+
+      topicNameCurriculumDTOMap.put(topicName, curriculumDTOPaginationDTO);
+    }
+
+    return BaseResponse.build(
+        CurriculumHomeResponse.builder()
+            .topicNamePaginationDTOMap(topicNameCurriculumDTOMap)
+            .build(),
+        true);
+  }
+
+  @Override
+  public BaseResponse<PaginationResponse<CurriculumResponse>> findCurriculumByTopicId(
+      CurriculumByTopicRequest curriculumByTopicRequest) {
+    log.info("query {}", curriculumByTopicRequest);
+    boolean isExistsTopic = this.topicService.existsById(curriculumByTopicRequest.getTopicId());
+
+    if (!isExistsTopic) throw new EntityNotFoundException(ErrorCode.USER_TOPIC_NOT_FOUND);
+
+    Pageable pageable =
+        PageRequest.of(
+            curriculumByTopicRequest.getCurrentPage() - 1, curriculumByTopicRequest.getPageSize());
+    Page<CurriculumDTO> curriculumDTOPage =
+        this.curriculumService.findAllCurriculumByTopicId(
+            curriculumByTopicRequest.getTopicId(), pageable);
+
+    boolean isNotFoundCurriculum = curriculumDTOPage.isEmpty();
+    if (isNotFoundCurriculum) throw new EntityNotFoundException(ErrorCode.CURRICULUM_NOT_FOUND);
+
+    List<CurriculumResponse> curriculumResponses =
+        this.addLecturerIntoCurriculum(curriculumDTOPage.toList()).stream()
+            .map(
+                curriculumDTO ->
+                    CurriculumResponse.builder()
+                        .userId(curriculumDTO.getUserId())
+                        .username(curriculumDTO.getUsername())
+                        .avatar(curriculumDTO.getAvatar())
+                        .id(curriculumDTO.getId())
+                        .title(curriculumDTO.getTitle())
+                        .headLine(curriculumDTO.getHeadLine())
+                        .cost(curriculumDTO.getCost())
+                        .description(curriculumDTO.getDescription())
+                        .name(curriculumDTO.getName())
+                        .thumbnail(curriculumDTO.getThumbnail())
+                        .topicId(curriculumDTO.getTopicId())
+                        .topicName(curriculumDTO.getTopicName())
+                        .build())
+            .toList();
+
+    return BaseResponse.build(
+        PaginationResponse.<CurriculumResponse>builder()
+            .data(curriculumResponses)
+            .currentPage(curriculumByTopicRequest.getCurrentPage())
+            .totalPages(curriculumDTOPage.getTotalPages())
+            .totalElements(curriculumDTOPage.getNumberOfElements())
             .build(),
         true);
   }
