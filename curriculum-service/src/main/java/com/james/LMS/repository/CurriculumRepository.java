@@ -59,4 +59,7 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
           where t.id = :topicId and c.isActive and t.isActive and ch.isActive and  ct.isActive
       """)
       Page<CurriculumDTO> findAllCurriculumByTopicId(Long topicId, Pageable pageable);
+
+
+      Boolean existsCurriculumByIdAndIsActiveIsTrue(Long id);
 }

@@ -5,4 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserCurriculumRepository extends JpaRepository<UserCurriculum, Long> {}
+public interface UserCurriculumRepository extends JpaRepository<UserCurriculum, Long> {
+
+  Boolean existsUserCurriculumByUserIdAndCurriculum_IdAndIsActiveIsTrue(
+      Long userId, Long curriculumId);
+}

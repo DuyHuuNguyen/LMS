@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ExamRepository extends JpaRepository<Exam, Long> {
@@ -29,4 +30,16 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
     where e.session.id in (:sessionIds)
     """)
     List<ExamDTO> findExamDTOBySessionIds(List<Long> sessionIds);
+
+    Boolean existsByIdAndSession_IdAndIsActiveIsTrue(Long examId,Long sessionId);
+
+
+    @Query(value = """
+    select distinct e
+    from Exam e
+    join fetch e.session s
+    left join fetch e.tests t
+    where e.id =:id and e.isActive = true
+    """)
+    Optional<Exam> findExamFetchTestsAndSessionById(Long id);
 }

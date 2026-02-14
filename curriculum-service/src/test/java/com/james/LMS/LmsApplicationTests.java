@@ -4,6 +4,8 @@ import com.james.LMS.repository.CurriculumRepository;
 import com.james.LMS.repository.TopicRepository;
 import com.james.LMS.repository.UserTopicRepository;
 import com.james.LMS.service.VideoService;
+import com.james.LMS.util.chain_responsibility.client.OwnerExamClient;
+import com.james.LMS.util.chain_responsibility.request.OwnerExamInCurriculumRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,8 @@ class LmsApplicationTests {
   @Autowired private CurriculumRepository curriculumRepository;
   @Autowired private TopicRepository topicRepository;
   @Autowired private UserTopicRepository userTopicRepository;
+  @Autowired private OwnerExamClient ownerExamClient;
+  @Autowired private OwnerExamClient java;
 
   @Test
   void contextLoads() {
@@ -27,7 +31,26 @@ class LmsApplicationTests {
     //    var cur = this.curriculumRepository.findAllInTopicOfUser(List.of(1L,2L,3L),
     // PageRequest.of(0,10));
     //    cur.stream().forEach(System.out::println);
-    var bo = this.userTopicRepository.existsByUserIdAndTopic_IdAndIsActiveIsTrue(1L, 7L);
-    log.info(" boolean {}", bo);
+    //    var bo = this.userTopicRepository.existsByUserIdAndTopic_IdAndIsActiveIsTrue(1L, 7L);
+    //    log.info(" boolean {}", bo);
+  }
+
+  @Test
+  public void demo() {
+    var req =
+        OwnerExamInCurriculumRequest.builder()
+            .userId(101L)
+            .curriculumId(1L)
+            .sessionId(1L)
+            .examId(1L)
+            .build();
+    log.info("Ok");
+    ownerExamClient.validUserHasExamInCurriculum(req);
+    java.validUserHasExamInCurriculum(req);
+
+    //      Thread t1 = new Thread(() -> { ownerExamClient.validUserHasExamInCurriculum(req);});
+    //    Thread t2 = new Thread(() -> { java.validUserHasExamInCurriculum(req);});
+    //    t1.start();
+    //    t2.start();
   }
 }

@@ -17,4 +17,6 @@ public interface CurriculumService {
       List<Long> followedTopicIds, Pageable pageable);
 
   Page<CurriculumDTO> findAllCurriculumByTopicId(Long topicId, Pageable pageable);
+
+  Boolean existsCurriculumById(Long id);
 }

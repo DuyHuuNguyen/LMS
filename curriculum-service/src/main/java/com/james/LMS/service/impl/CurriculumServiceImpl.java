@@ -38,4 +38,9 @@ public class CurriculumServiceImpl implements CurriculumService {
   public Page<CurriculumDTO> findAllCurriculumByTopicId(Long topicId, Pageable pageable) {
     return this.curriculumRepository.findAllCurriculumByTopicId(topicId, pageable);
   }
+
+  @Override
+  public Boolean existsCurriculumById(Long id) {
+    return this.curriculumRepository.existsCurriculumByIdAndIsActiveIsTrue(id);
+  }
 }

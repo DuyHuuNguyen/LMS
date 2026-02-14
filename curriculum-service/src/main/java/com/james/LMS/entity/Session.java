@@ -20,7 +20,7 @@ public class Session extends BaseEntity {
   @Column(name = "name", nullable = false)
   private String name;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "curriculum_id")
   private Curriculum curriculum;
 }

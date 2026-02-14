@@ -16,4 +16,10 @@ public class SessionServiceImpl implements SessionService {
   public List<Session> findAllByCurriculumId(Long curriculumId) {
     return this.sessionRepository.findAllByCurriculumId(curriculumId);
   }
+
+  @Override
+  public Boolean existsByIdAndCurriculumId(Long sessionId, Long curriculumId) {
+    return this.sessionRepository.existsByIdAndCurriculum_IdAndIsActiveIsTrue(
+        sessionId, curriculumId);
+  }
 }

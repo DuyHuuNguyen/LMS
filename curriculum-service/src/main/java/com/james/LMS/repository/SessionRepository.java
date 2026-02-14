@@ -17,4 +17,7 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
     ORDER BY s.index
     """)
     List<Session> findAllByCurriculumId(Long curriculumId);
+
+
+    Boolean existsByIdAndCurriculum_IdAndIsActiveIsTrue(Long userId,Long curriculumId);
 }

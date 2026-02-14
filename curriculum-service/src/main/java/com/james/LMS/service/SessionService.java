@@ -5,4 +5,6 @@ import java.util.List;
 
 public interface SessionService {
   List<Session> findAllByCurriculumId(Long curriculumId);
+
+  Boolean existsByIdAndCurriculumId(Long sessionId, Long curriculumId);
 }
