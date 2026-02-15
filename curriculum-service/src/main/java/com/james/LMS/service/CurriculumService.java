@@ -19,4 +19,6 @@ public interface CurriculumService {
   Page<CurriculumDTO> findAllCurriculumByTopicId(Long topicId, Pageable pageable);
 
   Boolean existsCurriculumById(Long id);
+
+  Boolean existsByIdAndChannelUserIdAndIsActiveIsTrue(Long curriculumId, Long userId);
 }

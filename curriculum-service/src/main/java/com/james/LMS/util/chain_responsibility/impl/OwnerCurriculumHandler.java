@@ -37,12 +37,17 @@ public class OwnerCurriculumHandler implements ChainResponsibilityHandler {
     boolean isUserEnrolledInCurriculum =
         this.userCurriculumService.existsByUserIdAndCurriculumId(
             curriculumRequest.getUserId(), curriculumRequest.getCurriculumId());
-    if (!isUserEnrolledInCurriculum)
-      throw new RuntimeException("User do not enroll in curriculums");
+
+    boolean isInstructorOfCurriculum =
+        this.curriculumService.existsByIdAndChannelUserIdAndIsActiveIsTrue(
+            curriculumRequest.getCurriculumId(), curriculumRequest.getUserId());
+    log.info("is user {} | is instructor {}", isUserEnrolledInCurriculum, isInstructorOfCurriculum);
+
+    if (isInstructorOfCurriculum || isUserEnrolledInCurriculum) {
+      boolean isEndOfChainResponsibility = this.next == null;
+      if (!isEndOfChainResponsibility) this.next.handleRequest(curriculumRequest);
+    } else throw new RuntimeException("User do not enroll in curriculums");
 
     log.info("Pass");
-
-    boolean isEndOfChainResponsibility = this.next == null;
-    if (!isEndOfChainResponsibility) this.next.handleRequest(curriculumRequest);
   }
 }

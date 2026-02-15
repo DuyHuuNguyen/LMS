@@ -62,4 +62,6 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
 
 
       Boolean existsCurriculumByIdAndIsActiveIsTrue(Long id);
+
+      Boolean existsByIdAndChannel_UserIdAndIsActiveIsTrue(Long curriculumId,Long userId);
 }

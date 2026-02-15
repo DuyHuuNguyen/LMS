@@ -6,6 +6,7 @@ import com.james.LMS.entity.Exam;
 import com.james.LMS.enums.ErrorCode;
 import com.james.LMS.exception.EntityNotFoundException;
 import com.james.LMS.facade.ExamFacade;
+import com.james.LMS.request.AddNewExamRequest;
 import com.james.LMS.request.ExamDetailRequest;
 import com.james.LMS.response.BaseResponse;
 import com.james.LMS.response.ExamDetailResponse;
@@ -14,9 +15,11 @@ import com.james.LMS.util.chain_responsibility.client.OwnerExamClient;
 import com.james.LMS.util.chain_responsibility.request.OwnerExamInCurriculumRequest;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ExamFacadeImpl implements ExamFacade {
@@ -38,6 +41,7 @@ public class ExamFacadeImpl implements ExamFacade {
     try {
       this.ownerExamClient.validUserHasExamInCurriculum(ownerExamInCurriculumRequest);
     } catch (Exception e) {
+      log.error(e.getMessage());
       throw new EntityNotFoundException(ErrorCode.EXAM_NOT_FOUND);
     }
     Exam exam =
@@ -67,5 +71,11 @@ public class ExamFacadeImpl implements ExamFacade {
             .testDTOS(testDTOS)
             .build(),
         true);
+  }
+
+  @Override
+  public BaseResponse<Void> addNewExam(AddNewExamRequest addNewExamRequest) {
+
+    return null;
   }
 }

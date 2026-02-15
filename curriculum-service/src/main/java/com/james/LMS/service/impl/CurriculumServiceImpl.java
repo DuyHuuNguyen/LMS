@@ -43,4 +43,10 @@ public class CurriculumServiceImpl implements CurriculumService {
   public Boolean existsCurriculumById(Long id) {
     return this.curriculumRepository.existsCurriculumByIdAndIsActiveIsTrue(id);
   }
+
+  @Override
+  public Boolean existsByIdAndChannelUserIdAndIsActiveIsTrue(Long curriculumId, Long userId) {
+    return this.curriculumRepository.existsByIdAndChannel_UserIdAndIsActiveIsTrue(
+        curriculumId, userId);
+  }
 }

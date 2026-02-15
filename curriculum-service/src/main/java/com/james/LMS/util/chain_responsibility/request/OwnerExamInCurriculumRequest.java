@@ -14,4 +14,5 @@ public class OwnerExamInCurriculumRequest {
   private Long curriculumId;
   private Long sessionId;
   private Long examId;
+  private Boolean isInstructor;
 }

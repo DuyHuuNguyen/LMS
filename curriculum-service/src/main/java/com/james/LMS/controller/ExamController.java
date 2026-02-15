@@ -2,6 +2,7 @@ package com.james.LMS.controller;
 
 import com.james.LMS.config.SecurityConfig;
 import com.james.LMS.facade.ExamFacade;
+import com.james.LMS.request.AddNewExamRequest;
 import com.james.LMS.request.ExamDetailRequest;
 import com.james.LMS.response.BaseResponse;
 import com.james.LMS.response.ExamDetailResponse;
@@ -20,12 +21,21 @@ public class ExamController {
 
   @GetMapping("/detail/{id}")
   @ResponseStatus(HttpStatus.OK)
-  @Operation(tags = {"Curriculum APIs"})
+  @Operation(tags = {"Exam APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
-  @PreAuthorize("isAuthenticated()")
+  @PreAuthorize("hasRole('ROLE_USER')||hasRole('ROLE_INSTRUCTOR')")
   public BaseResponse<ExamDetailResponse> findDetailById(
       @PathVariable Long id, ExamDetailRequest examDetailRequest) {
     examDetailRequest.withId(id);
     return this.examFacade.findExamDetail(examDetailRequest);
+  }
+
+  @PostMapping
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Exam APIs"})
+  @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
+  @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
+  private BaseResponse<Void> addNewExam(@RequestBody AddNewExamRequest addNewExamRequest) {
+    return this.examFacade.addNewExam(addNewExamRequest);
   }
 }
