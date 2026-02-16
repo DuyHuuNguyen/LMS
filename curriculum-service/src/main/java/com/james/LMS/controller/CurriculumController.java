@@ -13,11 +13,13 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/curriculums")
 @RequiredArgsConstructor
+@Validated
 public class CurriculumController {
 
   private final CurriculumFacade curriculumFacade;
@@ -37,7 +39,7 @@ public class CurriculumController {
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("isAuthenticated()")
   public BaseResponse<CurriculumHomeResponse> findCurriculumForHome(
-      @Valid CurriculumHomeRequest curriculumHomeRequest) {
+      @Valid @ModelAttribute CurriculumHomeRequest curriculumHomeRequest) {
     return this.curriculumFacade.findCurriculumForHomeNewFlow(curriculumHomeRequest);
   }
 
@@ -58,7 +60,7 @@ public class CurriculumController {
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("isAuthenticated()")
   public BaseResponse<PaginationResponse<CurriculumResponse>> findCurriculumByTopicId(
-      CurriculumByTopicRequest curriculumByTopicRequest) {
+          @Valid @ModelAttribute  CurriculumByTopicRequest curriculumByTopicRequest) {
     return this.curriculumFacade.findCurriculumByTopicId(curriculumByTopicRequest);
   }
 }

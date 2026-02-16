@@ -222,9 +222,6 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
         this.curriculumService.findAllCurriculumByTopicId(
             curriculumByTopicRequest.getTopicId(), pageable);
 
-    boolean isNotFoundCurriculum = curriculumDTOPage.isEmpty();
-    if (isNotFoundCurriculum) throw new EntityNotFoundException(ErrorCode.CURRICULUM_NOT_FOUND);
-
     List<CurriculumResponse> curriculumResponses =
         this.addLecturerIntoCurriculum(curriculumDTOPage.toList()).stream()
             .map(

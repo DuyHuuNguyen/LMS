@@ -9,5 +9,7 @@ import lombok.*;
 @Data
 @ToString(callSuper = true)
 public class CurriculumHomeRequest extends BaseCriteria {
-  @NotNull @Positive private Integer topicSize;
+  @NotNull(message = "topicSize must not be null")
+  @Positive(message = "topicSize must be positive")
+  private Integer topicSize;
 }
