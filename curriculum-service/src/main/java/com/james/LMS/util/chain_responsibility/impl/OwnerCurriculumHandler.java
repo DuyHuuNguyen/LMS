@@ -34,9 +34,12 @@ public class OwnerCurriculumHandler implements ChainResponsibilityHandler {
         this.curriculumService.existsCurriculumById(curriculumRequest.getCurriculumId());
     if (!isExistsCurriculum) throw new RuntimeException("Curriculum not found");
 
-    boolean isUserEnrolledInCurriculum =
-        this.userCurriculumService.existsByUserIdAndCurriculumId(
-            curriculumRequest.getUserId(), curriculumRequest.getCurriculumId());
+    boolean isUserEnrolledInCurriculum = false;
+
+    if (!curriculumRequest.getIsInstructor())
+      isUserEnrolledInCurriculum =
+          this.userCurriculumService.existsByUserIdAndCurriculumId(
+              curriculumRequest.getUserId(), curriculumRequest.getCurriculumId());
 
     boolean isInstructorOfCurriculum =
         this.curriculumService.existsByIdAndChannelUserIdAndIsActiveIsTrue(

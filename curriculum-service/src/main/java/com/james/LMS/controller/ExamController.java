@@ -8,6 +8,7 @@ import com.james.LMS.response.BaseResponse;
 import com.james.LMS.response.ExamDetailResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,7 +36,7 @@ public class ExamController {
   @Operation(tags = {"Exam APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
-  private BaseResponse<Void> addNewExam(@RequestBody AddNewExamRequest addNewExamRequest) {
+  public BaseResponse<Void> addNewExam(@RequestBody @Valid AddNewExamRequest addNewExamRequest) {
     return this.examFacade.addNewExam(addNewExamRequest);
   }
 }

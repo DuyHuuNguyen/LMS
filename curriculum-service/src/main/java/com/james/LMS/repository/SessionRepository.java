@@ -5,7 +5,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface SessionRepository extends JpaRepository<Session, Long> {
@@ -20,4 +22,6 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
 
 
     Boolean existsByIdAndCurriculum_IdAndIsActiveIsTrue(Long userId,Long curriculumId);
+
+    Optional<Session> findByIdAndCurriculum_Id(Long id, Long curriculumId);
 }

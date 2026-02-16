@@ -36,3 +36,6 @@ rabbitmq:
   exchange-name: ache-lecturers-data
   cache-data-routing-key: cache-lecturers-data
   cache-data-queue: cache-data-queue
+  exchange-create-tests-name: create-tests-exchange
+  create-tests-routing-key: create-tests-routing-key
+  create-tests-queue: create-tests-queue

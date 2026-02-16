@@ -25,14 +25,33 @@ public class RabbitMQConfig {
   @Value("${rabbitmq.cache-data-routing-key}")
   private String cacheDataRoutingKey;
 
+  @Value("${rabbitmq.exchange-create-tests-name}")
+  private String createTestsExchange;
+
+  @Value("${rabbitmq.create-tests-queue}")
+  private String createTestsQueue;
+
+  @Value("${rabbitmq.create-tests-routing-key}")
+  private String createTestsRoutingKey;
+
   @Bean
   public TopicExchange exchange() {
     return new TopicExchange(exchange);
   }
 
   @Bean
+  public TopicExchange createTestsExchange() {
+    return new TopicExchange(createTestsExchange);
+  }
+
+  @Bean
   public Queue cacheDataQueue() {
     return new Queue(cacheDataQueue, true);
+  }
+
+  @Bean
+  public Queue createTestsQueue() {
+    return new Queue(createTestsQueue, true);
   }
 
   @Bean
@@ -48,5 +67,12 @@ public class RabbitMQConfig {
   @Bean
   public Binding cacheDataBinding() {
     return BindingBuilder.bind(cacheDataQueue()).to(exchange()).with(cacheDataRoutingKey);
+  }
+
+  @Bean
+  public Binding createTestsBinding() {
+    return BindingBuilder.bind(createTestsQueue())
+        .to(createTestsExchange())
+        .with(createTestsRoutingKey);
   }
 }

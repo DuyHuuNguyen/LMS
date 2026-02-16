@@ -9,10 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Builder
-public class OwnerExamInCurriculumRequest {
-  private Long userId;
+public class InstructorCreateCurriculumContentRequest {
   private Long curriculumId;
-  private Long sessionId;
-  private Long examId;
-  @Builder.Default private Boolean isInstructor = false;
+  private Long userId;
 }

@@ -1,3 +1,8 @@
 package com.james.LMS.service;
 
-public interface TestService {}
+import com.james.LMS.entity.Test;
+import java.util.List;
+
+public interface TestService {
+  List<Test> saveAll(List<Test> tests);
+}

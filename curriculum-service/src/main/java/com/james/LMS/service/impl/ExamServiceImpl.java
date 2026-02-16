@@ -33,4 +33,14 @@ public class ExamServiceImpl implements ExamService {
   public Optional<Exam> findExamFetchTestAndSessionById(Long id) {
     return this.examRepository.findExamFetchTestsAndSessionById(id);
   }
+
+  @Override
+  public Exam saveAndFetch(Exam exam) {
+    return this.examRepository.save(exam);
+  }
+
+  @Override
+  public Optional<Exam> findByIdAndIsActiveIsTrue(Long id) {
+    return this.examRepository.findById(id);
+  }
 }

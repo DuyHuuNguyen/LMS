@@ -1,0 +1,22 @@
+package com.james.LMS.dto;
+
+import java.util.HashMap;
+import java.util.Map;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@ToString
+public class CreateTestDTO {
+  private Integer index;
+
+  private String question;
+
+  private Map<String, Object> chooses = new HashMap<>();
+
+  private String answer;
+}

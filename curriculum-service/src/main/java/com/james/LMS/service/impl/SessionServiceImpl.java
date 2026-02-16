@@ -4,6 +4,7 @@ import com.james.LMS.entity.Session;
 import com.james.LMS.repository.SessionRepository;
 import com.james.LMS.service.SessionService;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,5 +22,15 @@ public class SessionServiceImpl implements SessionService {
   public Boolean existsByIdAndCurriculumId(Long sessionId, Long curriculumId) {
     return this.sessionRepository.existsByIdAndCurriculum_IdAndIsActiveIsTrue(
         sessionId, curriculumId);
+  }
+
+  @Override
+  public Optional<Session> findById(Long id) {
+    return this.sessionRepository.findById(id);
+  }
+
+  @Override
+  public Optional<Session> findByIdAndCurriculumId(Long sessionId, Long curriculumId) {
+    return this.sessionRepository.findByIdAndCurriculum_Id(sessionId, curriculumId);
   }
 }

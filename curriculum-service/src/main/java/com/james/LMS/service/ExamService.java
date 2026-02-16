@@ -13,4 +13,8 @@ public interface ExamService {
   Boolean existByExamIdAndSessionId(Long examId, Long sessionId);
 
   Optional<Exam> findExamFetchTestAndSessionById(Long id);
+
+  Exam saveAndFetch(Exam exam);
+
+  Optional<Exam> findByIdAndIsActiveIsTrue(Long Id);
 }
