@@ -41,8 +41,8 @@ spring:
               - "http://localhost:5173"
               - "http://localhost:3000"
               - "https://*.trycloudflare.com"
-              - "https://analyze-separate-aggregate-dividend.trycloudflare.com"
-              - "https://keyboards-swap-bid-arrow.trycloudflare.com"
+              - "https://velvet-missile-translator-beauty.trycloudflare.com"
+              - "https://efficiency-relay-coverage-index.trycloudflare.com"
             allowedMethods:
               - GET
               - POST
@@ -52,7 +52,6 @@ spring:
             allowedHeaders:
               - "*"
             allowCredentials: true
-
 ---
 spring:
   cloud:

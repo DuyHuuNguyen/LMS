@@ -5,11 +5,11 @@ import com.james.LMS.repository.TopicRepository;
 import com.james.LMS.repository.UserTopicRepository;
 import com.james.LMS.service.VideoService;
 import com.james.LMS.util.chain_responsibility.client.OwnerExamClient;
-import com.james.LMS.util.chain_responsibility.request.OwnerExamInCurriculumRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 
 @Slf4j
 @SpringBootTest
@@ -37,16 +37,13 @@ class LmsApplicationTests {
 
   @Test
   public void demo() {
-    var req =
-        OwnerExamInCurriculumRequest.builder()
-            .userId(101L)
-            .curriculumId(1L)
-            .sessionId(1L)
-            .examId(1L)
-            .build();
-    log.info("Ok");
-    ownerExamClient.validUserHasExamInCurriculum(req);
-    java.validUserHasExamInCurriculum(req);
+    log.info("Run test");
+    this.curriculumRepository
+        .findAllPurchasedCurriculums(1L, PageRequest.of(0, 10))
+        .forEach(
+            p -> {
+              log.info("test {}", p.toString());
+            });
 
     //      Thread t1 = new Thread(() -> { ownerExamClient.validUserHasExamInCurriculum(req);});
     //    Thread t2 = new Thread(() -> { java.validUserHasExamInCurriculum(req);});

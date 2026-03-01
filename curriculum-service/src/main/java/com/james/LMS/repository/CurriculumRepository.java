@@ -1,6 +1,7 @@
 package com.james.LMS.repository;
 
 import com.james.LMS.dto.CurriculumDTO;
+import com.james.LMS.dto.PurchasedCurriculumDTO;
 import com.james.LMS.entity.Curriculum;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -64,4 +65,33 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
       Boolean existsCurriculumByIdAndIsActiveIsTrue(Long id);
 
       Boolean existsByIdAndChannel_UserIdAndIsActiveIsTrue(Long curriculumId,Long userId);
+
+
+      @Query("""
+      select new com.james.LMS.dto.PurchasedCurriculumDTO(
+          c.id,
+          c.title,
+          c.headLine,
+          c.description,
+          c.thumbnail,
+          se.name,
+          se.id,
+          v.id,
+          e.id,
+          upr.stoppedAt,
+          v.thumbnail,
+           CASE
+             WHEN upr IS NULL THEN true
+             ELSE false
+           END
+          )
+        from Curriculum c
+        join UserCurriculum uc on uc.curriculum.id = c.id
+        left join UserProgress upr on upr.curriculum.id = c.id
+        left join Session se on se.id = upr.session.id
+        left join Video v on v.id = upr.video.id
+        left join Exam e on e.id = upr.exam.id
+        where uc.userId =:userId and c.isActive and uc.isActive and COALESCE(upr.isActive,true) and COALESCE(se.isActive,true) and COALESCE(v.isActive,true) and COALESCE(e.isActive,true)
+      """)
+      Page<PurchasedCurriculumDTO> findAllPurchasedCurriculums(Long userId,Pageable pageable);
 }

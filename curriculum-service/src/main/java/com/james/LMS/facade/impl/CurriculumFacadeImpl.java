@@ -13,6 +13,7 @@ import com.james.LMS.message.BaseMessage;
 import com.james.LMS.message.LoadLecturerIntoCachePayload;
 import com.james.LMS.request.CurriculumByTopicRequest;
 import com.james.LMS.request.CurriculumHomeRequest;
+import com.james.LMS.request.PurchasedCurriculumCriteria;
 import com.james.LMS.request.TopicCriteria;
 import com.james.LMS.response.*;
 import com.james.LMS.service.*;
@@ -248,6 +249,56 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
             .currentPage(curriculumByTopicRequest.getCurrentPage())
             .totalPages(curriculumDTOPage.getTotalPages())
             .totalElements(curriculumDTOPage.getNumberOfElements())
+            .build(),
+        true);
+  }
+
+  @Override
+  public BaseResponse<PaginationResponse<PurchasedCurriculumResponse>> findAllPurchasedCurriculums(
+      PurchasedCurriculumCriteria purchasedCurriculumCriteria) {
+    SecurityUserDetails principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    Pageable pageable =
+        PageRequest.of(
+            purchasedCurriculumCriteria.getCurrentPage() - 1,
+            purchasedCurriculumCriteria.getPageSize());
+
+    Page<PurchasedCurriculumDTO> purchasedCurriculumDTOPage =
+        this.curriculumService.findAllPurchasedCurriculums(principal.getId(), pageable);
+
+    List<PurchasedCurriculumResponse> purchasedCurriculumResponses =
+        purchasedCurriculumDTOPage.stream()
+            .map(
+                purchasedCurriculumDTO ->
+                    PurchasedCurriculumResponse.builder()
+                        .id(purchasedCurriculumDTO.getId())
+                        .title(purchasedCurriculumDTO.getTitle())
+                        .headline(purchasedCurriculumDTO.getHeadLine())
+                        .description(purchasedCurriculumDTO.getDescription())
+                        .curriculumThumbnail(purchasedCurriculumDTO.getCurriculumThumbnail())
+                        .isFirstTimeLearnCurriculum(
+                            purchasedCurriculumDTO.getIsFirstTimeLearnCurriculum())
+                        .sessionName(purchasedCurriculumDTO.getSessionName())
+                        .sessionId(purchasedCurriculumDTO.getSessionId())
+                        .sessionContentId(
+                            Objects.nonNull(purchasedCurriculumDTO.getVideoId())
+                                ? purchasedCurriculumDTO.getVideoId()
+                                : purchasedCurriculumDTO.getExamId())
+                        .isVideo(Objects.nonNull(purchasedCurriculumDTO.getVideoId()))
+                        .stoppedAt(
+                            Objects.nonNull(purchasedCurriculumDTO.getStoppedAt())
+                                ? DurationConverterUtil.toStringDuration(
+                                    Duration.ofSeconds(purchasedCurriculumDTO.getStoppedAt()))
+                                : null)
+                        .build())
+            .toList();
+
+    return BaseResponse.build(
+        PaginationResponse.<PurchasedCurriculumResponse>builder()
+            .totalPages(purchasedCurriculumDTOPage.getTotalPages())
+            .totalElements(purchasedCurriculumDTOPage.getNumberOfElements())
+            .currentPage(purchasedCurriculumCriteria.getCurrentPage())
+            .data(purchasedCurriculumResponses)
             .build(),
         true);
   }

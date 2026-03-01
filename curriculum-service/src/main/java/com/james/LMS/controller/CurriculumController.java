@@ -4,6 +4,7 @@ import com.james.LMS.config.SecurityConfig;
 import com.james.LMS.facade.CurriculumFacade;
 import com.james.LMS.request.CurriculumByTopicRequest;
 import com.james.LMS.request.CurriculumHomeRequest;
+import com.james.LMS.request.PurchasedCurriculumCriteria;
 import com.james.LMS.request.TopicCriteria;
 import com.james.LMS.response.*;
 import io.swagger.v3.oas.annotations.Hidden;
@@ -60,7 +61,17 @@ public class CurriculumController {
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("isAuthenticated()")
   public BaseResponse<PaginationResponse<CurriculumResponse>> findCurriculumByTopicId(
-          @Valid @ModelAttribute  CurriculumByTopicRequest curriculumByTopicRequest) {
+      @Valid CurriculumByTopicRequest curriculumByTopicRequest) {
     return this.curriculumFacade.findCurriculumByTopicId(curriculumByTopicRequest);
+  }
+
+  @GetMapping("/purchased-curriculums")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Curriculum APIs"})
+  @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
+  @PreAuthorize("isAuthenticated()")
+  public BaseResponse<PaginationResponse<PurchasedCurriculumResponse>> findAllPurchasedCurriculums(
+      PurchasedCurriculumCriteria purchasedCurriculumCriteria) {
+    return this.curriculumFacade.findAllPurchasedCurriculums(purchasedCurriculumCriteria);
   }
 }

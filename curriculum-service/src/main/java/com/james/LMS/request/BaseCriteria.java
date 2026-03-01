@@ -12,11 +12,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @AllArgsConstructor
 @NoArgsConstructor
 public abstract class BaseCriteria {
-  @NotNull
-  @Positive private Integer currentPage;
+  @NotNull @Positive private Integer currentPage;
 
-  @NotNull
-  @Positive private Integer pageSize;
+  @NotNull @Positive private Integer pageSize;
 
   @Override
   public String toString() {

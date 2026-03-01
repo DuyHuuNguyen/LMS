@@ -1,6 +1,7 @@
 package com.james.LMS.service.impl;
 
 import com.james.LMS.dto.CurriculumDTO;
+import com.james.LMS.dto.PurchasedCurriculumDTO;
 import com.james.LMS.entity.Curriculum;
 import com.james.LMS.repository.CurriculumRepository;
 import com.james.LMS.service.CurriculumService;
@@ -48,5 +49,10 @@ public class CurriculumServiceImpl implements CurriculumService {
   public Boolean existsByIdAndChannelUserIdAndIsActiveIsTrue(Long curriculumId, Long userId) {
     return this.curriculumRepository.existsByIdAndChannel_UserIdAndIsActiveIsTrue(
         curriculumId, userId);
+  }
+
+  @Override
+  public Page<PurchasedCurriculumDTO> findAllPurchasedCurriculums(Long userId, Pageable pageable) {
+    return this.curriculumRepository.findAllPurchasedCurriculums(userId, pageable);
   }
 }

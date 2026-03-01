@@ -2,6 +2,7 @@ package com.james.LMS.facade;
 
 import com.james.LMS.request.CurriculumByTopicRequest;
 import com.james.LMS.request.CurriculumHomeRequest;
+import com.james.LMS.request.PurchasedCurriculumCriteria;
 import com.james.LMS.request.TopicCriteria;
 import com.james.LMS.response.*;
 
@@ -19,4 +20,7 @@ public interface CurriculumFacade {
 
   BaseResponse<PaginationResponse<CurriculumResponse>> findCurriculumByTopicId(
       CurriculumByTopicRequest curriculumByTopicRequest);
+
+  BaseResponse<PaginationResponse<PurchasedCurriculumResponse>> findAllPurchasedCurriculums(
+      PurchasedCurriculumCriteria purchasedCurriculumCriteria);
 }

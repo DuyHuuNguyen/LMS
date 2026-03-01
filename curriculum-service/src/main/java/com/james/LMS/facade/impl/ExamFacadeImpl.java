@@ -49,7 +49,8 @@ public class ExamFacadeImpl implements ExamFacade {
         (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     OwnerExamInCurriculumRequest ownerExamInCurriculumRequest =
         OwnerExamInCurriculumRequest.builder()
-            .userId(principal.getId()).isInstructor(false)
+            .userId(principal.getId())
+            .isInstructor(false)
             .curriculumId(examDetailRequest.getCurriculumId())
             .sessionId(examDetailRequest.getSessionId())
             .examId(examDetailRequest.getExamId())
