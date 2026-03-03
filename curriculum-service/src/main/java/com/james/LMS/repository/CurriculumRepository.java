@@ -94,4 +94,23 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
         where uc.userId =:userId and c.isActive and uc.isActive and COALESCE(upr.isActive,true) and COALESCE(se.isActive,true) and COALESCE(v.isActive,true) and COALESCE(e.isActive,true)
       """)
       Page<PurchasedCurriculumDTO> findAllPurchasedCurriculums(Long userId,Pageable pageable);
+
+
+      @Query("""
+      select COUNT(uc) > 0
+      from UserCurriculum  uc
+      join Session s on s.curriculum.id = uc.curriculum.id
+      join Video v on v.session.id = s.id
+      where uc.userId =:userId and uc.curriculum.id =:curriculumId and s.id =:sessionId and v.id = :videoId and uc.isActive and s.isActive and v.isActive
+      """)
+      Boolean isPurchasedCurriculumToHaveVideo(Long userId,Long curriculumId,Long sessionId,Long videoId);
+
+      @Query("""
+      select COUNT(uc) > 0
+      from UserCurriculum  uc
+      join Session s on s.curriculum.id = uc.curriculum.id
+      join Exam e on e.session.id = s.id
+      where uc.userId =:userId and uc.curriculum.id =:curriculumId and s.id =:sessionId and e.id = :examId and uc.isActive and s.isActive and e.isActive
+      """)
+      Boolean isPurchasedCurriculumToHaveExam(Long userId,Long curriculumId,Long sessionId,Long examId);
 }

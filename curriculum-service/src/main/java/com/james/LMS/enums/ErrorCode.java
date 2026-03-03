@@ -9,8 +9,9 @@ public enum ErrorCode {
   USER_TOPIC_NOT_FOUND("2000", "Not found followed topics of user"),
   CURRICULUM_NOT_FOUND("2001", "Curriculum not found"),
   EXAM_NOT_FOUND("2002", "Exam not found"),
-  SESSION_NOT_FOUND("2003", "Session not found");
-
+  SESSION_NOT_FOUND("2003", "Session not found"),
+  PERMISSION_DENIED_VIDEO("2004", "Video is denied"),
+  VIDEO_NOT_FOUND_AT_STORAGE("2005", "Video is found at storage");
   private final String code;
   private final String message;
 }

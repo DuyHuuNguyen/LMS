@@ -45,6 +45,8 @@ class LmsApplicationTests {
               log.info("test {}", p.toString());
             });
 
+    this.curriculumRepository.isPurchasedCurriculumToHaveVideo(2L, 2l, 2L, 2L);
+
     //      Thread t1 = new Thread(() -> { ownerExamClient.validUserHasExamInCurriculum(req);});
     //    Thread t2 = new Thread(() -> { java.validUserHasExamInCurriculum(req);});
     //    t1.start();

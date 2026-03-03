@@ -32,7 +32,11 @@ public interface VideoRepository extends JpaRepository<Video, Long> {
     List<VideoDTO> findVideoDTOBySessionId(List<Long> sessionIds);
 
 
-
-
+    @Query("""
+    select v.durationSeconds
+    from Video v
+    where v.id =:id and v.isActive
+    """)
+    Integer findDurationById(Long id);
 
 }
