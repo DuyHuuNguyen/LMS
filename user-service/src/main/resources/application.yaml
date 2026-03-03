@@ -56,3 +56,6 @@ grpc:
   server:
     security:
       enabled: false
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %clr([%thread]){faint} %clr(%-5level) %clr(%logger{36}){cyan} %clr(%X{requestId}){yellow} - %clr(%X{email}){green} - %msg%n"

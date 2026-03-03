@@ -36,8 +36,6 @@ public class TopicFacadeImpl implements TopicFacade {
   public BaseResponse<PaginationResponse<TopicResponse>> findPersonalFollowedTopics(
       PersonalFollowedTopicsRequest personalFollowedTopicsRequest) {
 
-    log.info("Find all topics of user focussing {}", personalFollowedTopicsRequest);
-
     SecurityUserDetails principal =
         (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     Pageable pageable =
@@ -101,7 +99,6 @@ public class TopicFacadeImpl implements TopicFacade {
     int unfollowTopics =
         this.userTopicService.unfollowTopic(
             unfollowedTopicsRequest.getUnfollowTopicIds(), principal.getId());
-    log.info("Unfollow topic : {}", unfollowTopics);
     return BaseResponse.ok();
   }
 }

@@ -95,7 +95,6 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
   @Override
   public BaseResponse<CurriculumHomeResponse> findCurriculumForHome(
       CurriculumHomeRequest curriculumHomeRequest) {
-    log.info("Curriculum Home request {} ", curriculumHomeRequest);
     SecurityUserDetails principal =
         (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     List<Long> followedTopicIds =
@@ -165,7 +164,6 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
   @Override
   public BaseResponse<CurriculumHomeResponse> findCurriculumForHomeNewFlow(
       CurriculumHomeRequest curriculumHomeRequest) {
-    log.info("Curriculum Home request {} ", curriculumHomeRequest);
     SecurityUserDetails principal =
         (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     List<Long> followedTopicIds =
@@ -308,7 +306,6 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
     for (CurriculumDTO curriculumDTO : curriculumDTOS) {
       String instructorKey =
           String.format(InstructorEnum.INSTRUCTOR_KEY.getContent(), curriculumDTO.getUserId());
-      log.info("lecturer key {}", instructorKey);
       boolean isAvailableInstructorData = this.cacheService.hasKey(instructorKey);
 
       if (!isAvailableInstructorData) {

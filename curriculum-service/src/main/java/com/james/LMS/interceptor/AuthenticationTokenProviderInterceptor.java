@@ -33,7 +33,6 @@ public class AuthenticationTokenProviderInterceptor extends OncePerRequestFilter
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
     String path = request.getRequestURI();
-    log.info("path : {}", path);
 
     String token = getTokenFromHeader(request);
 
@@ -43,7 +42,6 @@ public class AuthenticationTokenProviderInterceptor extends OncePerRequestFilter
     }
 
     try {
-      log.info("token {}", token);
       AuthDTO authDTO = this.authService.validToken(token);
 
       List<GrantedAuthority> authorityList =

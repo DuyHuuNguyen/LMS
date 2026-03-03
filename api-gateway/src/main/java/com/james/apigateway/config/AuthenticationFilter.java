@@ -1,6 +1,7 @@
 package com.james.apigateway.config;
 
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -53,6 +54,16 @@ public class AuthenticationFilter implements GlobalFilter {
       return Mono.fromRunnable(() -> exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED))
           .then(exchange.getResponse().setComplete());
     }
-    return chain.filter(exchange);
+
+    String requestId = exchange.getRequest().getHeaders().getFirst("x-request-id");
+
+    if (requestId == null || requestId.isBlank()) {
+      requestId = UUID.randomUUID().toString();
+    }
+
+    ServerHttpRequest mutatedRequest =
+        exchange.getRequest().mutate().header("x-request-id", requestId).build();
+
+    return chain.filter(exchange.mutate().request(mutatedRequest).build());
   }
 }
