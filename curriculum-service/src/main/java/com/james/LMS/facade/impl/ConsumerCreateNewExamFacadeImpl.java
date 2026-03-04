@@ -1,12 +1,12 @@
-package com.james.LMS.service.impl;
+package com.james.LMS.facade.impl;
 
 import com.james.LMS.entity.Exam;
 import com.james.LMS.entity.Test;
 import com.james.LMS.enums.ErrorCode;
 import com.james.LMS.exception.EntityNotFoundException;
+import com.james.LMS.facade.ConsumerCreateNewExamFacade;
 import com.james.LMS.message.BaseMessage;
 import com.james.LMS.message.CreateTestsPayload;
-import com.james.LMS.service.ConsumerCreateNewExamService;
 import com.james.LMS.service.ExamService;
 import com.james.LMS.service.TestService;
 import java.util.List;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ConsumerCreateNewExamServiceImpl implements ConsumerCreateNewExamService {
+public class ConsumerCreateNewExamFacadeImpl implements ConsumerCreateNewExamFacade {
 
   private final ExamService examService;
   private final TestService testService;

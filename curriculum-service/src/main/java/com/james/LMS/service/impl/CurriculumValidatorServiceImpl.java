@@ -1,5 +1,6 @@
 package com.james.LMS.service.impl;
 
+import com.james.LMS.dto.ValidVideoUploadingAccessDTO;
 import com.james.LMS.dto.ValidateExamAccessDTO;
 import com.james.LMS.dto.ValidateVideoAccessDTO;
 import com.james.LMS.repository.CurriculumRepository;
@@ -28,5 +29,14 @@ public class CurriculumValidatorServiceImpl implements CurriculumValidatorServic
         validateVideoAccessDTO.getCurriculumId(),
         validateVideoAccessDTO.getSessionId(),
         validateVideoAccessDTO.getVideoId());
+  }
+
+  @Override
+  public Boolean isExistedChannelAndCurriculumForUploadVideo(
+      ValidVideoUploadingAccessDTO validVideoUploadingAccessDTO) {
+    return this.curriculumRepository.isExistedChannelAndCurriculumForUploadVideo(
+        validVideoUploadingAccessDTO.getUserChanelHolderId(),
+        validVideoUploadingAccessDTO.getCurriculumId(),
+        validVideoUploadingAccessDTO.getSessionId());
   }
 }

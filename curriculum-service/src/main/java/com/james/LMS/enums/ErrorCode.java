@@ -12,7 +12,8 @@ public enum ErrorCode {
   SESSION_NOT_FOUND("2003", "Session not found"),
   PERMISSION_DENIED_VIDEO("2004", "Video is denied"),
   VIDEO_NOT_FOUND_AT_STORAGE("2005", "Video is found at storage"),
-  INSTRUCTOR_NOT_FOUND("2006", "Instructor not found");
+  INSTRUCTOR_NOT_FOUND("2006", "Instructor not found"),
+  UPLOADING_VIDEO_IS_DENIED("2007", "Denied uploading video");
   private final String code;
   private final String message;
 }

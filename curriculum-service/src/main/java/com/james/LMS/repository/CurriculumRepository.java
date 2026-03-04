@@ -127,4 +127,14 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
 
 
 
+      @Query("""
+      select count(c) > 0
+      from Curriculum c
+      join Channel  ch on c.channel.id = ch.id
+      join Session se on se.curriculum.id = c.id
+      where c.id =:curriculumId and c.isActive and ch.userId =:userHolderChannelId and ch.isActive and se.id =:sessionId and se.isActive
+      """)
+      Boolean isExistedChannelAndCurriculumForUploadVideo(Long userHolderChannelId,Long curriculumId,Long sessionId);
+
+
 }

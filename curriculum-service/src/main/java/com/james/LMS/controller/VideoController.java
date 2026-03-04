@@ -3,6 +3,7 @@ package com.james.LMS.controller;
 import com.james.LMS.config.SecurityConfig;
 import com.james.LMS.facade.VideoFacade;
 import com.james.LMS.request.VideoStreamingPresignRequest;
+import com.james.LMS.request.VideoUploadingPresignUrlRequest;
 import com.james.LMS.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.*;
 public class VideoController {
   private final VideoFacade videoFacade;
 
-  @PostMapping("/presign-url")
+  @PostMapping("/presign-url-video-streaming")
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"Video APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
@@ -27,5 +28,15 @@ public class VideoController {
   public BaseResponse<String> generateVideoStreamingPresignUrl(
       @RequestBody VideoStreamingPresignRequest request) {
     return this.videoFacade.generateVideoStreamingPresignUrl(request);
+  }
+
+  @PostMapping("/presign-url-video-uploading")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Video APIs"})
+  @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
+  @PreAuthorize("isAuthenticated()")
+  public BaseResponse<String> generateUploadingPresignUrl(
+      @RequestBody VideoUploadingPresignUrlRequest request) {
+    return this.videoFacade.generateVideoUploadPresignUrl(request);
   }
 }

@@ -7,5 +7,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum MessageType {
   READ_LECTURER_INFO_AND_CACHE,
-  CREATE_TESTS_FOR_EXAM
+  CREATE_TESTS_FOR_EXAM,
+  CREATE_VIDEO
 }

@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.domain.PageRequest;
 
 @Slf4j
 @SpringBootTest
@@ -38,15 +37,17 @@ class LmsApplicationTests {
   @Test
   public void demo() {
     log.info("Run test");
-    this.curriculumRepository
-        .findAllPurchasedCurriculums(1L, PageRequest.of(0, 10))
-        .forEach(
-            p -> {
-              log.info("test {}", p.toString());
-            });
+    //    this.curriculumRepository
+    //        .findAllPurchasedCurriculums(1L, PageRequest.of(0, 10))
+    //        .forEach(
+    //            p -> {
+    //              log.info("test {}", p.toString());
+    //            });
+    //
+    //    this.curriculumRepository.isPurchasedCurriculumToHaveVideo(2L, 2l, 2L, 2L);
 
-    this.curriculumRepository.isPurchasedCurriculumToHaveVideo(2L, 2l, 2L, 2L);
-
+    var boo = this.curriculumRepository.isExistedChannelAndCurriculumForUploadVideo(2L, 1L, 1L);
+    log.info("boooooo {}", boo);
     //      Thread t1 = new Thread(() -> { ownerExamClient.validUserHasExamInCurriculum(req);});
     //    Thread t2 = new Thread(() -> { java.validUserHasExamInCurriculum(req);});
     //    t1.start();
