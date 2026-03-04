@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
     type = SecuritySchemeType.HTTP,
     bearerFormat = "JWT",
     scheme = "bearer",
-    in = SecuritySchemeIn.HEADER,
+    in = SecuritySchemeIn.COOKIE,
     paramName = AuthenticationTokenProviderInterceptor.AUTHORIZATION)
 public class SwaggerConfig {
   @Bean

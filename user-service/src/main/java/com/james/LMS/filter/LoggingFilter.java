@@ -1,6 +1,7 @@
 package com.james.LMS.filter;
 
 import com.james.LMS.config.SecurityUserDetails;
+import com.james.LMS.util.PublicEndpointsValidatorUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,11 +27,18 @@ public class LoggingFilter extends OncePerRequestFilter {
       MDC.put("requestId", requestId);
       response.setHeader("x-request-id", requestId);
 
-      SecurityUserDetails principal =
-          (SecurityUserDetails)
-              SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-      String email = principal.getUsername() != null ? principal.getUsername() : "anonymous";
-      MDC.put("email", email);
+      String path = request.getRequestURI();
+      boolean isPublicEndPoints =
+          PublicEndpointsValidatorUtil.isSwaggerUrl(path)
+              || PublicEndpointsValidatorUtil.isPublicEndpoint(path);
+
+      if (!isPublicEndPoints) {
+        SecurityUserDetails principal =
+            (SecurityUserDetails)
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = principal.getUsername();
+        MDC.put("email", email);
+      }
 
       log.info(
           "Incoming Request: method={}, path={}", request.getMethod(), request.getRequestURI());

@@ -4,6 +4,7 @@ import com.james.LMS.config.SecurityConfig;
 import com.james.LMS.facade.UserFacade;
 import com.james.LMS.request.*;
 import com.james.LMS.response.*;
+import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -23,6 +24,7 @@ public class UserController {
 
   private final UserFacade userFacade;
 
+  @Hidden
   @PostMapping("/login")
   @ResponseStatus(HttpStatus.OK)
   @Operation(
