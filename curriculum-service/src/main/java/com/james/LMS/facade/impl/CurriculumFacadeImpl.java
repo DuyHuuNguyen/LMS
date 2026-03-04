@@ -45,6 +45,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
   private final CacheService cacheService;
   private final ProducerLoadLecturesIntoCacheService producerLoadLecturesIntoCacheService;
   private final InstructorService instructorService;
+  private final ChannelService channelService;
 
   private static final Integer ZERO_LECTURE = 0;
   private static final Integer INITIAL_HOME_PAGE = 0;
@@ -53,19 +54,43 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
   public BaseResponse<CurriculumReviewResponse> findCurriculumForReviewById(Long id) {
     Curriculum curriculum =
         this.curriculumService
-            .findById(id)
+            .findByIdAndFetchChannel(id)
             .orElseThrow(() -> new EntityNotFoundException(ErrorCode.CURRICULUM_NOT_FOUND));
-    List<Session> sessions = this.sessionService.findAllByCurriculumId(curriculum.getId());
+    CompletableFuture<List<Session>> sessionsFuture =
+        CompletableFuture.supplyAsync(
+            () -> this.sessionService.findAllByCurriculumId(curriculum.getId()));
 
-    List<Long> sessionIds = sessions.stream().map(BaseEntity::getId).toList();
+    CompletableFuture<List<TopicDTO>> topicDTOSFuture =
+        CompletableFuture.supplyAsync(
+            () -> this.topicService.findAllTopicDTOByCurriculumId(curriculum.getId()));
 
-    List<TopicDTO> topicDTOS = this.topicService.findAllTopicDTOByCurriculumId(curriculum.getId());
+    CompletableFuture<Map<Long, List<BaseSessionContentDTO>>> collectContentSessionMapFuture =
+        sessionsFuture.thenApplyAsync(
+            sessions -> {
+              List<Long> sessionIds = sessions.stream().map(BaseEntity::getId).toList();
+              List<BaseSessionContentDTO> sessionContentDTOS =
+                  this.buildSessionContentDTO(sessionIds);
+              return sessionContentDTOS.stream()
+                  .collect(Collectors.groupingBy(BaseSessionContentDTO::getSessionId));
+            });
 
-    List<BaseSessionContentDTO> sessionContentDTOS = this.buildSessionContentDTO(sessionIds);
+    CompletableFuture<InstructorDTO> instructorDTOFuture =
+        CompletableFuture.supplyAsync(
+            () ->
+                this.instructorService
+                    .findByUserId(curriculum.getChannel().getUserId())
+                    .orElseThrow(
+                        () -> new EntityNotFoundException(ErrorCode.INSTRUCTOR_NOT_FOUND)));
 
+    CompletableFuture.allOf(
+            sessionsFuture, topicDTOSFuture, collectContentSessionMapFuture, instructorDTOFuture)
+        .join();
+
+    List<Session> sessions = sessionsFuture.join();
+    List<TopicDTO> topicDTOS = topicDTOSFuture.join();
     Map<Long, List<BaseSessionContentDTO>> collectContentSessionMap =
-        sessionContentDTOS.stream()
-            .collect(Collectors.groupingBy(BaseSessionContentDTO::getSessionId));
+        collectContentSessionMapFuture.join();
+    InstructorDTO instructorDTO = instructorDTOFuture.join();
 
     AtomicReference<Long> totalDurationOfCurriculum = new AtomicReference<>(0L);
     AtomicReference<Integer> totalLectures = new AtomicReference<>(0);
@@ -76,11 +101,12 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
 
     return BaseResponse.build(
         CurriculumReviewResponse.builder()
+            .instructorDTO(instructorDTO)
             .title(curriculum.getTitle())
             .headline(curriculum.getHeadLine())
             .cost(curriculum.getCost())
             .description(curriculum.getDescription())
-            .name(curriculum.getName())
+            .requirement(curriculum.getRequirement())
             .totalTimesStringFormat(
                 DurationConverterUtil.toStringDuration(
                     Duration.ofSeconds(totalDurationOfCurriculum.get())))
@@ -234,7 +260,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
                         .headLine(curriculumDTO.getHeadLine())
                         .cost(curriculumDTO.getCost())
                         .description(curriculumDTO.getDescription())
-                        .name(curriculumDTO.getName())
+                        .requirement(curriculumDTO.getRequirement())
                         .thumbnail(curriculumDTO.getThumbnail())
                         .topicId(curriculumDTO.getTopicId())
                         .topicName(curriculumDTO.getTopicName())
@@ -381,6 +407,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
                   SessionDTO.builder()
                       .id(session.getId())
                       .index(session.getIndex())
+                      .name(session.getName())
                       .totalTimesStringFormat(
                           DurationConverterUtil.toStringDuration(
                               Duration.ofSeconds(totalDurationSeconds)))

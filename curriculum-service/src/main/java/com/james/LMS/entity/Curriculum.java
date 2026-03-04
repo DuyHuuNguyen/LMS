@@ -31,7 +31,7 @@ public class Curriculum extends BaseEntity {
   private String description;
 
   @Column(name = "requirement")
-  private String name;
+  private String requirement;
 
   @Column(name = "thumbnail")
   private String thumbnail;

@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
@@ -24,7 +25,7 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
             c.headLine,
             c.cost,
             c.description,
-            c.name,
+            c.requirement,
             c.thumbnail,
             t.id,
             t.name
@@ -48,7 +49,7 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
             c.headLine,
             c.cost,
             c.description,
-            c.name,
+            c.requirement,
             c.thumbnail,
             t.id,
             t.name
@@ -113,4 +114,17 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
       where uc.userId =:userId and uc.curriculum.id =:curriculumId and s.id =:sessionId and e.id = :examId and uc.isActive and s.isActive and e.isActive
       """)
       Boolean isPurchasedCurriculumToHaveExam(Long userId,Long curriculumId,Long sessionId,Long examId);
+
+
+
+      @Query("""
+      select c
+      from Curriculum c
+      join fetch c.channel
+      where c.id =:id and c.isActive and c.channel.isActive
+      """)
+      Optional<Curriculum> findByIdFetchChannel(Long id);
+
+
+
 }

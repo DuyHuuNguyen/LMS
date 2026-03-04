@@ -19,7 +19,7 @@ public class CurriculumDTO {
   private String headLine;
   private BigDecimal cost;
   private String description;
-  private String name;
+  private String requirement;
   private String thumbnail;
   private Long topicId;
   private String topicName;

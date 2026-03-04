@@ -55,4 +55,9 @@ public class CurriculumServiceImpl implements CurriculumService {
   public Page<PurchasedCurriculumDTO> findAllPurchasedCurriculums(Long userId, Pageable pageable) {
     return this.curriculumRepository.findAllPurchasedCurriculums(userId, pageable);
   }
+
+  @Override
+  public Optional<Curriculum> findByIdAndFetchChannel(Long id) {
+    return this.curriculumRepository.findByIdFetchChannel(id);
+  }
 }

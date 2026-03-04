@@ -27,8 +27,8 @@ public class LoggingFilter extends OncePerRequestFilter {
 
   @Override
   protected void doFilterInternal(
-          HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-          throws ServletException, IOException {
+      HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+      throws ServletException, IOException {
 
     ContentCachingRequestWrapper wrappedRequest = new ContentCachingRequestWrapper(request);
     ContentCachingResponseWrapper wrappedResponse = new ContentCachingResponseWrapper(response);
@@ -41,13 +41,13 @@ public class LoggingFilter extends OncePerRequestFilter {
 
       String path = wrappedRequest.getRequestURI();
       boolean isPublicEndPoints =
-              PublicEndpointsValidatorUtil.isSwaggerUrl(path)
-                      || PublicEndpointsValidatorUtil.isPublicEndpoint(path);
+          PublicEndpointsValidatorUtil.isSwaggerUrl(path)
+              || PublicEndpointsValidatorUtil.isPublicEndpoint(path);
 
       if (!isPublicEndPoints) {
         SecurityUserDetails principal =
-                (SecurityUserDetails)
-                        SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+            (SecurityUserDetails)
+                SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = principal.getUsername();
         MDC.put("email", email);
       }
@@ -55,10 +55,10 @@ public class LoggingFilter extends OncePerRequestFilter {
       String requestBody = extractRequestBody(wrappedRequest);
 
       log.info(
-              "Incoming Request: method={}, path={}, request={}",
-              wrappedRequest.getMethod(),
-              wrappedRequest.getRequestURI(),
-              requestBody);
+          "Incoming Request: method={}, path={}, request={}",
+          wrappedRequest.getMethod(),
+          wrappedRequest.getRequestURI(),
+          requestBody);
 
       filterChain.doFilter(wrappedRequest, wrappedResponse);
 
@@ -66,10 +66,10 @@ public class LoggingFilter extends OncePerRequestFilter {
       String responseBody = extractResponseBody(wrappedResponse);
 
       log.info(
-              "Outgoing Response: status={}, duration={}ms, response={}",
-              wrappedResponse.getStatus(),
-              duration,
-              responseBody);
+          "Outgoing Response: status={}, duration={}ms, response={}",
+          wrappedResponse.getStatus(),
+          duration,
+          responseBody);
     } finally {
       wrappedResponse.copyBodyToResponse();
       MDC.clear();
@@ -108,11 +108,11 @@ public class LoggingFilter extends OncePerRequestFilter {
     }
 
     return contentType.startsWith(MediaType.APPLICATION_JSON_VALUE)
-            || contentType.startsWith(MediaType.APPLICATION_XML_VALUE)
-            || contentType.startsWith(MediaType.TEXT_PLAIN_VALUE)
-            || contentType.startsWith(MediaType.TEXT_HTML_VALUE)
-            || contentType.startsWith(MediaType.TEXT_XML_VALUE)
-            || contentType.startsWith(MediaType.APPLICATION_FORM_URLENCODED_VALUE);
+        || contentType.startsWith(MediaType.APPLICATION_XML_VALUE)
+        || contentType.startsWith(MediaType.TEXT_PLAIN_VALUE)
+        || contentType.startsWith(MediaType.TEXT_HTML_VALUE)
+        || contentType.startsWith(MediaType.TEXT_XML_VALUE)
+        || contentType.startsWith(MediaType.APPLICATION_FORM_URLENCODED_VALUE);
   }
 
   private String formatBody(byte[] content) {

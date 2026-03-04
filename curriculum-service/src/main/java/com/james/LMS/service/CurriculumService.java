@@ -24,4 +24,6 @@ public interface CurriculumService {
   Boolean existsByIdAndChannelUserIdAndIsActiveIsTrue(Long curriculumId, Long userId);
 
   Page<PurchasedCurriculumDTO> findAllPurchasedCurriculums(Long userId, Pageable pageable);
+
+  Optional<Curriculum> findByIdAndFetchChannel(Long id);
 }
