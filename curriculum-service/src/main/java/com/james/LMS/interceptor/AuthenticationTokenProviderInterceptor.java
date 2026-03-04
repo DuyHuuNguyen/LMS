@@ -1,10 +1,12 @@
 package com.james.LMS.interceptor;
 
+import com.james.LMS.config.SecurityConfig;
 import com.james.LMS.config.SecurityUserDetails;
 import com.james.LMS.dto.AuthDTO;
 import com.james.LMS.service.AuthService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -34,7 +36,7 @@ public class AuthenticationTokenProviderInterceptor extends OncePerRequestFilter
       throws ServletException, IOException {
     String path = request.getRequestURI();
 
-    String token = getTokenFromHeader(request);
+    String token = this.getJwtTokenFromCookie(request);
 
     if (this.isSwaggerUrl(path) || this.isPublicEndpoint(path)) {
       filterChain.doFilter(request, response);
@@ -71,10 +73,22 @@ public class AuthenticationTokenProviderInterceptor extends OncePerRequestFilter
     return PUBLIC_ENDPOINTS.stream().anyMatch(path::endsWith);
   }
 
+  @Deprecated
   private String getTokenFromHeader(HttpServletRequest request) {
     String headerAuth = request.getHeader(AUTHORIZATION);
     if (headerAuth != null) {
       return headerAuth.substring(START_OF_TOKEN);
+    }
+    return null;
+  }
+
+  public String getJwtTokenFromCookie(HttpServletRequest request) {
+    if (request.getCookies() != null) {
+      for (Cookie cookie : request.getCookies()) {
+        if (SecurityConfig.COOKIE_SECURITY_NAME.equals(cookie.getName())) {
+          return cookie.getValue();
+        }
+      }
     }
     return null;
   }

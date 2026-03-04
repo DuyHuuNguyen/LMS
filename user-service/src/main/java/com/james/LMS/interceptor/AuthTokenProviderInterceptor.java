@@ -117,6 +117,7 @@ public class AuthTokenProviderInterceptor extends OncePerRequestFilter {
         && cacheService.retrieve(accessTokenCacheKey).equals(token);
   }
 
+  @Deprecated
   public String getJwtTokenFromHeader(HttpServletRequest request) {
     String headerAuth = request.getHeader(AUTHORIZATION);
     if (headerAuth != null) {

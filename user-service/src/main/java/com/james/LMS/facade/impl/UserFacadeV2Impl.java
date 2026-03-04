@@ -55,6 +55,7 @@ public class UserFacadeV2Impl implements UserFacadeV2 {
         ResponseCookie.from(SecurityConfig.COOKIE_SECURITY_NAME, accessToken)
             .httpOnly(true)
             .secure(true)
+            .sameSite("None")
             .path("/")
             .maxAge(COOKIE_ACCESS_TOKEN_TTL)
             .build();
@@ -63,6 +64,7 @@ public class UserFacadeV2Impl implements UserFacadeV2 {
         ResponseCookie.from(SecurityConfig.COOKIE_REFRESH_TOKEN_NAME, accessToken)
             .httpOnly(true)
             .secure(true)
+            .sameSite("None")
             .path("/")
             .maxAge(COOKIE_REFRESH_TOKEN_TTL)
             .build();

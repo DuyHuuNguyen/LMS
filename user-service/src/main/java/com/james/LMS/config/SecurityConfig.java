@@ -6,7 +6,6 @@ import com.james.LMS.service.CacheService;
 import com.james.LMS.service.JwtService;
 import com.james.LMS.service.RoleService;
 import com.james.LMS.service.UserService;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +20,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Slf4j
@@ -38,8 +36,6 @@ public class SecurityConfig implements WebMvcConfigurer {
   public static final String COOKIE_SECURITY_NAME = "access-token";
   public static final String COOKIE_REFRESH_TOKEN_NAME = "refresh-token";
 
-  private final AllowedOriginsConfig allowedOriginsConfig;
-
   private final String[] WHITE_LISTS = {
     "/swagger-ui/**",
     "/v3/api-docs/**",
@@ -52,21 +48,6 @@ public class SecurityConfig implements WebMvcConfigurer {
     "/api/v1/users/demo",
     "/api/v2/users/login",
   };
-
-  @PostConstruct
-  public void loggingAllowedOrigins() {
-    for (String origin : this.allowedOriginsConfig.toStringArray())
-      log.info("Allowed origin : {}", origin);
-  }
-
-  @Override
-  public void addCorsMappings(CorsRegistry registry) {
-    registry
-        .addMapping("/**")
-        .allowedOrigins(this.allowedOriginsConfig.toStringArray())
-        .allowCredentials(true)
-        .allowedMethods("*");
-  }
 
   @Bean
   public PasswordEncoder passwordEncoder() {

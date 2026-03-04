@@ -35,7 +35,10 @@ public class AuthenticationFilter implements GlobalFilter {
     var isSwagger = SWAGGER_URLS.stream().anyMatch(path::startsWith);
     var isPublic = PUBLIC_APIS.stream().anyMatch(path::startsWith);
 
-    if (isSwagger || isPublic) return chain.filter(exchange);
+    ServerHttpRequest mutatedRequest = this.buildRequestId(exchange);
+
+    if (isSwagger || isPublic)
+      return chain.filter(exchange.mutate().request(mutatedRequest).build());
 
     HttpCookie tokenCookie = exchange.getRequest().getCookies().getFirst(COOKIE_NAME);
 
@@ -46,8 +49,6 @@ public class AuthenticationFilter implements GlobalFilter {
       exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
       return exchange.getResponse().setComplete();
     }
-
-    ServerHttpRequest mutatedRequest = this.buildRequestId(exchange);
 
     return chain.filter(exchange.mutate().request(mutatedRequest).build());
   }
