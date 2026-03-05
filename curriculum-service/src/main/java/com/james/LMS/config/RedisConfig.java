@@ -1,6 +1,7 @@
 package com.james.LMS.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.james.LMS.dto.BannerDTO;
 import com.james.LMS.dto.InstructorDTO;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,6 +42,24 @@ public class RedisConfig {
 
     Jackson2JsonRedisSerializer<InstructorDTO> serializer =
         new Jackson2JsonRedisSerializer<>(InstructorDTO.class);
+
+    template.setConnectionFactory(redisConnectionFactory);
+    template.setKeySerializer(new StringRedisSerializer());
+    template.setValueSerializer(serializer);
+    template.setHashKeySerializer(new StringRedisSerializer());
+    template.setHashValueSerializer(serializer);
+    template.afterPropertiesSet();
+
+    return template;
+  }
+
+  @Bean(name = "redisBannerTemplate")
+  public RedisTemplate<String, BannerDTO> redisBannerTemplate(
+      RedisConnectionFactory redisConnectionFactory) {
+    RedisTemplate<String, BannerDTO> template = new RedisTemplate<>();
+
+    Jackson2JsonRedisSerializer<BannerDTO> serializer =
+        new Jackson2JsonRedisSerializer<>(BannerDTO.class);
 
     template.setConnectionFactory(redisConnectionFactory);
     template.setKeySerializer(new StringRedisSerializer());

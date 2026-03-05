@@ -50,9 +50,7 @@ logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %clr([%thread]){faint} %clr(%-5level) %clr(%logger{36}){cyan} %clr(%X{requestId}){yellow} - %clr(%X{email}){green} - %msg%n"
 
-cors:
-  allowed-origins:
-    - ${FE_ORIGIN}
-    - ${BE_ORIGIN}
-    - ${FE_LOCAL_ORIGIN}
-    - ${BE_LOCAL_ORIGIN}
+cloudinary:
+  cloudinary-name: dvynemzxx
+  api-key: 368324453129176
+  api-secret: FyxpYajXxv58KvfsbG9mYuYWOh8
