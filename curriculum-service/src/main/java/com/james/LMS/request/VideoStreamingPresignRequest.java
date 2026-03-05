@@ -10,14 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VideoStreamingPresignRequest {
-  @Positive
-  @NotNull
-  private Long curriculumId;
-  @Positive
-  @NotNull
-  private Long sessionId;
-  @Positive
-  @NotNull
-  private Long videoId;
+  @Positive @NotNull private Long curriculumId;
+  @Positive @NotNull private Long sessionId;
+  @Positive @NotNull private Long videoId;
   private Integer stoppedAt;
 }

@@ -16,7 +16,9 @@ public enum ErrorCode {
   UPLOADING_VIDEO_IS_DENIED("2007", "Denied uploading video"),
   BANNER_NOT_FOUND("2008", "Banner not found"),
   FILE_ERROR_UPLOAD("2009", "Upload file error"),
-  VIDEO_WAS_UPLOADED_INTO_STORAGE("3000", "Video was uploaded into storage");
+  VIDEO_WAS_UPLOADED_INTO_STORAGE("3000", "Video was uploaded into storage"),
+  VIDEO_METADATA_NOT_FOUND("3001", "Video metadata not found"),
+  SESSION_OR_VIDEO_NOT_FOUND("3002", "Video or session not found");
   private final String code;
   private final String message;
 }

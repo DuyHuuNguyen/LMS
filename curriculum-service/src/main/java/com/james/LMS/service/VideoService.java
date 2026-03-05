@@ -17,4 +17,6 @@ public interface VideoService {
   void save(Video video);
 
   Optional<Video> findByIdentifyCode(String identifyCode);
+
+  Optional<Video> findVideoAndFetchSessionById(Long id);
 }

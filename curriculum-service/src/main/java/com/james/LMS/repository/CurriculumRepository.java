@@ -137,4 +137,15 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
       Boolean isExistedChannelAndCurriculumForUploadVideo(Long userHolderChannelId,Long curriculumId,Long sessionId);
 
 
+
+      @Query("""
+            select COUNT(c) > 0
+            from Curriculum c
+            join Session se on se.curriculum.id = c.id
+            join Video  v on v.session.id = se.id
+            where c.channel.userId =:userHolderChannelId and c.isActive and c.id =:curriculumId and se.isActive and v.id = :videoId and v.isActive
+            """)
+      Boolean isInstructorHoldVideo(Long userHolderChannelId,Long curriculumId,Long videoId);
+
+
 }

@@ -42,4 +42,11 @@ public interface VideoRepository extends JpaRepository<Video, Long> {
 
     Optional<Video> findByIdentifyCode(String identifyCode);
 
+    @Query("""
+    select v
+    from Video v
+    join fetch v.session
+    where v.id =:id and v.isActive
+    """)
+    Optional<Video> findVideoAndFetchSessionById(Long id);
 }

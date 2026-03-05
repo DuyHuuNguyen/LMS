@@ -2,8 +2,10 @@ package com.james.LMS.facade.impl;
 
 import com.james.LMS.config.MinioConfig;
 import com.james.LMS.config.SecurityUserDetails;
+import com.james.LMS.dto.ValidChangeSessionVideoAccessDTO;
 import com.james.LMS.dto.ValidVideoUploadingAccessDTO;
 import com.james.LMS.dto.ValidateVideoAccessDTO;
+import com.james.LMS.entity.Session;
 import com.james.LMS.entity.Video;
 import com.james.LMS.enums.*;
 import com.james.LMS.exception.EntityNotFoundException;
@@ -12,6 +14,7 @@ import com.james.LMS.exception.VideoAlreadyExistInStorageException;
 import com.james.LMS.facade.VideoFacade;
 import com.james.LMS.message.BaseMessage;
 import com.james.LMS.message.CreateVideoPayload;
+import com.james.LMS.request.UpdateSessionVideoRequest;
 import com.james.LMS.request.VideoStreamingPresignRequest;
 import com.james.LMS.request.VideoUploadingPresignUrlRequest;
 import com.james.LMS.response.BaseResponse;
@@ -20,6 +23,7 @@ import com.james.LMS.util.HashMD5Util;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -36,6 +40,7 @@ public class VideoFacadeImpl implements VideoFacade {
   private final CurriculumService curriculumService;
   private final CurriculumValidatorService curriculumValidatorService;
   private final ProducerCreateVideoService producerCreateVideoService;
+  private final SessionService sessionService;
   private static final String DOT_MP4 = ".mp4";
 
   @Override
@@ -113,6 +118,65 @@ public class VideoFacadeImpl implements VideoFacade {
 
     this.produceUploadingVideoMessage(request, videoUrl, principal.getUsername(), identifyCode);
     return this.generatePresignUrlForUpload(videoUrl);
+  }
+
+  @Override
+  @Transactional
+  public BaseResponse<Void> changeSessionVideo(UpdateSessionVideoRequest request) {
+    SecurityUserDetails principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+    ValidInstructorHoldVideoDTO validInstructorHoldVideoDTO =
+        ValidInstructorHoldVideoDTO.builder()
+            .userId(principal.getId())
+            .curriculumId(request.getCurriculumId())
+            .videoId(request.getId())
+            .build();
+    boolean isInstructorHoldVideo =
+        this.curriculumValidatorService.isInstructorHoldVideo(validInstructorHoldVideoDTO);
+    if (!isInstructorHoldVideo)
+      throw new EntityNotFoundException(ErrorCode.VIDEO_METADATA_NOT_FOUND);
+
+    ValidChangeSessionVideoAccessDTO validChangeSessionVideoAccessDTO =
+        ValidChangeSessionVideoAccessDTO.builder()
+            .userChanelHolderId(principal.getId())
+            .curriculumId(request.getCurriculumId())
+            .newSessionId(request.getNewSessionId())
+            .videoId(request.getId())
+            .build();
+
+    boolean isExistedChannelAndCurriculumForChangeSession =
+        this.curriculumValidatorService.isExistedChannelAndCurriculumForChangeSession(
+            validChangeSessionVideoAccessDTO);
+    if (!isExistedChannelAndCurriculumForChangeSession)
+      throw new PermissionDeniedException(ErrorCode.PERMISSION_DENIED_VIDEO);
+
+    CompletableFuture<Video> videoFuture =
+        CompletableFuture.supplyAsync(
+            () ->
+                this.videoService
+                    .findVideoAndFetchSessionById(request.getId())
+                    .orElseThrow(
+                        () -> new EntityNotFoundException(ErrorCode.VIDEO_METADATA_NOT_FOUND)));
+
+    CompletableFuture<Session> sessionFuture =
+        CompletableFuture.supplyAsync(
+            () ->
+                this.sessionService
+                    .findById(request.getNewSessionId())
+                    .orElseThrow(() -> new EntityNotFoundException(ErrorCode.SESSION_NOT_FOUND)));
+    try {
+      CompletableFuture.allOf(videoFuture, sessionFuture).join();
+
+      Video video = videoFuture.join();
+      Session targetSessionForChanging = sessionFuture.join();
+      video.addSession(targetSessionForChanging);
+      this.videoService.save(video);
+
+    } catch (EntityNotFoundException e) {
+      throw new EntityNotFoundException(ErrorCode.SESSION_OR_VIDEO_NOT_FOUND);
+    }
+    return BaseResponse.ok();
   }
 
   private BaseResponse<String> generatePresignUrlForUpload(String videoUrl) {

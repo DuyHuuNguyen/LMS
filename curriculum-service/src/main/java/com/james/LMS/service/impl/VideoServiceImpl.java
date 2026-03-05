@@ -43,4 +43,9 @@ public class VideoServiceImpl implements VideoService {
   public Optional<Video> findByIdentifyCode(String identifyCode) {
     return this.videoRepository.findByIdentifyCode(identifyCode);
   }
+
+  @Override
+  public Optional<Video> findVideoAndFetchSessionById(Long id) {
+    return this.videoRepository.findVideoAndFetchSessionById(id);
+  }
 }

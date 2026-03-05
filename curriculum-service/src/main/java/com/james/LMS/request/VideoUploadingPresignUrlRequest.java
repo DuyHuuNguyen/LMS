@@ -12,20 +12,10 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 public class VideoUploadingPresignUrlRequest {
-  @Positive
-  @NotNull
-  private Long curriculumId;
-  @Positive
-  @NotNull
-  private Long sessionId;
-  @NotNull
-  private String videoName;
-  @NotNull
-  private Boolean isPreView;
-  @Positive
-  @NotNull
-  private Integer index;
-  @Positive
-  @NotNull
-  private Long durationSeconds;
+  @Positive @NotNull private Long curriculumId;
+  @Positive @NotNull private Long sessionId;
+  @NotNull private String videoName;
+  @NotNull private Boolean isPreView;
+  @Positive @NotNull private Integer index;
+  @Positive @NotNull private Long durationSeconds;
 }

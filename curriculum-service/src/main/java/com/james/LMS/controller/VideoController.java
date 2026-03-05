@@ -2,6 +2,7 @@ package com.james.LMS.controller;
 
 import com.james.LMS.config.SecurityConfig;
 import com.james.LMS.facade.VideoFacade;
+import com.james.LMS.request.UpdateSessionVideoRequest;
 import com.james.LMS.request.VideoStreamingPresignRequest;
 import com.james.LMS.request.VideoUploadingPresignUrlRequest;
 import com.james.LMS.response.BaseResponse;
@@ -9,7 +10,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -36,9 +36,22 @@ public class VideoController {
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"Video APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
-  @PreAuthorize("isAuthenticated()")
+  @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
   public BaseResponse<String> generateUploadingPresignUrl(
       @RequestBody @Valid VideoUploadingPresignUrlRequest request) {
     return this.videoFacade.generateVideoUploadPresignUrl(request);
+  }
+
+  @PatchMapping("/session/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(
+      tags = {"Video APIs"},
+      summary = "Change session of video by id")
+  @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
+  @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
+  public BaseResponse<Void> changeSessionVideo(
+      @PathVariable Long id, @RequestBody UpdateSessionVideoRequest request) {
+    request.withId(id);
+    return this.videoFacade.changeSessionVideo(request);
   }
 }
