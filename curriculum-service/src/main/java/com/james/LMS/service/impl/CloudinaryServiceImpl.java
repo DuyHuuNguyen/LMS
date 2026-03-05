@@ -15,17 +15,17 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CloudinaryServiceImpl implements CloudinaryService {
-    private final Cloudinary cloudinary;
+  private final Cloudinary cloudinary;
 
-    @Override
-    public String uploadFile(byte[] image, FileType resourceType) {
+  @Override
+  public String uploadFile(byte[] image, FileType resourceType) {
 
-        var params = ObjectUtils.asMap("folder", "banners", "resource_type", resourceType.getType());
-        try {
-            var uploadResult = cloudinary.uploader().upload(image, params);
-            return uploadResult.get("secure_url").toString();
-        } catch (IOException e) {
-            throw new UploadFileException(ErrorCode.FILE_ERROR_UPLOAD);
-        }
+    var params = ObjectUtils.asMap("folder", "banners", "resource_type", resourceType.getType());
+    try {
+      var uploadResult = cloudinary.uploader().upload(image, params);
+      return uploadResult.get("secure_url").toString();
+    } catch (IOException e) {
+      throw new UploadFileException(ErrorCode.FILE_ERROR_UPLOAD);
     }
+  }
 }

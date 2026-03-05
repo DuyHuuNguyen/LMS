@@ -7,7 +7,9 @@ import com.james.LMS.request.VideoUploadingPresignUrlRequest;
 import com.james.LMS.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -26,7 +28,7 @@ public class VideoController {
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("isAuthenticated()")
   public BaseResponse<String> generateVideoStreamingPresignUrl(
-      @RequestBody VideoStreamingPresignRequest request) {
+      @RequestBody @Valid VideoStreamingPresignRequest request) {
     return this.videoFacade.generateVideoStreamingPresignUrl(request);
   }
 
@@ -36,7 +38,7 @@ public class VideoController {
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("isAuthenticated()")
   public BaseResponse<String> generateUploadingPresignUrl(
-      @RequestBody VideoUploadingPresignUrlRequest request) {
+      @RequestBody @Valid VideoUploadingPresignUrlRequest request) {
     return this.videoFacade.generateVideoUploadPresignUrl(request);
   }
 }

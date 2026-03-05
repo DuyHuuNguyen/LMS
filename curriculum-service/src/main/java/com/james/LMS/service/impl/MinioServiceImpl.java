@@ -4,6 +4,8 @@ import com.james.LMS.config.MinioConfig;
 import com.james.LMS.service.MinioService;
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MinioClient;
+import io.minio.StatObjectArgs;
+import io.minio.errors.ErrorResponseException;
 import io.minio.http.Method;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -50,5 +52,20 @@ public class MinioServiceImpl implements MinioService {
             .object(fileName)
             .expiry(durationOfVideo)
             .build());
+  }
+
+  @Override
+  public Boolean isExistFile(String bucket, String fileUrl) {
+    try {
+      minioClient.statObject(StatObjectArgs.builder().bucket(bucket).object(fileUrl).build());
+      return true;
+    } catch (ErrorResponseException e) {
+      if (e.errorResponse().code().equals("NoSuchKey")) {
+        return false;
+      }
+      throw new RuntimeException(e);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 }

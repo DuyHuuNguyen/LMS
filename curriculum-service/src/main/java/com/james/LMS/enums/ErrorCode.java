@@ -11,10 +11,12 @@ public enum ErrorCode {
   EXAM_NOT_FOUND("2002", "Exam not found"),
   SESSION_NOT_FOUND("2003", "Session not found"),
   PERMISSION_DENIED_VIDEO("2004", "Video is denied"),
-  VIDEO_NOT_FOUND_AT_STORAGE("2005", "Video is found at storage"),
+  VIDEO_NOT_FOUND_AT_STORAGE("2005", "Video is not found at storage"),
   INSTRUCTOR_NOT_FOUND("2006", "Instructor not found"),
   UPLOADING_VIDEO_IS_DENIED("2007", "Denied uploading video"),
-  BANNER_NOT_FOUND("2008", "Banner not found"), FILE_ERROR_UPLOAD("2009","Upload file error" );
+  BANNER_NOT_FOUND("2008", "Banner not found"),
+  FILE_ERROR_UPLOAD("2009", "Upload file error"),
+  VIDEO_WAS_UPLOADED_INTO_STORAGE("3000", "Video was uploaded into storage");
   private final String code;
   private final String message;
 }

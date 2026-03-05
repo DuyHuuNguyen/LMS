@@ -7,7 +7,6 @@ import com.james.LMS.service.BannerService;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -21,7 +20,6 @@ public class BannerServiceImpl implements BannerService {
 
   private final RedisTemplate<String, BannerDTO> redisBannerTemplate;
   private final RedisTemplate<String, Object> redisTemplate;
-
 
   @Override
   public void hiddenBannerById(String id) {
@@ -50,10 +48,12 @@ public class BannerServiceImpl implements BannerService {
 
   @Override
   public List<BannerDTO> findAll() {
-    List<BannerDTO> banners = redisBannerTemplate.opsForList().range(BANNER_KEY, 0, -1).stream().filter(BannerDTO::getIsActive).toList();
+    List<BannerDTO> banners =
+        redisBannerTemplate.opsForList().range(BANNER_KEY, 0, -1).stream()
+            .filter(BannerDTO::getIsActive)
+            .toList();
     return banners == null ? Collections.emptyList() : banners;
   }
-
 
   @Override
   public void storeWithoutTimeout(BannerDTO bannerDTO) {

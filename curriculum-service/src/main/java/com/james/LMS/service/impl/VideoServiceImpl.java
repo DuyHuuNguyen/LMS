@@ -33,4 +33,14 @@ public class VideoServiceImpl implements VideoService {
   public Integer findDurationById(Long id) {
     return this.videoRepository.findDurationById(id);
   }
+
+  @Override
+  public void save(Video video) {
+    this.videoRepository.save(video);
+  }
+
+  @Override
+  public Optional<Video> findByIdentifyCode(String identifyCode) {
+    return this.videoRepository.findByIdentifyCode(identifyCode);
+  }
 }

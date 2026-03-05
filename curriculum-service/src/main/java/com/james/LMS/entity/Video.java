@@ -20,6 +20,9 @@ public class Video extends BaseSessionContent {
   @Column(name = "thumbnail")
   private String thumbnail;
 
+  @Column(name = "identify_code", nullable = false, unique = true)
+  private String identifyCode;
+
   @Column(name = "view")
   private Integer view;
 
@@ -32,4 +35,8 @@ public class Video extends BaseSessionContent {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "session_id")
   private Session session;
+
+  public void addSession(Session session) {
+    this.session = session;
+  }
 }

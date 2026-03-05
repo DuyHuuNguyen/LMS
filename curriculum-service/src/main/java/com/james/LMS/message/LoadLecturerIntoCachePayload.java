@@ -1,5 +1,6 @@
 package com.james.LMS.message;
 
+import java.io.Serializable;
 import lombok.*;
 
 @AllArgsConstructor
@@ -7,6 +8,6 @@ import lombok.*;
 @Getter
 @ToString
 @Builder
-public class LoadLecturerIntoCachePayload {
+public class LoadLecturerIntoCachePayload implements Serializable {
   private Long userId;
 }

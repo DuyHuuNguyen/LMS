@@ -26,4 +26,6 @@ public interface CurriculumService {
   Page<PurchasedCurriculumDTO> findAllPurchasedCurriculums(Long userId, Pageable pageable);
 
   Optional<Curriculum> findByIdAndFetchChannel(Long id);
+
+  Boolean isExistsById(Long id);
 }

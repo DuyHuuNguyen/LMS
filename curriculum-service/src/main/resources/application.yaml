@@ -39,9 +39,12 @@ rabbitmq:
   exchange-create-tests-name: create-tests-exchange
   create-tests-routing-key: create-tests-routing-key
   create-tests-queue: create-tests-queue
+  exchange-uploading-video: uploading-video-exchange
+  routing-key-uploading-video: uploading-video-routing-key
+  queue-uploading-video: uploading-video-queue
 ---
 minio:
-  url: http://localhost:9000
+  url: ${MINIO_URL:http://localhost:9000}
   access-key: admin
   secret-key: 12345678
   thumbnail-bucket: thumbnail-bucket

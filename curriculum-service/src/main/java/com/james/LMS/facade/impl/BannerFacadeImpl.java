@@ -6,10 +6,9 @@ import com.james.LMS.facade.BannerFacade;
 import com.james.LMS.request.UploadBannerRequest;
 import com.james.LMS.response.BaseResponse;
 import com.james.LMS.service.BannerService;
+import com.james.LMS.service.CloudinaryService;
 import java.util.List;
 import java.util.UUID;
-
-import com.james.LMS.service.CloudinaryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -21,11 +20,15 @@ public class BannerFacadeImpl implements BannerFacade {
   private final BannerService bannerService;
   private final CloudinaryService cloudinaryService;
 
-
   @Override
   public BaseResponse<Void> uploadBanner(UploadBannerRequest request) {
     String imageUrl = this.cloudinaryService.uploadFile(request.getBytes(), FileType.IMAGE);
-    BannerDTO bannerDTO = BannerDTO.builder().id(UUID.randomUUID().toString()).index(request.getIndex()).imageUrl(imageUrl).build();
+    BannerDTO bannerDTO =
+        BannerDTO.builder()
+            .id(UUID.randomUUID().toString())
+            .index(request.getIndex())
+            .imageUrl(imageUrl)
+            .build();
     this.bannerService.storeWithoutTimeout(bannerDTO);
     return BaseResponse.ok();
   }
@@ -40,6 +43,4 @@ public class BannerFacadeImpl implements BannerFacade {
     this.bannerService.hiddenBannerById(id);
     return BaseResponse.ok();
   }
-
-
 }

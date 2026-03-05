@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public interface VideoRepository extends JpaRepository<Video, Long> {
@@ -38,5 +39,7 @@ public interface VideoRepository extends JpaRepository<Video, Long> {
     where v.id =:id and v.isActive
     """)
     Integer findDurationById(Long id);
+
+    Optional<Video> findByIdentifyCode(String identifyCode);
 
 }

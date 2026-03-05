@@ -1,16 +1,21 @@
 package com.james.LMS.message;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import java.io.Serializable;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Builder
-public class CreateVideoPayload {
+@ToString
+public class CreateVideoPayload implements Serializable {
   private String videoUrl;
   private Long curriculumId;
   private Long sessionId;
+  private Long durationSeconds;
+  private Integer index;
+  private Boolean isPreView;
+  private String name;
+  private String email;
+  private String identifyCode;
 }

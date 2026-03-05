@@ -7,7 +7,6 @@ import com.james.LMS.request.UploadBannerRequest;
 import com.james.LMS.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -31,15 +30,16 @@ public class BannerController {
     return bannerFacade.findAllBanners();
   }
 
-  @PostMapping( consumes = "multipart/form-data", produces = "application/json")
+  @PostMapping(consumes = "multipart/form-data", produces = "application/json")
   @ResponseStatus(HttpStatus.OK)
   @Operation(
-          summary = "Upload image",
-          tags = {"Banner APIs"})
+      summary = "Upload image",
+      tags = {"Banner APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("hasRole('ROLE_SYSTEM_ADMIN')")
   @SneakyThrows
-  public BaseResponse<Void> uploadBanner(@RequestPart("image") MultipartFile image, @RequestBody UploadBannerRequest request){
+  public BaseResponse<Void> uploadBanner(
+      @RequestPart("image") MultipartFile image, @RequestBody UploadBannerRequest request) {
     request.withBytes(image);
     return this.bannerFacade.uploadBanner(request);
   }
@@ -49,8 +49,7 @@ public class BannerController {
   @Operation(tags = {"Banner APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("hasRole('ROLE_SYSTEM_ADMIN')")
-  public BaseResponse<Void> hiddenBanner(@PathVariable String id){
+  public BaseResponse<Void> hiddenBanner(@PathVariable String id) {
     return this.bannerFacade.hiddenBannerById(id);
   }
-
 }

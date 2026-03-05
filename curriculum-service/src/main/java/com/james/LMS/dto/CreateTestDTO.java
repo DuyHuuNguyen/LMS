@@ -1,5 +1,6 @@
 package com.james.LMS.dto;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.AllArgsConstructor;
@@ -11,7 +12,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Getter
 @ToString
-public class CreateTestDTO {
+public class CreateTestDTO implements Serializable {
   private Integer index;
 
   private String question;

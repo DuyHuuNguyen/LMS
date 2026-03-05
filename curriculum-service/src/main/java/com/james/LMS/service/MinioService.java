@@ -7,4 +7,6 @@ public interface MinioService {
   String generatePresignedThumbnailUrl(String fileName);
 
   String generatePresignedVideoStreamingUrl(String fileName, Integer durationOfVideo);
+
+  Boolean isExistFile(String bucket, String fileUrl);
 }

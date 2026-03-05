@@ -9,5 +9,4 @@ public interface BannerService {
   List<BannerDTO> findAll();
 
   void storeWithoutTimeout(BannerDTO bannerDTO);
-
 }

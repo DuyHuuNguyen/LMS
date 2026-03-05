@@ -34,6 +34,15 @@ public class RabbitMQConfig {
   @Value("${rabbitmq.create-tests-routing-key}")
   private String createTestsRoutingKey;
 
+  @Value("${rabbitmq.exchange-uploading-video}")
+  private String uploadingVideoExchange;
+
+  @Value("${rabbitmq.queue-uploading-video}")
+  private String uploadingVideoQueue;
+
+  @Value("${rabbitmq.routing-key-uploading-video}")
+  private String uploadingVideoRoutingKey;
+
   @Bean
   public TopicExchange exchange() {
     return new TopicExchange(exchange);
@@ -52,6 +61,16 @@ public class RabbitMQConfig {
   @Bean
   public Queue createTestsQueue() {
     return new Queue(createTestsQueue, true);
+  }
+
+  @Bean
+  public TopicExchange uploadingVideoExchange() {
+    return new TopicExchange(uploadingVideoExchange);
+  }
+
+  @Bean
+  public Queue uploadingVideoQueue() {
+    return new Queue(uploadingVideoQueue, true);
   }
 
   @Bean
@@ -74,5 +93,12 @@ public class RabbitMQConfig {
     return BindingBuilder.bind(createTestsQueue())
         .to(createTestsExchange())
         .with(createTestsRoutingKey);
+  }
+
+  @Bean
+  public Binding uploadingVideoBinding() {
+    return BindingBuilder.bind(uploadingVideoQueue())
+        .to(uploadingVideoExchange())
+        .with(uploadingVideoRoutingKey);
   }
 }

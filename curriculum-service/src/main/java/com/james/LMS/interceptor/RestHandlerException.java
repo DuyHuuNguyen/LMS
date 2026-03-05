@@ -3,6 +3,7 @@ package com.james.LMS.interceptor;
 import com.james.LMS.exception.EntityNotFoundException;
 import com.james.LMS.exception.InvalidTokenException;
 import com.james.LMS.exception.PermissionDeniedException;
+import com.james.LMS.exception.VideoAlreadyExistInStorageException;
 import com.james.LMS.response.BaseResponse;
 import com.james.LMS.response.ExceptionResponse;
 import java.util.HashMap;
@@ -38,6 +39,15 @@ public class RestHandlerException {
   @ExceptionHandler(InvalidTokenException.class)
   public ResponseEntity<BaseResponse<ExceptionResponse>> handleInvalidTokenException(
       InvalidTokenException exception) {
+    return new ResponseEntity<>(
+        BaseResponse.build(
+            new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),
+        HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(VideoAlreadyExistInStorageException.class)
+  public ResponseEntity<BaseResponse<ExceptionResponse>> handleVideoAlreadyExistOnStorageException(
+      VideoAlreadyExistInStorageException exception) {
     return new ResponseEntity<>(
         BaseResponse.build(
             new ExceptionResponse(exception.getErrorCode(), exception.getMessage()), false),

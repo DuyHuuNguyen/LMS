@@ -13,4 +13,8 @@ public interface VideoService {
   Optional<Video> findById(Long id);
 
   Integer findDurationById(Long id);
+
+  void save(Video video);
+
+  Optional<Video> findByIdentifyCode(String identifyCode);
 }

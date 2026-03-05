@@ -60,4 +60,9 @@ public class CurriculumServiceImpl implements CurriculumService {
   public Optional<Curriculum> findByIdAndFetchChannel(Long id) {
     return this.curriculumRepository.findByIdFetchChannel(id);
   }
+
+  @Override
+  public Boolean isExistsById(Long id) {
+    return this.curriculumRepository.existsById(id);
+  }
 }

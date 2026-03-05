@@ -3,9 +3,11 @@ package com.james.LMS.response;
 import java.io.Serializable;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
 @Builder
+@ToString
 public class BaseResponse<T> implements Serializable {
   private boolean isSuccess;
   private T metadata;
