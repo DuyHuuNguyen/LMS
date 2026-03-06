@@ -1,9 +1,6 @@
 package com.james.LMS.facade;
 
-import com.james.LMS.request.CurriculumByTopicRequest;
-import com.james.LMS.request.CurriculumHomeRequest;
-import com.james.LMS.request.PurchasedCurriculumCriteria;
-import com.james.LMS.request.TopicCriteria;
+import com.james.LMS.request.*;
 import com.james.LMS.response.*;
 
 public interface CurriculumFacade {
@@ -23,4 +20,11 @@ public interface CurriculumFacade {
 
   BaseResponse<PaginationResponse<PurchasedCurriculumResponse>> findAllPurchasedCurriculums(
       PurchasedCurriculumCriteria purchasedCurriculumCriteria);
+
+  BaseResponse<PaginationResponse<CurriculumResponse>> findAllWishlist(
+      WishlistRequest wishlistRequest);
+
+  BaseResponse<Void> addWishList(Long id);
+
+  BaseResponse<Void> removeWishlist(RemoveWishlistRequest request);
 }

@@ -5,4 +5,6 @@ import java.util.Optional;
 
 public interface ChannelService {
   Optional<Channel> findByCurriculumId(Long curriculumId);
+
+  Optional<Channel> findChannelByUserId(Long userId);
 }

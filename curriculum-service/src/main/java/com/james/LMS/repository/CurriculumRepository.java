@@ -1,5 +1,6 @@
 package com.james.LMS.repository;
 
+import com.james.LMS.dto.CurriculumChannelDTO;
 import com.james.LMS.dto.CurriculumDTO;
 import com.james.LMS.dto.PurchasedCurriculumDTO;
 import com.james.LMS.entity.Curriculum;
@@ -146,6 +147,53 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
             where c.channel.userId =:userHolderChannelId and c.isActive and c.id =:curriculumId and se.isActive and v.id = :videoId and v.isActive
             """)
       Boolean isInstructorHoldVideo(Long userHolderChannelId,Long curriculumId,Long videoId);
+
+
+      @Query("""
+           select distinct new com.james.LMS.dto.CurriculumDTO(
+            ch.userId ,
+            null ,
+            null,
+            c.id,
+            c.title,
+            c.headLine,
+            c.cost,
+            c.description,
+            c.requirement,
+            c.thumbnail,
+            t.id,
+            t.name
+            )
+          from Curriculum c
+          join CurriculumTopic ct on ct.curriculum.id = c.id
+          join Topic t on t.id = ct.topic.id
+          join Channel ch on ch.id = c.channel.id
+          join Wishlist wl on wl.curriculum.id = c.id
+          where wl.userId =:userId and wl.isActive and c.isActive and t.isActive and ch.isActive and  ct.isActive
+      """)
+      Page<CurriculumDTO> findAllWishlist(Long userId, Pageable pageable);
+
+      @Query("""
+           select  new com.james.LMS.dto.CurriculumChannelDTO(
+            c.id,
+            c.title,
+            c.headLine,
+            c.cost,
+            c.description,
+            c.requirement,
+            c.thumbnail,
+             size(c.sessions),
+              (
+                    select coalesce(sum(v.durationSeconds),0)
+                    from Video v
+                    where v.session.curriculum.id = c.id and v.isActive
+              )
+            )
+          from Curriculum c
+          join Channel ch on ch.id = c.channel.id
+          where c.isActive and ch.isActive and ch.id =:channelId
+      """)
+      Page<CurriculumChannelDTO> findAllInChannel(Long channelId,Pageable pageable);
 
 
 }

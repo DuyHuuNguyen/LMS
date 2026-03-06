@@ -1,5 +1,6 @@
 package com.james.LMS.service.impl;
 
+import com.james.LMS.dto.CurriculumChannelDTO;
 import com.james.LMS.dto.CurriculumDTO;
 import com.james.LMS.dto.PurchasedCurriculumDTO;
 import com.james.LMS.entity.Curriculum;
@@ -64,5 +65,15 @@ public class CurriculumServiceImpl implements CurriculumService {
   @Override
   public Boolean isExistsById(Long id) {
     return this.curriculumRepository.existsById(id);
+  }
+
+  @Override
+  public Page<CurriculumDTO> findAllWishlist(Long userId, Pageable pageable) {
+    return this.curriculumRepository.findAllWishlist(userId, pageable);
+  }
+
+  @Override
+  public Page<CurriculumChannelDTO> findAllInChannel(Long channelId, Pageable pageable) {
+    return this.curriculumRepository.findAllInChannel(channelId, pageable);
   }
 }

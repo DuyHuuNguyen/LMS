@@ -16,4 +16,9 @@ public class ChannelServiceImpl implements ChannelService {
   public Optional<Channel> findByCurriculumId(Long curriculumId) {
     return Optional.empty();
   }
+
+  @Override
+  public Optional<Channel> findChannelByUserId(Long userId) {
+    return this.channelRepository.findChannelByUserId(userId);
+  }
 }

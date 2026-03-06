@@ -11,12 +11,8 @@ import lombok.*;
 @ToString
 public class UpdateSessionVideoRequest {
   @Hidden private Long id;
-  @Positive
-  @NonNull
-  private Long newSessionId;
-  @Positive
-  @NonNull
-  private Long curriculumId;
+  @Positive @NonNull private Long newSessionId;
+  @Positive @NonNull private Long curriculumId;
 
   public void withId(Long id) {
     this.id = id;

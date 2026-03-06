@@ -2,15 +2,13 @@ package com.james.LMS.controller;
 
 import com.james.LMS.config.SecurityConfig;
 import com.james.LMS.facade.CurriculumFacade;
-import com.james.LMS.request.CurriculumByTopicRequest;
-import com.james.LMS.request.CurriculumHomeRequest;
-import com.james.LMS.request.PurchasedCurriculumCriteria;
-import com.james.LMS.request.TopicCriteria;
+import com.james.LMS.request.*;
 import com.james.LMS.response.*;
 import io.swagger.v3.oas.annotations.Hidden;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -73,5 +71,33 @@ public class CurriculumController {
   public BaseResponse<PaginationResponse<PurchasedCurriculumResponse>> findAllPurchasedCurriculums(
       PurchasedCurriculumCriteria purchasedCurriculumCriteria) {
     return this.curriculumFacade.findAllPurchasedCurriculums(purchasedCurriculumCriteria);
+  }
+
+  @GetMapping("/wishlist")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Curriculum APIs"})
+  @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
+  @PreAuthorize("isAuthenticated()")
+  public BaseResponse<PaginationResponse<CurriculumResponse>> findAllWishlist(
+      @NotNull WishlistRequest wishlistRequest) {
+    return this.curriculumFacade.findAllWishlist(wishlistRequest);
+  }
+
+  @DeleteMapping("/wishlist")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Curriculum APIs"})
+  @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
+  @PreAuthorize("isAuthenticated()")
+  public BaseResponse<Void> removeWishlist(@RequestBody RemoveWishlistRequest request) {
+    return this.curriculumFacade.removeWishlist(request);
+  }
+
+  @PostMapping("/wishlist/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Curriculum APIs"})
+  @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
+  @PreAuthorize("isAuthenticated()")
+  public BaseResponse<Void> addWishlist(@PathVariable Long id) {
+    return this.curriculumFacade.addWishList(id);
   }
 }

@@ -42,4 +42,8 @@ public class BaseEntity {
   protected void preUpdate() {
     this.updatedAt = Instant.now().toEpochMilli();
   }
+
+  public void softDelete() {
+    this.isActive = false;
+  }
 }

@@ -66,9 +66,7 @@ logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %clr([%thread]){faint} %clr(%-5level) %clr(%logger{1}){cyan} %clr(%X{requestId}){yellow} - %clr(%X{email}){green} - %msg%n"
 
-cors:
-  allowed-origins:
-    - ${FE_ORIGIN}
-    - ${BE_ORIGIN}
-    - ${FE_LOCAL_ORIGIN}
-    - ${BE_LOCAL_ORIGIN}
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka

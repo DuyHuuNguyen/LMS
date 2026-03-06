@@ -37,6 +37,7 @@ public class UserFacadeImpl implements UserFacade {
   private final RoleService roleService;
   private final MailProducerService mailProducerService;
   private final CloudinaryService cloudinaryService;
+  private final ChannelService channelService;
 
   @Override
   public BaseResponse<LoginResponse> login(LoginRequest loginRequest) {
@@ -238,7 +239,10 @@ public class UserFacadeImpl implements UserFacade {
             .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
 
     boolean isInstructor = user.getInstructor() != null;
-
+    Long channelId = null;
+    if (isInstructor) {
+      channelId = this.channelService.findChannelIdByUserId(principal.getId());
+    }
     UserDetailResponse userDetailResponse =
         UserDetailResponse.builder()
             .id(user.getId())
@@ -246,6 +250,7 @@ public class UserFacadeImpl implements UserFacade {
             .email(user.getEmail())
             .avatarUrl(user.getAvatarUrl())
             .isInstructor(isInstructor)
+            .channelId(channelId)
             .createdAt(DateUtil.convertToLocalDate(user.getCreatedAt()))
             .instructorAbout(user.getInstructor().getAbout())
             .instructorName(user.getInstructor().getName())

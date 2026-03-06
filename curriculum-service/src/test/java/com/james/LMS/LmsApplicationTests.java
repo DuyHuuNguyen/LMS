@@ -36,6 +36,14 @@ class LmsApplicationTests {
 
   @Autowired private VideoFacade videoFacade;
 
+  //  @Test
+  //  void channelCurriculum(){
+  //   var pa= PageRequest.of(0,10);
+  //   this.curriculumRepository.findAllInChannel(1L,pa).stream().forEach(p -> {
+  //     log.debug(p.toString());
+  //   });
+  //  }
+
   @Test
   public void testUploadVideo() {
     var principle =

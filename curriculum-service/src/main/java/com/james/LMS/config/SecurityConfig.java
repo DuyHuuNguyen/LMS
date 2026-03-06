@@ -29,7 +29,7 @@ public class SecurityConfig implements WebMvcConfigurer {
   public static final String COOKIE_REFRESH_TOKEN_NAME = "refresh-token";
 
   private final String[] WHITE_LISTS = {
-    "/swagger-ui/**", "/v3/api-docs/**",
+    "/swagger-ui/**", "/v3/api-docs/**", "/api/v1/channels/internal/**"
   };
 
   public static final String SECURITY_REQUIREMENT = "Bearer Authentication";

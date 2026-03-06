@@ -4,6 +4,7 @@ import com.james.LMS.config.SecurityConfig;
 import com.james.LMS.config.SecurityUserDetails;
 import com.james.LMS.dto.AuthDTO;
 import com.james.LMS.service.AuthService;
+import com.james.LMS.util.PublicEndpointsValidatorUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -25,8 +26,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class AuthenticationTokenProviderInterceptor extends OncePerRequestFilter {
   private final AuthService authService;
 
-  private static final List<String> SWAGGER_URLS = List.of("/swagger-ui/", "/v3/api-docs");
-  private static final List<String> PUBLIC_ENDPOINTS = List.of("/api/v1/internal");
   public static final String AUTHORIZATION = "Authorization";
   private static final int START_OF_TOKEN = 7;
 
@@ -38,7 +37,11 @@ public class AuthenticationTokenProviderInterceptor extends OncePerRequestFilter
 
     String token = this.getJwtTokenFromCookie(request);
 
-    if (this.isSwaggerUrl(path) || this.isPublicEndpoint(path)) {
+    boolean isPublicEndPoints =
+        PublicEndpointsValidatorUtil.isSwaggerUrl(path)
+            || PublicEndpointsValidatorUtil.isPublicEndpoint(path);
+
+    if (isPublicEndPoints) {
       filterChain.doFilter(request, response);
       return;
     }
@@ -63,14 +66,6 @@ public class AuthenticationTokenProviderInterceptor extends OncePerRequestFilter
       return;
     }
     filterChain.doFilter(request, response);
-  }
-
-  private boolean isSwaggerUrl(String path) {
-    return SWAGGER_URLS.stream().anyMatch(path::startsWith);
-  }
-
-  public boolean isPublicEndpoint(String path) {
-    return PUBLIC_ENDPOINTS.stream().anyMatch(path::endsWith);
   }
 
   @Deprecated

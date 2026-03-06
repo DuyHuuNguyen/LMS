@@ -19,4 +19,5 @@ public class UserDetailResponse {
   private String instructorName;
   private String instructorAbout;
   private LocalDate createdAt;
+  private Long channelId;
 }

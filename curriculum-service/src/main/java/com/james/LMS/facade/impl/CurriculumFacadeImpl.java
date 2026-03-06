@@ -8,13 +8,11 @@ import com.james.LMS.enums.InstructorEnum;
 import com.james.LMS.enums.MessageType;
 import com.james.LMS.enums.SourceMessageEnum;
 import com.james.LMS.exception.EntityNotFoundException;
+import com.james.LMS.exception.PermissionDeniedException;
 import com.james.LMS.facade.CurriculumFacade;
 import com.james.LMS.message.BaseMessage;
 import com.james.LMS.message.LoadLecturerIntoCachePayload;
-import com.james.LMS.request.CurriculumByTopicRequest;
-import com.james.LMS.request.CurriculumHomeRequest;
-import com.james.LMS.request.PurchasedCurriculumCriteria;
-import com.james.LMS.request.TopicCriteria;
+import com.james.LMS.request.*;
 import com.james.LMS.response.*;
 import com.james.LMS.service.*;
 import com.james.LMS.util.DurationConverterUtil;
@@ -31,6 +29,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -46,6 +45,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
   private final ProducerLoadLecturesIntoCacheService producerLoadLecturesIntoCacheService;
   private final InstructorService instructorService;
   private final ChannelService channelService;
+  private final WishlistService wishlistService;
 
   private static final Integer ZERO_LECTURE = 0;
   private static final Integer INITIAL_HOME_PAGE = 0;
@@ -248,24 +248,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
             curriculumByTopicRequest.getTopicId(), pageable);
 
     List<CurriculumResponse> curriculumResponses =
-        this.addLecturerIntoCurriculum(curriculumDTOPage.toList()).stream()
-            .map(
-                curriculumDTO ->
-                    CurriculumResponse.builder()
-                        .userId(curriculumDTO.getUserId())
-                        .username(curriculumDTO.getUsername())
-                        .avatar(curriculumDTO.getAvatar())
-                        .id(curriculumDTO.getId())
-                        .title(curriculumDTO.getTitle())
-                        .headLine(curriculumDTO.getHeadLine())
-                        .cost(curriculumDTO.getCost())
-                        .description(curriculumDTO.getDescription())
-                        .requirement(curriculumDTO.getRequirement())
-                        .thumbnail(curriculumDTO.getThumbnail())
-                        .topicId(curriculumDTO.getTopicId())
-                        .topicName(curriculumDTO.getTopicName())
-                        .build())
-            .toList();
+        this.buildCurriculumResponses(curriculumDTOPage.toList());
 
     return BaseResponse.build(
         PaginationResponse.<CurriculumResponse>builder()
@@ -327,6 +310,61 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
         true);
   }
 
+  @Override
+  public BaseResponse<PaginationResponse<CurriculumResponse>> findAllWishlist(
+      WishlistRequest wishlistRequest) {
+    SecurityUserDetails principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    Pageable pageable =
+        PageRequest.of(wishlistRequest.getCurrentPage() - 1, wishlistRequest.getPageSize());
+    Page<CurriculumDTO> curriculumDTOPage =
+        this.curriculumService.findAllWishlist(principal.getId(), pageable);
+
+    List<CurriculumResponse> curriculumResponses =
+        this.buildCurriculumResponses(curriculumDTOPage.toList());
+
+    return BaseResponse.build(
+        PaginationResponse.<CurriculumResponse>builder()
+            .data(curriculumResponses)
+            .currentPage(wishlistRequest.getCurrentPage())
+            .totalPages(curriculumDTOPage.getTotalPages())
+            .totalElements(curriculumDTOPage.getNumberOfElements())
+            .build(),
+        true);
+  }
+
+  @Override
+  @Transactional
+  public BaseResponse<Void> addWishList(Long id) {
+    SecurityUserDetails principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    Curriculum curriculum =
+        this.curriculumService
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.CURRICULUM_NOT_FOUND));
+    Wishlist wishlist = Wishlist.builder().userId(principal.getId()).curriculum(curriculum).build();
+    this.wishlistService.save(wishlist);
+    return BaseResponse.ok();
+  }
+
+  @Override
+  public BaseResponse<Void> removeWishlist(RemoveWishlistRequest request) {
+    SecurityUserDetails principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    Wishlist wishlist =
+        this.wishlistService
+            .findById(request.getWishlistId())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.WISHLIST_NOT_FOUND));
+
+    boolean isOwnerWishlist = wishlist.getUserId().equals(principal.getId());
+    if (!isOwnerWishlist) throw new PermissionDeniedException(ErrorCode.WISHLIST_NOT_FOUND);
+
+    wishlist.softDelete();
+    this.wishlistService.save(wishlist);
+
+    return BaseResponse.ok();
+  }
+
   private List<CurriculumDTO> addLecturerIntoCurriculum(List<CurriculumDTO> curriculumDTOS) {
 
     for (CurriculumDTO curriculumDTO : curriculumDTOS) {
@@ -357,6 +395,27 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
       curriculumDTO.addLectureInfo(lecturerDTO);
     }
     return curriculumDTOS;
+  }
+
+  private List<CurriculumResponse> buildCurriculumResponses(List<CurriculumDTO> curriculumDTOS) {
+    return this.addLecturerIntoCurriculum(curriculumDTOS).stream()
+        .map(
+            curriculumDTO ->
+                CurriculumResponse.builder()
+                    .userId(curriculumDTO.getUserId())
+                    .username(curriculumDTO.getUsername())
+                    .avatar(curriculumDTO.getAvatar())
+                    .id(curriculumDTO.getId())
+                    .title(curriculumDTO.getTitle())
+                    .headLine(curriculumDTO.getHeadLine())
+                    .cost(curriculumDTO.getCost())
+                    .description(curriculumDTO.getDescription())
+                    .requirement(curriculumDTO.getRequirement())
+                    .thumbnail(curriculumDTO.getThumbnail())
+                    .topicId(curriculumDTO.getTopicId())
+                    .topicName(curriculumDTO.getTopicName())
+                    .build())
+        .toList();
   }
 
   private List<BaseSessionContentDTO> buildSessionContentDTO(List<Long> sessionIds) {

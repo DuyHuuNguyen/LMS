@@ -1,5 +1,6 @@
 package com.james.LMS.service;
 
+import com.james.LMS.dto.CurriculumChannelDTO;
 import com.james.LMS.dto.CurriculumDTO;
 import com.james.LMS.dto.PurchasedCurriculumDTO;
 import com.james.LMS.entity.Curriculum;
@@ -28,4 +29,8 @@ public interface CurriculumService {
   Optional<Curriculum> findByIdAndFetchChannel(Long id);
 
   Boolean isExistsById(Long id);
+
+  Page<CurriculumDTO> findAllWishlist(Long userId, Pageable pageable);
+
+  Page<CurriculumChannelDTO> findAllInChannel(Long channelId, Pageable pageable);
 }
