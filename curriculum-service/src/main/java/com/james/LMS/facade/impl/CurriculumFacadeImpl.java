@@ -354,6 +354,10 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
   public BaseResponse<Void> addWishList(Long id) {
     SecurityUserDetails principal =
         (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+    boolean isExistWishlist = this.wishlistService.isExistByCurriculumId(id);
+    if (isExistWishlist) return BaseResponse.ok();
+
     Curriculum curriculum =
         this.curriculumService
             .findById(id)
@@ -403,6 +407,45 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
     SessionDetailResponse sessionDetailResponse =
         SessionDetailResponse.builder().sessionDTOS(this.mapSessionsToSessionDTO(sessions)).build();
     return BaseResponse.build(sessionDetailResponse, true);
+  }
+
+  @Override
+  public BaseResponse<PaginationResponse<SearchCurriculumResponse>> findAllByCriteria(
+      CurriculumCriteria curriculumCriteria) {
+    int currentPage = Objects.nonNull(curriculumCriteria) && Objects.nonNull(curriculumCriteria.getCurrentPage())
+        ? curriculumCriteria.getCurrentPage()
+        : 1;
+    int pageSize = Objects.nonNull(curriculumCriteria) && Objects.nonNull(curriculumCriteria.getPageSize())
+        ? curriculumCriteria.getPageSize()
+        : 10;
+    String keyword = Objects.nonNull(curriculumCriteria) ? curriculumCriteria.getKeyword() : null;
+    long totalDurationSeconds =
+        Objects.nonNull(curriculumCriteria) && Objects.nonNull(curriculumCriteria.getDuration())
+            ? curriculumCriteria.getDuration()
+            : 0L;
+    Set<Long> requestedTopicIds =
+        Objects.nonNull(curriculumCriteria) ? curriculumCriteria.getTopicIds() : null;
+    boolean applyTopicFilter = Objects.nonNull(requestedTopicIds) && !requestedTopicIds.isEmpty();
+    Set<Long> topicIds = applyTopicFilter ? requestedTopicIds : Set.of(-1L);
+
+    Pageable pageable =
+        PageRequest.of(currentPage - 1, pageSize);
+
+    Page<CurriculumSearchDTO> curriculumSearchDTOPage =
+        this.curriculumService.findAllByCriteria(
+            keyword, totalDurationSeconds, topicIds, applyTopicFilter, pageable);
+
+    List<SearchCurriculumResponse> curriculumResponses =
+        this.buildSearchCurriculumResponses(curriculumSearchDTOPage.toList());
+
+    return BaseResponse.build(
+        PaginationResponse.<SearchCurriculumResponse>builder()
+            .data(curriculumResponses)
+            .currentPage(currentPage)
+            .totalPages(curriculumSearchDTOPage.getTotalPages())
+            .totalElements(curriculumSearchDTOPage.getNumberOfElements())
+            .build(),
+        true);
   }
 
   private List<CurriculumDTO> addLecturerIntoCurriculum(List<CurriculumDTO> curriculumDTOS) {
@@ -456,6 +499,56 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
                     .topicName(curriculumDTO.getTopicName())
                     .build())
         .toList();
+  }
+
+  private List<SearchCurriculumResponse> buildSearchCurriculumResponses(
+      List<CurriculumSearchDTO> curriculumSearchDTOS) {
+    List<SearchCurriculumResponse> curriculumResponses =
+        curriculumSearchDTOS.stream()
+            .map(
+                curriculumSearchDTO ->
+                    SearchCurriculumResponse.builder()
+                        .userId(curriculumSearchDTO.getUserId())
+                        .id(curriculumSearchDTO.getId())
+                        .title(curriculumSearchDTO.getTitle())
+                        .headLine(curriculumSearchDTO.getHeadLine())
+                        .cost(curriculumSearchDTO.getCost())
+                        .description(curriculumSearchDTO.getDescription())
+                        .requirement(curriculumSearchDTO.getRequirement())
+                        .thumbnail(curriculumSearchDTO.getThumbnail())
+                        .build())
+            .toList();
+    return this.addLecturerIntoCurriculumResponses(curriculumResponses);
+  }
+
+  private List<SearchCurriculumResponse> addLecturerIntoCurriculumResponses(
+      List<SearchCurriculumResponse> curriculumResponses) {
+    for (SearchCurriculumResponse curriculumResponse : curriculumResponses) {
+      Long userId = curriculumResponse.getUserId();
+      if (Objects.isNull(userId)) continue;
+
+      String instructorKey = String.format(InstructorEnum.INSTRUCTOR_KEY.getContent(), userId);
+      boolean isAvailableInstructorData = this.cacheService.hasKey(instructorKey);
+
+      if (!isAvailableInstructorData) {
+        BaseMessage<LoadLecturerIntoCachePayload> loadLecturerIntoCachePayloadMessage =
+            BaseMessage.<LoadLecturerIntoCachePayload>builder()
+                .type(MessageType.READ_LECTURER_INFO_AND_CACHE)
+                .source(SourceMessageEnum.CURRICULUM_SERVICE)
+                .createdAt(Instant.now())
+                .payload(LoadLecturerIntoCachePayload.builder().userId(userId).build())
+                .build();
+        this.producerLoadLecturesIntoCacheService.send(loadLecturerIntoCachePayloadMessage);
+
+        Optional<InstructorDTO> instructorDTOOptional = this.instructorService.findByUserId(userId);
+        instructorDTOOptional.ifPresent(curriculumResponse::addLectureInfo);
+        continue;
+      }
+
+      InstructorDTO lecturerDTO = this.cacheService.retrieveInstructorDTOAndRenewTTL(instructorKey);
+      curriculumResponse.addLectureInfo(lecturerDTO);
+    }
+    return curriculumResponses;
   }
 
   private List<BaseSessionContentDTO> buildSessionContentDTO(List<Long> sessionIds) {

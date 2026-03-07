@@ -63,6 +63,16 @@ public class CurriculumController {
     return this.curriculumFacade.findCurriculumByTopicId(curriculumByTopicRequest);
   }
 
+  @GetMapping("/search")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Curriculum APIs"})
+  @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
+  @PreAuthorize("isAuthenticated()")
+  public BaseResponse<PaginationResponse<SearchCurriculumResponse>> findAllByCriteria(
+      @Valid @ModelAttribute CurriculumCriteria curriculumCriteria) {
+    return this.curriculumFacade.findAllByCriteria(curriculumCriteria);
+  }
+
   @GetMapping("/purchased-curriculums")
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"Curriculum APIs"})

@@ -1,14 +1,13 @@
 package com.james.LMS.service.impl;
 
-import com.james.LMS.dto.CurriculumChannelDTO;
-import com.james.LMS.dto.CurriculumDTO;
-import com.james.LMS.dto.PurchasedCurriculumDTO;
-import com.james.LMS.dto.WishListCurriculumDTO;
+import com.james.LMS.dto.*;
 import com.james.LMS.entity.Curriculum;
 import com.james.LMS.repository.CurriculumRepository;
 import com.james.LMS.service.CurriculumService;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -81,5 +80,16 @@ public class CurriculumServiceImpl implements CurriculumService {
   @Override
   public Page<CurriculumChannelDTO> findAllInChannel(Long channelId, Pageable pageable) {
     return this.curriculumRepository.findAllInChannel(channelId, pageable);
+  }
+
+  @Override
+  public Page<CurriculumSearchDTO> findAllByCriteria(
+      String keyword,
+      Long totalDurationSeconds,
+      Set<Long> topicIds,
+      boolean applyTopicFilter,
+      Pageable pageable) {
+    return this.curriculumRepository.findAllByCriteria(
+        keyword, totalDurationSeconds, topicIds, applyTopicFilter, pageable);
   }
 }

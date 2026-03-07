@@ -7,4 +7,6 @@ public interface WishlistService {
   void save(Wishlist wishlist);
 
   Optional<Wishlist> findById(Long id);
+
+    boolean isExistByCurriculumId(Long id);
 }

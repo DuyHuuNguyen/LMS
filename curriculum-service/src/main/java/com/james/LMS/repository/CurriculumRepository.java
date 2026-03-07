@@ -2,15 +2,16 @@ package com.james.LMS.repository;
 
 import com.james.LMS.dto.*;
 import com.james.LMS.entity.Curriculum;
-import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
@@ -229,4 +230,96 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
       """)
       Boolean isPurchasedCurriculum(@Param("dto") ValidUserPurchasedCurriculumAccessDTO dto);
 
+
+      @Query(
+          value =
+              """
+            SELECT
+              ch.user_id AS userId,
+              c.id AS id,
+              c.title AS title,
+              c.head_line AS headLine,
+              c.cost AS cost,
+              c.description AS description,
+              c.requirement AS requirement,
+              c.thumbnail AS thumbnail,
+              ca.total_duration_seconds AS totalDurationSeconds,
+              CASE
+                WHEN :keyword IS NULL OR btrim(:keyword) = '' THEN 0
+                ELSE ts_rank(
+                  setweight(to_tsvector('simple', COALESCE(c.title, '')), 'A') ||
+                  setweight(to_tsvector('simple', COALESCE(c.head_line, '')), 'B') ||
+                  setweight(to_tsvector('simple', COALESCE(c.description, '')), 'C'),
+                  plainto_tsquery('simple', :keyword)
+                )
+              END AS relevanceScore
+            FROM curriculums c
+            JOIN channels ch ON ch.id = c.channel_id
+            JOIN curriculum_audits ca ON ca.curriculum_id = c.id
+            WHERE c.is_active = true
+              AND ch.is_active = true
+              AND ca.is_active = true
+              AND ca.total_duration_seconds >= :totalDurationSeconds
+              AND (
+                :applyTopicFilter = false
+                OR EXISTS (
+                  SELECT 1
+                  FROM curriculum_topics ct
+                  JOIN topics t ON t.id = ct.topic_id
+                  WHERE ct.curriculum_id = c.id
+                    AND ct.is_active = true
+                    AND t.is_active = true
+                    AND t.id IN (:topicIds)
+                )
+              )
+              AND (
+                :keyword IS NULL
+                OR btrim(:keyword) = ''
+                OR (
+                  setweight(to_tsvector('simple', COALESCE(c.title, '')), 'A') ||
+                  setweight(to_tsvector('simple', COALESCE(c.head_line, '')), 'B') ||
+                  setweight(to_tsvector('simple', COALESCE(c.description, '')), 'C')
+                ) @@ plainto_tsquery('simple', :keyword)
+              )
+            ORDER BY relevanceScore DESC, c.created_at DESC
+      """,
+          countQuery =
+              """
+            SELECT COUNT(1)
+            FROM curriculums c
+            JOIN channels ch ON ch.id = c.channel_id
+            JOIN curriculum_audits ca ON ca.curriculum_id = c.id
+            WHERE c.is_active = true
+              AND ch.is_active = true
+              AND ca.is_active = true
+              AND ca.total_duration_seconds >= :totalDurationSeconds
+              AND (
+                :applyTopicFilter = false
+                OR EXISTS (
+                  SELECT 1
+                  FROM curriculum_topics ct
+                  JOIN topics t ON t.id = ct.topic_id
+                  WHERE ct.curriculum_id = c.id
+                    AND ct.is_active = true
+                    AND t.is_active = true
+                    AND t.id IN (:topicIds)
+                )
+              )
+              AND (
+                :keyword IS NULL
+                OR btrim(:keyword) = ''
+                OR (
+                  setweight(to_tsvector('simple', COALESCE(c.title, '')), 'A') ||
+                  setweight(to_tsvector('simple', COALESCE(c.head_line, '')), 'B') ||
+                  setweight(to_tsvector('simple', COALESCE(c.description, '')), 'C')
+                ) @@ plainto_tsquery('simple', :keyword)
+              )
+      """,
+          nativeQuery = true)
+      Page<CurriculumSearchDTO> findAllByCriteria(
+          @Param("keyword") String keyword,
+          @Param("totalDurationSeconds") Long totalDurationSeconds,
+          @Param("topicIds") Set<Long> topicIds,
+          @Param("applyTopicFilter") boolean applyTopicFilter,
+          Pageable pageable);
 }

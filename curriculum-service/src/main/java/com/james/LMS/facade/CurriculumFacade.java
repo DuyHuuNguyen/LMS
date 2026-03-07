@@ -29,4 +29,7 @@ public interface CurriculumFacade {
   BaseResponse<Void> removeWishlist(RemoveWishlistRequest request);
 
   BaseResponse<SessionDetailResponse> findSessionsOfCurriculum(Long id);
+
+  BaseResponse<PaginationResponse<SearchCurriculumResponse>> findAllByCriteria(
+      CurriculumCriteria curriculumCriteria);
 }

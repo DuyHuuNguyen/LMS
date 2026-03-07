@@ -21,4 +21,9 @@ public class WishlistServiceImpl implements WishlistService {
   public Optional<Wishlist> findById(Long id) {
     return this.wishlistRepository.findById(id);
   }
+
+  @Override
+  public boolean isExistByCurriculumId(Long id) {
+    return this.wishlistRepository.existsWishlistByCurriculum_IdAndIsActiveIsTrue(id);
+  }
 }

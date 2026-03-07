@@ -11,7 +11,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 public class CurriculumCriteria extends BaseCriteria {
-  private String keywork;
-  private Set<Long> topicId;
+  private String keyword;
+  private Set<Long> topicIds;
   private Long duration;
 }

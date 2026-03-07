@@ -38,6 +38,11 @@ class LmsApplicationTests {
   @Autowired private VideoFacade videoFacade;
 
   @Test
+  public void testFindByCriteria(){
+
+  }
+
+  @Test
   void run() {
 
     log.info(

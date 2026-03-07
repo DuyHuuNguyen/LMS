@@ -1,5 +1,6 @@
 package com.james.LMS.response;
 
+import com.james.LMS.dto.InstructorDTO;
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +11,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Builder
-public class ChannelCurriculumResponse {
+public class SearchCurriculumResponse {
+  private Long userId;
+  private String username;
+  private String avatar;
+
   private Long id;
   private String title;
   private String headLine;
@@ -18,7 +23,12 @@ public class ChannelCurriculumResponse {
   private String description;
   private String requirement;
   private String thumbnail;
-  private Integer totalSessions;
-  private String totalTimesStringFormat;
+
   private Boolean isWishlisted;
+
+  public void addLectureInfo(InstructorDTO lecturerDTO) {
+    this.userId = lecturerDTO.getUserId();
+    this.username = lecturerDTO.getUsername();
+    this.avatar = lecturerDTO.getAvatar();
+  }
 }
