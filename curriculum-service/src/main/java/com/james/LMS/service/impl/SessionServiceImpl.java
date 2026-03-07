@@ -33,4 +33,9 @@ public class SessionServiceImpl implements SessionService {
   public Optional<Session> findByIdAndCurriculumId(Long sessionId, Long curriculumId) {
     return this.sessionRepository.findByIdAndCurriculum_Id(sessionId, curriculumId);
   }
+
+  @Override
+  public List<Session> findAllSessionAndFetchVideosAndExamsByCurriculumId(Long curriculumId) {
+    return this.sessionRepository.findAllSessionAndFetchVideosAndExamsByCurriculumId(curriculumId);
+  }
 }

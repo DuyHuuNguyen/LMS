@@ -1,9 +1,6 @@
 package com.james.LMS.service.impl;
 
-import com.james.LMS.dto.ValidChangeSessionVideoAccessDTO;
-import com.james.LMS.dto.ValidVideoUploadingAccessDTO;
-import com.james.LMS.dto.ValidateExamAccessDTO;
-import com.james.LMS.dto.ValidateVideoAccessDTO;
+import com.james.LMS.dto.*;
 import com.james.LMS.repository.CurriculumRepository;
 import com.james.LMS.service.CurriculumValidatorService;
 import com.james.LMS.service.ValidInstructorHoldVideoDTO;
@@ -57,5 +54,11 @@ public class CurriculumValidatorServiceImpl implements CurriculumValidatorServic
         validInstructorHoldVideoDTO.getUserId(),
         validInstructorHoldVideoDTO.getCurriculumId(),
         validInstructorHoldVideoDTO.getVideoId());
+  }
+
+  @Override
+  public Boolean isPurchasedCurriculum(
+      ValidUserPurchasedCurriculumAccessDTO validUserPurchasedCurriculumAccessDTO) {
+    return this.curriculumRepository.isPurchasedCurriculum(validUserPurchasedCurriculumAccessDTO);
   }
 }

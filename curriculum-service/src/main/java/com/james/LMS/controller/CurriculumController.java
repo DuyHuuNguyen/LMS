@@ -100,4 +100,15 @@ public class CurriculumController {
   public BaseResponse<Void> addWishlist(@PathVariable Long id) {
     return this.curriculumFacade.addWishList(id);
   }
+
+  @GetMapping("/sessions/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(
+      tags = {"Curriculum APIs"},
+      summary = "Only purchased, Can use api.")
+  @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
+  //  @PreAuthorize("!hasRole('ROLE_INSTRUCTOR')")
+  public BaseResponse<SessionDetailResponse> findSessionsOfCurriculum(@PathVariable Long id) {
+    return this.curriculumFacade.findSessionsOfCurriculum(id);
+  }
 }

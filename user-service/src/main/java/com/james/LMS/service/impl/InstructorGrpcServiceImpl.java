@@ -26,8 +26,8 @@ public class InstructorGrpcServiceImpl extends InstructorServiceGrpc.InstructorS
     if (userOptional.isEmpty()) {
       log.warn("Instructor not found {}", request);
       responseObserver.onError(
-          Status.INTERNAL.withDescription("Instructor not found").asRuntimeException());
-      responseObserver.onCompleted();
+          Status.NOT_FOUND.withDescription("Instructor not found").asRuntimeException());
+      return;
     }
 
     User user = userOptional.get();

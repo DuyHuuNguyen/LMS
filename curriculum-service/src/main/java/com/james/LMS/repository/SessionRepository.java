@@ -24,4 +24,14 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
     Boolean existsByIdAndCurriculum_IdAndIsActiveIsTrue(Long userId,Long curriculumId);
 
     Optional<Session> findByIdAndCurriculum_Id(Long id, Long curriculumId);
+
+
+    @Query("""
+    select s
+    from Session s
+    join  fetch s.videos
+    join fetch  s.exams
+    where s.isActive and s.curriculum.id =:curriculumId
+    """)
+    List<Session> findAllSessionAndFetchVideosAndExamsByCurriculumId(Long curriculumId);
 }

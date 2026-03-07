@@ -11,4 +11,6 @@ public interface VideoFacade {
   BaseResponse<String> generateVideoUploadPresignUrl(VideoUploadingPresignUrlRequest request);
 
   BaseResponse<Void> changeSessionVideo(UpdateSessionVideoRequest request);
+
+  BaseResponse<String> genPresignStreamingVideo(String videoName);
 }

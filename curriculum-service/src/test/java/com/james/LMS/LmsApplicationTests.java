@@ -3,6 +3,7 @@ package com.james.LMS;
 import com.james.LMS.config.SecurityUserDetails;
 import com.james.LMS.dto.AuthDTO;
 import com.james.LMS.dto.BannerDTO;
+import com.james.LMS.dto.ValidUserPurchasedCurriculumAccessDTO;
 import com.james.LMS.enums.IdentifyTemplate;
 import com.james.LMS.facade.VideoFacade;
 import com.james.LMS.repository.CurriculumRepository;
@@ -36,13 +37,25 @@ class LmsApplicationTests {
 
   @Autowired private VideoFacade videoFacade;
 
-  //  @Test
-  //  void channelCurriculum(){
-  //   var pa= PageRequest.of(0,10);
-  //   this.curriculumRepository.findAllInChannel(1L,pa).stream().forEach(p -> {
-  //     log.debug(p.toString());
-  //   });
-  //  }
+  @Test
+  void run() {
+
+    log.info(
+        "{}",
+        this.curriculumRepository.isPurchasedCurriculum(
+            ValidUserPurchasedCurriculumAccessDTO.builder()
+                .userId(1L)
+                .curriculumId(1000L)
+                .build()));
+  }
+
+  //    @Test
+  //    void channelCurriculum(){
+  //     var pa= PageRequest.of(0,10);
+  //     this.curriculumRepository.findAllInChannel(1L,pa).stream().forEach(p -> {
+  //       log.debug(p.toString());
+  //     });
+  //    }
 
   @Test
   public void testUploadVideo() {

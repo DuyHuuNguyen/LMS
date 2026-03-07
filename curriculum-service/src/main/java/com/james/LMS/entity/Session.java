@@ -1,8 +1,8 @@
 package com.james.LMS.entity;
 
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,5 +27,8 @@ public class Session extends BaseEntity {
   private Curriculum curriculum;
 
   @OneToMany(mappedBy = "session", fetch = FetchType.LAZY)
-  private List<Video> videos = new ArrayList<>();
+  private Set<Video> videos = new HashSet<>();
+
+  @OneToMany(mappedBy = "session", fetch = FetchType.LAZY)
+  private Set<Exam> exams = new HashSet<>();
 }

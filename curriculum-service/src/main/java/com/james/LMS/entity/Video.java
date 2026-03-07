@@ -1,6 +1,7 @@
 package com.james.LMS.entity;
 
 import jakarta.persistence.*;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,5 +39,17 @@ public class Video extends BaseSessionContent {
 
   public void addSession(Session session) {
     this.session = session;
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (object == null || getClass() != object.getClass()) return false;
+    Video video = (Video) object;
+    return Objects.equals(this.getId(), video.getId());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(durationSeconds, thumbnail, identifyCode, view, size, videoUrl, session);
   }
 }

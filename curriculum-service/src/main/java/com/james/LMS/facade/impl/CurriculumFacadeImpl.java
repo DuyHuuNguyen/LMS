@@ -46,6 +46,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
   private final InstructorService instructorService;
   private final ChannelService channelService;
   private final WishlistService wishlistService;
+  private final CurriculumValidatorService curriculumValidatorService;
 
   private static final Integer ZERO_LECTURE = 0;
   private static final Integer INITIAL_HOME_PAGE = 0;
@@ -365,6 +366,30 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
     return BaseResponse.ok();
   }
 
+  @Override
+  public BaseResponse<SessionDetailResponse> findSessionsOfCurriculum(Long id) {
+    SecurityUserDetails principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+    ValidUserPurchasedCurriculumAccessDTO validUserPurchasedCurriculumAccessDTO =
+        ValidUserPurchasedCurriculumAccessDTO.builder()
+            .userId(principal.getId())
+            .curriculumId(id)
+            .build();
+    boolean isPurchasedCurriculum =
+        this.curriculumValidatorService.isPurchasedCurriculum(
+            validUserPurchasedCurriculumAccessDTO);
+
+    if (!isPurchasedCurriculum) throw new PermissionDeniedException(ErrorCode.CURRICULUM_NOT_FOUND);
+
+    List<Session> sessions =
+        this.sessionService.findAllSessionAndFetchVideosAndExamsByCurriculumId(id);
+
+    SessionDetailResponse sessionDetailResponse =
+        SessionDetailResponse.builder().sessionDTOS(this.mapSessionsToSessionDTO(sessions)).build();
+    return BaseResponse.build(sessionDetailResponse, true);
+  }
+
   private List<CurriculumDTO> addLecturerIntoCurriculum(List<CurriculumDTO> curriculumDTOS) {
 
     for (CurriculumDTO curriculumDTO : curriculumDTOS) {
@@ -477,5 +502,58 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
               return sessionDTO;
             })
         .toList();
+  }
+
+  private List<SessionDTO> mapSessionsToSessionDTO(List<Session> sessions) {
+    return sessions.stream()
+        .sorted(Comparator.comparing(Session::getIndex))
+        .map(
+            session -> {
+              List<BaseSessionContentDTO> lectures = this.mapSessionContents(session);
+              long totalDurationSeconds =
+                  lectures.stream()
+                      .filter(BaseSessionContentDTO::isVideo)
+                      .map(VideoDTO.class::cast)
+                      .mapToLong(VideoDTO::getDurationSeconds)
+                      .sum();
+
+              return SessionDTO.builder()
+                  .id(session.getId())
+                  .index(session.getIndex())
+                  .name(session.getName())
+                  .totalTimesStringFormat(
+                      DurationConverterUtil.toStringDuration(
+                          Duration.ofSeconds(totalDurationSeconds)))
+                  .totalLectures(lectures.size())
+                  .lectures(lectures)
+                  .build();
+            })
+        .toList();
+  }
+
+  private List<BaseSessionContentDTO> mapSessionContents(Session session) {
+    Map<Long, BaseSessionContentDTO> contentMap = new LinkedHashMap<>();
+
+    for (Video video : session.getVideos()) {
+      contentMap.put(
+          video.getId(),
+          new VideoDTO(
+              video.getId(),
+              video.getName(),
+              video.getIsPreview(),
+              video.getIndex(),
+              session.getId(),
+              video.getDurationSeconds()));
+    }
+
+    for (Exam exam : session.getExams()) {
+      Long examContentKey = -exam.getId();
+      contentMap.put(
+          examContentKey,
+          new ExamDTO(
+              exam.getId(), exam.getName(), exam.getIsPreview(), exam.getIndex(), session.getId()));
+    }
+
+    return contentMap.values().stream().sorted().toList();
   }
 }

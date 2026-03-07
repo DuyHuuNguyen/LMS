@@ -27,4 +27,6 @@ public interface CurriculumFacade {
   BaseResponse<Void> addWishList(Long id);
 
   BaseResponse<Void> removeWishlist(RemoveWishlistRequest request);
+
+  BaseResponse<SessionDetailResponse> findSessionsOfCurriculum(Long id);
 }

@@ -1,9 +1,6 @@
 package com.james.LMS.service;
 
-import com.james.LMS.dto.ValidChangeSessionVideoAccessDTO;
-import com.james.LMS.dto.ValidVideoUploadingAccessDTO;
-import com.james.LMS.dto.ValidateExamAccessDTO;
-import com.james.LMS.dto.ValidateVideoAccessDTO;
+import com.james.LMS.dto.*;
 
 public interface CurriculumValidatorService {
   Boolean isPurchasedCurriculumToHaveExam(ValidateExamAccessDTO validateExamAccessDTO);
@@ -17,4 +14,7 @@ public interface CurriculumValidatorService {
       ValidChangeSessionVideoAccessDTO validChangeSessionVideoAccessDTO);
 
   Boolean isInstructorHoldVideo(ValidInstructorHoldVideoDTO validInstructorHoldVideoDTO);
+
+  Boolean isPurchasedCurriculum(
+      ValidUserPurchasedCurriculumAccessDTO validUserPurchasedCurriculumAccessDTO);
 }

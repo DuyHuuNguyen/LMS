@@ -267,6 +267,10 @@ public class UserFacadeImpl implements UserFacade {
             .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
 
     boolean isInstructor = user.getInstructor() != null;
+    Long channelId = null;
+    if (isInstructor) {
+      channelId = this.channelService.findChannelIdByUserId(user.getId());
+    }
 
     UserDetailResponse userDetailResponse =
         UserDetailResponse.builder()
@@ -275,6 +279,7 @@ public class UserFacadeImpl implements UserFacade {
             .email(user.getEmail())
             .avatarUrl(user.getAvatarUrl())
             .isInstructor(isInstructor)
+            .channelId(channelId)
             .createdAt(DateUtil.convertToLocalDate(user.getCreatedAt()))
             .instructorAbout(user.getInstructor().getAbout())
             .instructorName(user.getInstructor().getName())

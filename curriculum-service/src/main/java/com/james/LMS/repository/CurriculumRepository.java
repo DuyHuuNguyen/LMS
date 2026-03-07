@@ -3,7 +3,9 @@ package com.james.LMS.repository;
 import com.james.LMS.dto.CurriculumChannelDTO;
 import com.james.LMS.dto.CurriculumDTO;
 import com.james.LMS.dto.PurchasedCurriculumDTO;
+import com.james.LMS.dto.ValidUserPurchasedCurriculumAccessDTO;
 import com.james.LMS.entity.Curriculum;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -195,5 +197,16 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
       """)
       Page<CurriculumChannelDTO> findAllInChannel(Long channelId,Pageable pageable);
 
+
+      @Query("""
+          select count(uc) > 0
+          from UserCurriculum uc
+          join Curriculum c on c.id = uc.curriculum.id
+          where c.isActive = true
+            and uc.isActive = true
+            and uc.userId = :#{#dto.userId}
+            and c.id = :#{#dto.curriculumId}
+      """)
+      Boolean isPurchasedCurriculum(@Param("dto") ValidUserPurchasedCurriculumAccessDTO dto);
 
 }

@@ -12,4 +12,6 @@ public interface SessionService {
   Optional<Session> findById(Long id);
 
   Optional<Session> findByIdAndCurriculumId(Long sessionId, Long curriculumId);
+
+  List<Session> findAllSessionAndFetchVideosAndExamsByCurriculumId(Long curriculumId);
 }

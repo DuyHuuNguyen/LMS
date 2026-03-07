@@ -54,4 +54,15 @@ public class VideoController {
     request.withId(id);
     return this.videoFacade.changeSessionVideo(request);
   }
+
+  @PostMapping("/admin-system/gen-presign-streaming")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(
+      tags = {"Video APIs"},
+      summary = "api demo")
+  @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
+  @PreAuthorize("isAuthenticated()")
+  public BaseResponse<String> genPresignStreamingVideo() {
+    return this.videoFacade.genPresignStreamingVideo("");
+  }
 }
