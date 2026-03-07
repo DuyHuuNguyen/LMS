@@ -312,20 +312,35 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
   }
 
   @Override
-  public BaseResponse<PaginationResponse<CurriculumResponse>> findAllWishlist(
+  public BaseResponse<PaginationResponse<WishListCurriculumResponse>> findAllWishlist(
       WishlistRequest wishlistRequest) {
     SecurityUserDetails principal =
         (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     Pageable pageable =
         PageRequest.of(wishlistRequest.getCurrentPage() - 1, wishlistRequest.getPageSize());
-    Page<CurriculumDTO> curriculumDTOPage =
-        this.curriculumService.findAllWishlist(principal.getId(), pageable);
+    Page<WishListCurriculumDTO> curriculumDTOPage =
+        this.curriculumService.findAllWishlistCurriculum(principal.getId(), pageable);
 
-    List<CurriculumResponse> curriculumResponses =
-        this.buildCurriculumResponses(curriculumDTOPage.toList());
+    List<WishListCurriculumResponse> curriculumResponses =
+        curriculumDTOPage.stream()
+            .map(
+                wishlistCurriculumDTO ->
+                    WishListCurriculumResponse.builder()
+                        .id(wishlistCurriculumDTO.getId())
+                        .wishlistId(wishlistCurriculumDTO.getWishlistId())
+                        .title(wishlistCurriculumDTO.getTitle())
+                        .headLine(wishlistCurriculumDTO.getHeadLine())
+                        .cost(wishlistCurriculumDTO.getCost())
+                        .description(wishlistCurriculumDTO.getDescription())
+                        .requirement(wishlistCurriculumDTO.getRequirement())
+                        .thumbnail(wishlistCurriculumDTO.getThumbnail())
+                        .topicId(wishlistCurriculumDTO.getTopicId())
+                        .topicName(wishlistCurriculumDTO.getTopicName())
+                        .build())
+            .toList();
 
     return BaseResponse.build(
-        PaginationResponse.<CurriculumResponse>builder()
+        PaginationResponse.<WishListCurriculumResponse>builder()
             .data(curriculumResponses)
             .currentPage(wishlistRequest.getCurrentPage())
             .totalPages(curriculumDTOPage.getTotalPages())

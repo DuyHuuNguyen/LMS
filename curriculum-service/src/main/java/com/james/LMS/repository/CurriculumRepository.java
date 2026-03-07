@@ -1,9 +1,6 @@
 package com.james.LMS.repository;
 
-import com.james.LMS.dto.CurriculumChannelDTO;
-import com.james.LMS.dto.CurriculumDTO;
-import com.james.LMS.dto.PurchasedCurriculumDTO;
-import com.james.LMS.dto.ValidUserPurchasedCurriculumAccessDTO;
+import com.james.LMS.dto.*;
 import com.james.LMS.entity.Curriculum;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Page;
@@ -174,6 +171,29 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
           where wl.userId =:userId and wl.isActive and c.isActive and t.isActive and ch.isActive and  ct.isActive
       """)
       Page<CurriculumDTO> findAllWishlist(Long userId, Pageable pageable);
+
+
+      @Query("""
+           select distinct new com.james.LMS.dto.WishListCurriculumDTO(
+            c.id,
+            wl.id,
+            c.title,
+            c.headLine,
+            c.cost,
+            c.description,
+            c.requirement,
+            c.thumbnail,
+            t.id,
+            t.name
+            )
+          from Curriculum c
+          join CurriculumTopic ct on ct.curriculum.id = c.id
+          join Topic t on t.id = ct.topic.id
+          join Channel ch on ch.id = c.channel.id
+          join Wishlist wl on wl.curriculum.id = c.id
+          where wl.userId =:userId and wl.isActive and c.isActive and t.isActive and ch.isActive and  ct.isActive
+      """)
+      Page<WishListCurriculumDTO> findAllWishlistCurriculum(Long userId,Pageable pageable);
 
       @Query("""
            select  new com.james.LMS.dto.CurriculumChannelDTO(

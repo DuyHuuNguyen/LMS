@@ -69,7 +69,7 @@ public class CurriculumController {
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("isAuthenticated()")
   public BaseResponse<PaginationResponse<PurchasedCurriculumResponse>> findAllPurchasedCurriculums(
-      PurchasedCurriculumCriteria purchasedCurriculumCriteria) {
+      @Valid PurchasedCurriculumCriteria purchasedCurriculumCriteria) {
     return this.curriculumFacade.findAllPurchasedCurriculums(purchasedCurriculumCriteria);
   }
 
@@ -78,8 +78,8 @@ public class CurriculumController {
   @Operation(tags = {"Curriculum APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("isAuthenticated()")
-  public BaseResponse<PaginationResponse<CurriculumResponse>> findAllWishlist(
-      @NotNull WishlistRequest wishlistRequest) {
+  public BaseResponse<PaginationResponse<WishListCurriculumResponse>> findAllWishlist(
+      @Valid @NotNull WishlistRequest wishlistRequest) {
     return this.curriculumFacade.findAllWishlist(wishlistRequest);
   }
 
@@ -88,7 +88,7 @@ public class CurriculumController {
   @Operation(tags = {"Curriculum APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("isAuthenticated()")
-  public BaseResponse<Void> removeWishlist(@RequestBody RemoveWishlistRequest request) {
+  public BaseResponse<Void> removeWishlist(@RequestBody @Valid RemoveWishlistRequest request) {
     return this.curriculumFacade.removeWishlist(request);
   }
 
@@ -107,7 +107,7 @@ public class CurriculumController {
       tags = {"Curriculum APIs"},
       summary = "Only purchased, Can use api.")
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
-  //  @PreAuthorize("!hasRole('ROLE_INSTRUCTOR')")
+  @PreAuthorize("!hasRole('ROLE_INSTRUCTOR')")
   public BaseResponse<SessionDetailResponse> findSessionsOfCurriculum(@PathVariable Long id) {
     return this.curriculumFacade.findSessionsOfCurriculum(id);
   }

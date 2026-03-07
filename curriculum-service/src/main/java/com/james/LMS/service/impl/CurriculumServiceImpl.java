@@ -3,6 +3,7 @@ package com.james.LMS.service.impl;
 import com.james.LMS.dto.CurriculumChannelDTO;
 import com.james.LMS.dto.CurriculumDTO;
 import com.james.LMS.dto.PurchasedCurriculumDTO;
+import com.james.LMS.dto.WishListCurriculumDTO;
 import com.james.LMS.entity.Curriculum;
 import com.james.LMS.repository.CurriculumRepository;
 import com.james.LMS.service.CurriculumService;
@@ -70,6 +71,11 @@ public class CurriculumServiceImpl implements CurriculumService {
   @Override
   public Page<CurriculumDTO> findAllWishlist(Long userId, Pageable pageable) {
     return this.curriculumRepository.findAllWishlist(userId, pageable);
+  }
+
+  @Override
+  public Page<WishListCurriculumDTO> findAllWishlistCurriculum(Long userId, Pageable pageable) {
+    return this.curriculumRepository.findAllWishlistCurriculum(userId, pageable);
   }
 
   @Override

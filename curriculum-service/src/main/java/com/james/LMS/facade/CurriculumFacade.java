@@ -21,7 +21,7 @@ public interface CurriculumFacade {
   BaseResponse<PaginationResponse<PurchasedCurriculumResponse>> findAllPurchasedCurriculums(
       PurchasedCurriculumCriteria purchasedCurriculumCriteria);
 
-  BaseResponse<PaginationResponse<CurriculumResponse>> findAllWishlist(
+  BaseResponse<PaginationResponse<WishListCurriculumResponse>> findAllWishlist(
       WishlistRequest wishlistRequest);
 
   BaseResponse<Void> addWishList(Long id);

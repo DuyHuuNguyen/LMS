@@ -8,6 +8,7 @@ import com.james.LMS.enums.ErrorCode;
 import com.james.LMS.exception.EntityNotFoundException;
 import com.james.LMS.facade.TopicFacade;
 import com.james.LMS.request.AddPersonalFollowedTopicsRequest;
+import com.james.LMS.request.AllTopicRequest;
 import com.james.LMS.request.PersonalFollowedTopicsRequest;
 import com.james.LMS.request.UnfollowedTopicsRequest;
 import com.james.LMS.response.BaseResponse;
@@ -100,5 +101,28 @@ public class TopicFacadeImpl implements TopicFacade {
         this.userTopicService.unfollowTopic(
             unfollowedTopicsRequest.getUnfollowTopicIds(), principal.getId());
     return BaseResponse.ok();
+  }
+
+  @Override
+  public BaseResponse<PaginationResponse<TopicResponse>> findAll(AllTopicRequest allTopicRequest) {
+    Pageable pageable =
+        PageRequest.of(allTopicRequest.getCurrentPage() - 1, allTopicRequest.getPageSize());
+    Page<TopicDTO> topicDTOPage = this.topicService.findAll(pageable);
+    List<TopicResponse> topicResponses =
+        topicDTOPage
+            .get()
+            .map(
+                topicDTO ->
+                    TopicResponse.builder().id(topicDTO.getId()).name(topicDTO.getName()).build())
+            .toList();
+
+    return BaseResponse.build(
+        PaginationResponse.<TopicResponse>builder()
+            .totalPages(topicDTOPage.getTotalPages())
+            .totalElements(topicDTOPage.getNumberOfElements())
+            .currentPage(allTopicRequest.getCurrentPage())
+            .data(topicResponses)
+            .build(),
+        true);
   }
 }
