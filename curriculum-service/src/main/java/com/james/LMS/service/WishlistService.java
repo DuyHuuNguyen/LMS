@@ -8,5 +8,7 @@ public interface WishlistService {
 
   Optional<Wishlist> findById(Long id);
 
-    boolean isExistByCurriculumId(Long id);
+  boolean isExistByCurriculumId(Long id);
+
+  boolean isExistByCurriculumIdAndUserId(Long id, Long userId);
 }

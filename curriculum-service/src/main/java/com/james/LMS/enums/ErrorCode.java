@@ -19,7 +19,8 @@ public enum ErrorCode {
   VIDEO_WAS_UPLOADED_INTO_STORAGE("3000", "Video was uploaded into storage"),
   VIDEO_METADATA_NOT_FOUND("3001", "Video metadata not found"),
   SESSION_OR_VIDEO_NOT_FOUND("3002", "Video or session not found"),
-  WISHLIST_NOT_FOUND("3002", "Wishlist not found");
+  WISHLIST_NOT_FOUND("3002", "Wishlist not found"),
+  CREATED_WISH_LIST("3003", "Created wishlist");
   private final String code;
   private final String message;
 }

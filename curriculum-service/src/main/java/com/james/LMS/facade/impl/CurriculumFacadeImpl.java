@@ -355,8 +355,9 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
     SecurityUserDetails principal =
         (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-    boolean isExistWishlist = this.wishlistService.isExistByCurriculumId(id);
-    if (isExistWishlist) return BaseResponse.ok();
+    boolean isExistWishlist =
+        this.wishlistService.isExistByCurriculumIdAndUserId(id, principal.getId());
+    if (isExistWishlist) throw new PermissionDeniedException(ErrorCode.CREATED_WISH_LIST);
 
     Curriculum curriculum =
         this.curriculumService
@@ -412,12 +413,14 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
   @Override
   public BaseResponse<PaginationResponse<SearchCurriculumResponse>> findAllByCriteria(
       CurriculumCriteria curriculumCriteria) {
-    int currentPage = Objects.nonNull(curriculumCriteria) && Objects.nonNull(curriculumCriteria.getCurrentPage())
-        ? curriculumCriteria.getCurrentPage()
-        : 1;
-    int pageSize = Objects.nonNull(curriculumCriteria) && Objects.nonNull(curriculumCriteria.getPageSize())
-        ? curriculumCriteria.getPageSize()
-        : 10;
+    int currentPage =
+        Objects.nonNull(curriculumCriteria) && Objects.nonNull(curriculumCriteria.getCurrentPage())
+            ? curriculumCriteria.getCurrentPage()
+            : 1;
+    int pageSize =
+        Objects.nonNull(curriculumCriteria) && Objects.nonNull(curriculumCriteria.getPageSize())
+            ? curriculumCriteria.getPageSize()
+            : 10;
     String keyword = Objects.nonNull(curriculumCriteria) ? curriculumCriteria.getKeyword() : null;
     long totalDurationSeconds =
         Objects.nonNull(curriculumCriteria) && Objects.nonNull(curriculumCriteria.getDuration())
@@ -428,8 +431,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
     boolean applyTopicFilter = Objects.nonNull(requestedTopicIds) && !requestedTopicIds.isEmpty();
     Set<Long> topicIds = applyTopicFilter ? requestedTopicIds : Set.of(-1L);
 
-    Pageable pageable =
-        PageRequest.of(currentPage - 1, pageSize);
+    Pageable pageable = PageRequest.of(currentPage - 1, pageSize);
 
     Page<CurriculumSearchDTO> curriculumSearchDTOPage =
         this.curriculumService.findAllByCriteria(
