@@ -1,25 +1,27 @@
 spring:
   application:
-    name: user-service
+    name: ${SPRING_APPLICATION_NAME:user-service}
+  config:
+    import: optional:file:.env[.properties],optional:file:../.env[.properties]
   datasource:
-    url: jdbc:postgresql://localhost:5432/db_user_service_lms
-    username: postgres
-    password: 123456
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/db_user_service_lms}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:123456}
     driver-class-name: org.postgresql.Driver
   jpa:
-    show-sql: true
+    show-sql: ${JPA_SHOW_SQL:false}
     properties:
       hibernate:
-        format_sql: true
+        format_sql: ${JPA_FORMAT_SQL:false}
   cache:
     type: redis
     redis:
-      time-to-live: 600000ms
+      time-to-live: ${REDIS_TTL:600000ms}
   rabbitmq:
-    port: 5672
-    host: localhost
-    username: guest
-    password: guest
+    port: ${RABBITMQ_PORT:5672}
+    host: ${RABBITMQ_HOST:localhost}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
   mail:
     host: smtp.gmail.com
     port: 587
@@ -28,25 +30,43 @@ spring:
     properties:
       mail:
         smtp:
-          auth: true
+          auth: ${MAIL_SMTP_AUTH:true}
           starttls:
-            enable: true
+            enable: ${MAIL_SMTP_STARTTLS_ENABLE:true}
+
 jwt:
-  secretKey: 16502ee43b73ce88149ca42ab31db111063820asdbd106505a6sfsafg345ecbb33a7bbe6b38578b23baee473c7aaf89c8e490c8e1429fbb264f137d1e2b3fb2ef396d8
-  accessTokenExpirationTime: 259200000 # 3 days
-  refreshTokenExpirationTime: 2419200000 # 2 weeks
-  resetPasswordTokenExpirationTime: 900000 # 15 minutes
+  secretKey: ${JWT_SECRET_KEY:}
+  accessTokenExpirationTime: ${JWT_ACCESS_TOKEN_EXPIRATION:259200000} # 3 days
+  refreshTokenExpirationTime: ${JWT_REFRESH_TOKEN_EXPIRATION:2419200000} # 2 weeks
+  resetPasswordTokenExpirationTime: ${JWT_RESET_PASSWORD_TOKEN_EXPIRATION:900000} # 15 minutes
+
 rabbitmq:
-  exchange-name: demo
-  user-mail-routing-key: demo
-  user-mail-queue: lms-queue
+  exchange-name: ${RABBITMQ_EXCHANGE_NAME:demo}
+  user-mail-routing-key: ${RABBITMQ_USER_MAIL_ROUTING_KEY:demo}
+  user-mail-queue: ${RABBITMQ_USER_MAIL_QUEUE:lms-queue}
+
+  exchange-cache-data-name: ${RABBITMQ_EXCHANGE_CACHE_DATA_NAME:cache-lecturers-data}
+  cache-data-routing-key: ${RABBITMQ_CACHE_DATA_ROUTING_KEY:cache-lecturers-data}
+  cache-data-queue: ${RABBITMQ_CACHE_DATA_QUEUE:cache-data-queue}
+
 server:
-  port: 8083
+  port: ${SERVER_PORT:8083}
+
 cloudinary:
-  cloudinary-name: dvynemzxx
-  api-key: 368324453129176
-  api-secret: FyxpYajXxv58KvfsbG9mYuYWOh8
+  cloudinary-name: ${CLOUDINARY_NAME:dvynemzxx}
+  api-key: ${CLOUDINARY_API_KEY:368324453129176}
+  api-secret: ${CLOUDINARY_API_SECRET:FyxpYajXxv58KvfsbG9mYuYWOh8}
+
 grpc:
   server:
     security:
-      enabled: false
+      enabled: ${GRPC_SERVER_SECURITY_ENABLED:false}
+
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %clr([%thread]){faint} %clr(%-5level) %clr(%logger{1}){cyan} %clr(%X{requestId}){yellow} - %clr(%X{email}){green} - %msg%n"
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka

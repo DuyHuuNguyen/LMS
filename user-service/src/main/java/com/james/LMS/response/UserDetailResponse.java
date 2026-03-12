@@ -1,15 +1,13 @@
 package com.james.LMS.response;
 
 import java.time.LocalDate;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@ToString
 public class UserDetailResponse {
   private Long id;
   private String username;
@@ -19,4 +17,5 @@ public class UserDetailResponse {
   private String instructorName;
   private String instructorAbout;
   private LocalDate createdAt;
+  private Long channelId;
 }

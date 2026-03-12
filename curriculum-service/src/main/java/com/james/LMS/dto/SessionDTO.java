@@ -15,5 +15,6 @@ public class SessionDTO {
   private Integer index;
   private String totalTimesStringFormat;
   private Integer totalLectures;
+  private String name;
   private List<BaseSessionContentDTO> lectures;
 }

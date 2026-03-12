@@ -1,6 +1,7 @@
 package com.james.LMS.entity;
 
 import jakarta.persistence.*;
+import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +21,9 @@ public class Video extends BaseSessionContent {
   @Column(name = "thumbnail")
   private String thumbnail;
 
+  @Column(name = "identify_code", nullable = false, unique = true)
+  private String identifyCode;
+
   @Column(name = "view")
   private Integer view;
 
@@ -32,4 +36,20 @@ public class Video extends BaseSessionContent {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "session_id")
   private Session session;
+
+  public void addSession(Session session) {
+    this.session = session;
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (object == null || getClass() != object.getClass()) return false;
+    Video video = (Video) object;
+    return Objects.equals(this.getId(), video.getId());
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(durationSeconds, thumbnail, identifyCode, view, size, videoUrl, session);
+  }
 }

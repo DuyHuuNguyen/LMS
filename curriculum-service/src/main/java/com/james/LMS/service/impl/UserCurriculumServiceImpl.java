@@ -9,4 +9,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserCurriculumServiceImpl implements UserCurriculumService {
   private final UserCurriculumRepository curriculumRepository;
+
+  @Override
+  public Boolean existsByUserIdAndCurriculumId(Long userId, Long curriculumId) {
+    return this.curriculumRepository.existsUserCurriculumByUserIdAndCurriculum_IdAndIsActiveIsTrue(
+        userId, curriculumId);
+  }
 }

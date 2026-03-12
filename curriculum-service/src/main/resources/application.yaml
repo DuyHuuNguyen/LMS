@@ -1,6 +1,6 @@
 spring:
   application:
-    name: LMS
+    name: curriculum-service
   datasource:
     url: jdbc:postgresql://localhost:5432/db_curriculum_service_lms
     username: postgres
@@ -11,6 +11,15 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  cache:
+    type: redis
+    redis:
+      time-to-live: 600000ms
+  rabbitmq:
+    port: 5672
+    host: localhost
+    username: guest
+    password: guest
 server:
   port: 8085
 ---
@@ -19,3 +28,36 @@ grpc:
     parse-token:
       address: 'static://localhost:9090'
       negotiationType: plaintext
+    instructor:
+      address: 'static://localhost:9090'
+      negotiationType: plaintext
+---
+rabbitmq:
+  exchange-name: ache-lecturers-data
+  cache-data-routing-key: cache-lecturers-data
+  cache-data-queue: cache-data-queue
+  exchange-create-tests-name: create-tests-exchange
+  create-tests-routing-key: create-tests-routing-key
+  create-tests-queue: create-tests-queue
+  exchange-uploading-video: uploading-video-exchange
+  routing-key-uploading-video: uploading-video-routing-key
+  queue-uploading-video: uploading-video-queue
+---
+minio:
+  url: ${MINIO_URL:http://localhost:9000}
+  access-key: admin
+  secret-key: 12345678
+  thumbnail-bucket: thumbnail-bucket
+  video-bucket: video-bucket
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %clr([%thread]){faint} %clr(%-5level) %clr(%logger{36}){cyan} %clr(%X{requestId}){yellow} - %clr(%X{email}){green} - %msg%n"
+
+cloudinary:
+  cloudinary-name: dvynemzxx
+  api-key: 368324453129176
+  api-secret: FyxpYajXxv58KvfsbG9mYuYWOh8
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka

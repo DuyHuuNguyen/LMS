@@ -1,10 +1,13 @@
 package com.james.LMS.interceptor;
 
+import com.james.LMS.config.SecurityConfig;
 import com.james.LMS.config.SecurityUserDetails;
 import com.james.LMS.dto.AuthDTO;
 import com.james.LMS.service.AuthService;
+import com.james.LMS.util.PublicEndpointsValidatorUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -23,8 +26,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class AuthenticationTokenProviderInterceptor extends OncePerRequestFilter {
   private final AuthService authService;
 
-  private static final List<String> SWAGGER_URLS = List.of("/swagger-ui/", "/v3/api-docs");
-  private static final List<String> PUBLIC_ENDPOINTS = List.of("/api/v1/internal");
   public static final String AUTHORIZATION = "Authorization";
   private static final int START_OF_TOKEN = 7;
 
@@ -33,17 +34,19 @@ public class AuthenticationTokenProviderInterceptor extends OncePerRequestFilter
       HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, IOException {
     String path = request.getRequestURI();
-    log.info("path : {}", path);
 
-    String token = getTokenFromHeader(request);
+    String token = this.getJwtTokenFromCookie(request);
 
-    if (this.isSwaggerUrl(path) || this.isPublicEndpoint(path)) {
+    boolean isPublicEndPoints =
+        PublicEndpointsValidatorUtil.isSwaggerUrl(path)
+            || PublicEndpointsValidatorUtil.isPublicEndpoint(path);
+
+    if (isPublicEndPoints) {
       filterChain.doFilter(request, response);
       return;
     }
 
     try {
-      log.info("token {}", token);
       AuthDTO authDTO = this.authService.validToken(token);
 
       List<GrantedAuthority> authorityList =
@@ -65,18 +68,22 @@ public class AuthenticationTokenProviderInterceptor extends OncePerRequestFilter
     filterChain.doFilter(request, response);
   }
 
-  private boolean isSwaggerUrl(String path) {
-    return SWAGGER_URLS.stream().anyMatch(path::startsWith);
-  }
-
-  public boolean isPublicEndpoint(String path) {
-    return PUBLIC_ENDPOINTS.stream().anyMatch(path::endsWith);
-  }
-
+  @Deprecated
   private String getTokenFromHeader(HttpServletRequest request) {
     String headerAuth = request.getHeader(AUTHORIZATION);
     if (headerAuth != null) {
       return headerAuth.substring(START_OF_TOKEN);
+    }
+    return null;
+  }
+
+  public String getJwtTokenFromCookie(HttpServletRequest request) {
+    if (request.getCookies() != null) {
+      for (Cookie cookie : request.getCookies()) {
+        if (SecurityConfig.COOKIE_SECURITY_NAME.equals(cookie.getName())) {
+          return cookie.getValue();
+        }
+      }
     }
     return null;
   }

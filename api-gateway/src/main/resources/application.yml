@@ -30,6 +30,7 @@ springdoc:
 
       - name: identification-service
         url: /identification-service/v3/api-docs
+    with-credentials: true
 ---
 spring:
   cloud:
@@ -38,11 +39,10 @@ spring:
         corsConfigurations:
           '[/**]':
             allowedOrigins:
-              - "http://localhost:5173"
-              - "http://localhost:3000"
-              - "https://*.trycloudflare.com"
-              - "https://potatoes-earnings-william-car.trycloudflare.com"
-              - "https://reservoir-treasure-pixels-technical.trycloudflare.com"
+              - ${FE_ORIGIN}
+              - ${BE_ORIGIN}
+              - ${FE_LOCAL_ORIGIN}
+              - ${BE_LOCAL_ORIGIN}
             allowedMethods:
               - GET
               - POST
@@ -52,7 +52,6 @@ spring:
             allowedHeaders:
               - "*"
             allowCredentials: true
-
 ---
 spring:
   cloud:

@@ -31,7 +31,7 @@ public class Curriculum extends BaseEntity {
   private String description;
 
   @Column(name = "requirement")
-  private String name;
+  private String requirement;
 
   @Column(name = "thumbnail")
   private String thumbnail;
@@ -59,4 +59,7 @@ public class Curriculum extends BaseEntity {
   @OneToMany(mappedBy = "curriculum", fetch = FetchType.LAZY)
   @Builder.Default
   private List<Wishlist> wishlist = new ArrayList<>();
+
+  @OneToOne(mappedBy = "curriculum", fetch = FetchType.LAZY)
+  private CurriculumAudit curriculumAudit;
 }

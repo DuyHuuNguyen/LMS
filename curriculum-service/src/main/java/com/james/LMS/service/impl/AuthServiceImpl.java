@@ -23,7 +23,6 @@ public class AuthServiceImpl implements AuthService {
     AccessTokenRequest accessTokenRequest =
         AccessTokenRequest.newBuilder().setAccessToken(token).build();
     AuthResponse authResponse = this.authTokenServiceBlockingStub.parseToken(accessTokenRequest);
-    log.info("Auth response {}", authResponse);
     return AuthDTO.builder()
         .id(authResponse.getUserId())
         .email(authResponse.getEmail())

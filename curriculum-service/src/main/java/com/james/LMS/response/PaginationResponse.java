@@ -1,5 +1,6 @@
 package com.james.LMS.response;
 
+import java.io.Serializable;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PaginationResponse<T> {
+public class PaginationResponse<T> implements Serializable {
   private List<T> data;
   private Integer currentPage;
   private Integer totalElements;

@@ -7,6 +7,7 @@ import com.james.LMS.service.JwtService;
 import com.james.LMS.service.RoleService;
 import com.james.LMS.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,17 +20,21 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+@Slf4j
 @Configuration
 @EnableMethodSecurity
 @RequiredArgsConstructor
-public class SecurityConfig {
+public class SecurityConfig implements WebMvcConfigurer {
   private final UserService userService;
   private final JwtService jwtService;
   private final CacheService cacheService;
   private final RoleService roleService;
 
   public static final String SECURITY_REQUIREMENT = "Bearer Authentication";
+  public static final String COOKIE_SECURITY_NAME = "access-token";
+  public static final String COOKIE_REFRESH_TOKEN_NAME = "refresh-token";
 
   private final String[] WHITE_LISTS = {
     "/swagger-ui/**",
@@ -41,6 +46,7 @@ public class SecurityConfig {
     "/api/v1/users/verify-otp",
     "/actuator/**",
     "/api/v1/users/demo",
+    "/api/v2/users/login",
   };
 
   @Bean
@@ -70,7 +76,7 @@ public class SecurityConfig {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
-        .cors(AbstractHttpConfigurer::disable)
+        .cors(cors -> {})
         .formLogin(AbstractHttpConfigurer::disable)
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

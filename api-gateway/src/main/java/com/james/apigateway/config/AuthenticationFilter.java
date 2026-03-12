@@ -1,11 +1,12 @@
 package com.james.apigateway.config;
 
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpCookie;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
@@ -17,9 +18,10 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class AuthenticationFilter implements GlobalFilter {
   private static final List<String> SWAGGER_URLS = List.of("/swagger-ui/", "/v3/api-docs");
+  private static final String COOKIE_NAME = "access-token";
   private static final List<String> PUBLIC_APIS =
       List.of(
-          "/api/v1/users/login",
+          "/api/v2/users/login",
           "/api/v1/users/refresh-token",
           "/api/v1/users/forgot-password",
           "/api/v1/users/verify-otp",
@@ -28,31 +30,37 @@ public class AuthenticationFilter implements GlobalFilter {
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
-    ServerHttpRequest request = exchange.getRequest();
-    HttpHeaders headers = request.getHeaders();
-
-    String path = String.valueOf(exchange.getRequest().getPath());
-    log.info("Path of request :{}", path);
+    String path = exchange.getRequest().getPath().value();
 
     var isSwagger = SWAGGER_URLS.stream().anyMatch(path::startsWith);
     var isPublic = PUBLIC_APIS.stream().anyMatch(path::startsWith);
 
-    log.info("Endpoint is swagger :{}", isSwagger);
-    log.info("Endpoint id public :{}", isPublic);
+    ServerHttpRequest mutatedRequest = this.buildRequestId(exchange);
 
-    if (isSwagger || isPublic) return chain.filter(exchange);
+    if (isSwagger || isPublic)
+      return chain.filter(exchange.mutate().request(mutatedRequest).build());
 
-    var authenticationHeaders = headers.get(HttpHeaders.AUTHORIZATION);
-    var isNullAuthentication =
-        authenticationHeaders == null || authenticationHeaders.getFirst() == null;
+    HttpCookie tokenCookie = exchange.getRequest().getCookies().getFirst(COOKIE_NAME);
 
-    var isMissingAcceptToken =
-        isNullAuthentication || !authenticationHeaders.getFirst().startsWith("Bearer ");
-    if (isMissingAcceptToken) {
-      log.info("Request {} is missing token in header", path);
-      return Mono.fromRunnable(() -> exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED))
-          .then(exchange.getResponse().setComplete());
+    var isMissingToken = (tokenCookie == null || tokenCookie.getValue().isBlank());
+
+    if (isMissingToken) {
+      log.info("Request {} is missing token in cookie", path);
+      exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+      return exchange.getResponse().setComplete();
     }
-    return chain.filter(exchange);
+
+    return chain.filter(exchange.mutate().request(mutatedRequest).build());
+  }
+
+  private ServerHttpRequest buildRequestId(ServerWebExchange exchange) {
+    String requestId = exchange.getRequest().getHeaders().getFirst("x-request-id");
+
+    if (requestId == null || requestId.isBlank()) {
+      requestId = UUID.randomUUID().toString();
+    }
+    ServerHttpRequest mutatedRequest =
+        exchange.getRequest().mutate().header("x-request-id", requestId).build();
+    return mutatedRequest;
   }
 }
