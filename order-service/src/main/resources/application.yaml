@@ -6,3 +6,14 @@ spring:
     host: localhost
     username: guest
     password: guest
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: always
