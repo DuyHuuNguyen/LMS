@@ -16,8 +16,8 @@ FROM eclipse-temurin:21-jre
 WORKDIR /
 
 # Copy the built JAR from the builder stage
-COPY --from=builder /target/*.jar api-gateway.jar
+COPY --from=builder /target/*.jar eureka-server.jar
 
 # Expose the port and run the application
-EXPOSE 9091
-ENTRYPOINT ["java", "-jar", "api-gateway.jar"]
+EXPOSE 8761
+ENTRYPOINT ["java", "-jar", "eureka-server.jar"]

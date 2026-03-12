@@ -16,8 +16,8 @@ FROM eclipse-temurin:21-jre
 WORKDIR /
 
 # Copy the built JAR from the builder stage
-COPY --from=builder /target/*.jar api-gateway.jar
+COPY --from=builder /target/*.jar curriculum-service.jar
 
 # Expose the port and run the application
-EXPOSE 9091
-ENTRYPOINT ["java", "-jar", "api-gateway.jar"]
+EXPOSE 8085
+ENTRYPOINT ["java", "-jar", "curriculum-service.jar"]

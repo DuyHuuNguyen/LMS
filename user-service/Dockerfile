@@ -1,7 +1,6 @@
 # Stage 1: Build the application
 FROM maven:3.9.6-eclipse-temurin-21 AS builder
 
-# Set working directory
 WORKDIR /
 
 # Copy the pom.xml and download dependencies (to leverage Docker cache)
@@ -11,13 +10,12 @@ RUN mvn dependency:resolve
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-# Use a lightweight JDK runtime for production
+# Stage 2: Runtime
 FROM eclipse-temurin:21-jre
 WORKDIR /
 
-# Copy the built JAR from the builder stage
-COPY --from=builder /target/*.jar api-gateway.jar
+COPY --from=builder /target/*.jar user-service.jar
 
-# Expose the port and run the application
-EXPOSE 9091
-ENTRYPOINT ["java", "-jar", "api-gateway.jar"]
+EXPOSE 8083
+ENTRYPOINT ["java", "-jar", "user-service.jar"]
+
