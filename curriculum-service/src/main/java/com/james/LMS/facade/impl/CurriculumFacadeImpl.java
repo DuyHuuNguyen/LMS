@@ -55,7 +55,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
   public BaseResponse<CurriculumReviewResponse> findCurriculumForReviewById(Long id) {
 
     SecurityUserDetails principal =
-            (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
     Curriculum curriculum =
         this.curriculumService
@@ -68,7 +68,9 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
     CompletableFuture<List<TopicDTO>> topicDTOSFuture =
         CompletableFuture.supplyAsync(
             () -> this.topicService.findAllTopicDTOByCurriculumId(curriculum.getId()));
-    CompletableFuture<Boolean> isExistWishListFuture = CompletableFuture.supplyAsync(()-> this.wishlistService.isExistByCurriculumIdAndUserId(id, principal.getId()));
+    CompletableFuture<Boolean> isExistWishListFuture =
+        CompletableFuture.supplyAsync(
+            () -> this.wishlistService.isExistByCurriculumIdAndUserId(id, principal.getId()));
 
     CompletableFuture<Map<Long, List<BaseSessionContentDTO>>> collectContentSessionMapFuture =
         sessionsFuture.thenApplyAsync(
@@ -89,7 +91,11 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
                         () -> new EntityNotFoundException(ErrorCode.INSTRUCTOR_NOT_FOUND)));
 
     CompletableFuture.allOf(
-            sessionsFuture, topicDTOSFuture, collectContentSessionMapFuture, instructorDTOFuture,isExistWishListFuture)
+            sessionsFuture,
+            topicDTOSFuture,
+            collectContentSessionMapFuture,
+            instructorDTOFuture,
+            isExistWishListFuture)
         .join();
 
     List<Session> sessions = sessionsFuture.join();
@@ -121,7 +127,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
             .totalLectures(totalLectures.get())
             .sessionDTOs(sessionDTOS)
             .topicDTOS(topicDTOS)
-                .isWishlisted(isWishListed)
+            .isWishlisted(isWishListed)
             .build(),
         true);
   }
