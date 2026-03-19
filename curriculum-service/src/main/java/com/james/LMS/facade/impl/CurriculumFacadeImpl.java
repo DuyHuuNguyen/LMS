@@ -53,6 +53,10 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
 
   @Override
   public BaseResponse<CurriculumReviewResponse> findCurriculumForReviewById(Long id) {
+
+    SecurityUserDetails principal =
+            (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
     Curriculum curriculum =
         this.curriculumService
             .findByIdAndFetchChannel(id)
@@ -64,6 +68,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
     CompletableFuture<List<TopicDTO>> topicDTOSFuture =
         CompletableFuture.supplyAsync(
             () -> this.topicService.findAllTopicDTOByCurriculumId(curriculum.getId()));
+    CompletableFuture<Boolean> isExistWishListFuture = CompletableFuture.supplyAsync(()-> this.wishlistService.isExistByCurriculumIdAndUserId(id, principal.getId()));
 
     CompletableFuture<Map<Long, List<BaseSessionContentDTO>>> collectContentSessionMapFuture =
         sessionsFuture.thenApplyAsync(
@@ -84,7 +89,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
                         () -> new EntityNotFoundException(ErrorCode.INSTRUCTOR_NOT_FOUND)));
 
     CompletableFuture.allOf(
-            sessionsFuture, topicDTOSFuture, collectContentSessionMapFuture, instructorDTOFuture)
+            sessionsFuture, topicDTOSFuture, collectContentSessionMapFuture, instructorDTOFuture,isExistWishListFuture)
         .join();
 
     List<Session> sessions = sessionsFuture.join();
@@ -92,6 +97,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
     Map<Long, List<BaseSessionContentDTO>> collectContentSessionMap =
         collectContentSessionMapFuture.join();
     InstructorDTO instructorDTO = instructorDTOFuture.join();
+    Boolean isWishListed = isExistWishListFuture.join();
 
     AtomicReference<Long> totalDurationOfCurriculum = new AtomicReference<>(0L);
     AtomicReference<Integer> totalLectures = new AtomicReference<>(0);
@@ -115,6 +121,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
             .totalLectures(totalLectures.get())
             .sessionDTOs(sessionDTOS)
             .topicDTOS(topicDTOS)
+                .isWishlisted(isWishListed)
             .build(),
         true);
   }
@@ -136,7 +143,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
             curriculumHomeRequest.getCurrentPage() - 1, curriculumHomeRequest.getPageSize());
     Page<CurriculumDTO> curriculumDTOPage =
         this.curriculumService.findAllCurriculumsByFollowedTopicIdsOfUser(
-            followedTopicIds, pageable);
+            followedTopicIds, principal.getId(), pageable);
 
     List<CurriculumDTO> curriculumDTOS =
         this.addLecturerIntoCurriculum(curriculumDTOPage.stream().toList());
@@ -207,7 +214,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
 
     for (var topicId : followedTopicIds) {
       Page<CurriculumDTO> curriculumDTOPage =
-          this.curriculumService.findAllCurriculumByTopicId(topicId, pageable);
+          this.curriculumService.findAllCurriculumByTopicId(topicId, principal.getId(), pageable);
 
       boolean isNotFoundCurriculum = curriculumDTOPage.isEmpty();
       if (isNotFoundCurriculum) continue;
@@ -241,12 +248,15 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
 
     if (!isExistsTopic) throw new EntityNotFoundException(ErrorCode.USER_TOPIC_NOT_FOUND);
 
+    SecurityUserDetails principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
     Pageable pageable =
         PageRequest.of(
             curriculumByTopicRequest.getCurrentPage() - 1, curriculumByTopicRequest.getPageSize());
     Page<CurriculumDTO> curriculumDTOPage =
         this.curriculumService.findAllCurriculumByTopicId(
-            curriculumByTopicRequest.getTopicId(), pageable);
+            curriculumByTopicRequest.getTopicId(), principal.getId(), pageable);
 
     List<CurriculumResponse> curriculumResponses =
         this.buildCurriculumResponses(curriculumDTOPage.toList());

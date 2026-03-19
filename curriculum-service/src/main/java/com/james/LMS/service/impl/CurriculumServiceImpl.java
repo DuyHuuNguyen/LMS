@@ -30,14 +30,15 @@ public class CurriculumServiceImpl implements CurriculumService {
 
   @Override
   public Page<CurriculumDTO> findAllCurriculumsByFollowedTopicIdsOfUser(
-      List<Long> followedTopicIds, Pageable pageable) {
+      List<Long> followedTopicIds, Long userId, Pageable pageable) {
     return this.curriculumRepository.findAllCurriculumsByFollowedTopicIdsOfUser(
-        followedTopicIds, pageable);
+        followedTopicIds, userId, pageable);
   }
 
   @Override
-  public Page<CurriculumDTO> findAllCurriculumByTopicId(Long topicId, Pageable pageable) {
-    return this.curriculumRepository.findAllCurriculumByTopicId(topicId, pageable);
+  public Page<CurriculumDTO> findAllCurriculumByTopicId(
+      Long topicId, Long userId, Pageable pageable) {
+    return this.curriculumRepository.findAllCurriculumByTopicId(topicId, userId, pageable);
   }
 
   @Override
