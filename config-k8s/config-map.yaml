@@ -1,0 +1,137 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: lms-config-map
+data:
+  FRONTEND_ORIGIN: https://classification-maps-gospel-returns.trycloudflare.com
+
+  BACKEND_ORIGIN: https://politicians-markers-gate-serve.trycloudflare.com
+
+  FRONTEND_LOCAL_ORIGIN: http://localhost:5173
+  BACKEND_LOCAL_ORIGIN: http://localhost:9091
+
+  GLOBAL_REDIS_HOST: redis
+  GLOBAL_REDIS_PORT: 6379
+
+  EUREKA_DOMAIN: eureka
+  EUREKA_PORT: 8761
+
+
+  ##############################################################################################################
+  # user-service application.yaml env vars (prefixed)
+  ##############################################################################################################
+
+  # user-service Spring application.yaml env vars (prefixed)
+  USER_SERVICE_SPRING_APPLICATION_NAME: user-service
+
+  USER_SERVICE_SERVER_PORT: 8083
+
+  # datasource (user-service)
+  USER_SERVICE_DB_URL: jdbc:postgresql://localhost:5432/db_user_service_lms
+  USER_SERVICE_DB_USERNAME: postgres
+  USER_SERVICE_DB_PASSWORD: ""
+
+  # JPA
+  USER_SERVICE_JPA_SHOW_SQL: "false"
+  USER_SERVICE_JPA_FORMAT_SQL: "false"
+
+  # Redis cache
+  USER_SERVICE_REDIS_TTL: 600000ms
+
+  # RabbitMQ (Spring Boot client)
+  USER_SERVICE_RABBITMQ_HOST: localhost
+  USER_SERVICE_RABBITMQ_PORT: "5672"
+  USER_SERVICE_RABBITMQ_USERNAME: guest
+  USER_SERVICE_RABBITMQ_PASSWORD: guest
+
+  # RabbitMQ (app-level exchanges/queues)
+  USER_SERVICE_RABBITMQ_EXCHANGE_NAME: demo
+  USER_SERVICE_RABBITMQ_USER_MAIL_ROUTING_KEY: demo
+  USER_SERVICE_RABBITMQ_USER_MAIL_QUEUE: lms-queue
+  USER_SERVICE_RABBITMQ_EXCHANGE_CACHE_DATA_NAME: cache-lecturers-data
+  USER_SERVICE_RABBITMQ_CACHE_DATA_ROUTING_KEY: cache-lecturers-data
+  USER_SERVICE_RABBITMQ_CACHE_DATA_QUEUE: cache-data-queue
+
+  # Mail (Spring Boot)
+  USER_SERVICE_MAIL_HOST: smtp.gmail.com
+  USER_SERVICE_MAIL_PORT: "587"
+  USER_SERVICE_MAIL_USERNAME: hduy09092005@gmail.com
+  USER_SERVICE_MAIL_PASSWORD: srwm lebt frsf dxkl
+  USER_SERVICE_MAIL_SMTP_AUTH: "true"
+  USER_SERVICE_MAIL_SMTP_STARTTLS_ENABLE: "true"
+
+  USER_SERVICE_JWT_SECRET_KEY: 16502ee43b73ce88149ca42ab31db111063820asdbd106505a6sfsafg345ecbb33a7bbe6b38578b23baee473c7aaf89c8e490c8e1429fbb264f137d1e2b3fb2ef396d8
+  USER_SERVICE_JWT_ACCESS_TOKEN_EXPIRATION: "259200000"
+  USER_SERVICE_JWT_REFRESH_TOKEN_EXPIRATION: "2419200000"
+  USER_SERVICE_JWT_RESET_PASSWORD_TOKEN_EXPIRATION: "900000"
+
+
+  # Cloudinary
+  USER_SERVICE_CLOUDINARY_NAME: dvynemzxx
+  USER_SERVICE_CLOUDINARY_API_KEY: 368324453129176
+  USER_SERVICE_CLOUDINARY_API_SECRET: FyxpYajXxv58KvfsbG9mYuYWOh8
+
+  # gRPC
+  USER_SERVICE_GRPC_SERVER_SECURITY_ENABLED: "false"
+
+
+  ##############################################################################################################
+  # curriculum-service application.yaml env vars (prefixed)
+  ##############################################################################################################
+
+  # datasource (curriculum-service)
+  CURRICULUM_SERVICE_SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/db_curriculum_service_lms
+  CURRICULUM_SERVICE_SPRING_DATASOURCE_USERNAME: postgres
+  CURRICULUM_SERVICE_SPRING_DATASOURCE_PASSWORD: "123456"
+  CURRICULUM_SERVICE_SPRING_DATASOURCE_DRIVER_CLASS_NAME: org.postgresql.Driver
+
+  # JPA
+  CURRICULUM_SERVICE_SPRING_JPA_SHOW_SQL: "true"
+  CURRICULUM_SERVICE_SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
+
+  # Redis cache
+  CURRICULUM_SERVICE_SPRING_CACHE_TYPE: redis
+  CURRICULUM_SERVICE_SPRING_CACHE_REDIS_TIME_TO_LIVE: 600000ms
+
+  # RabbitMQ (Spring Boot client)
+  CURRICULUM_SERVICE_SPRING_RABBITMQ_HOST: localhost
+  CURRICULUM_SERVICE_SPRING_RABBITMQ_PORT: "5672"
+  CURRICULUM_SERVICE_SPRING_RABBITMQ_USERNAME: guest
+  CURRICULUM_SERVICE_SPRING_RABBITMQ_PASSWORD: guest
+
+  # Server
+  CURRICULUM_SERVICE_SERVER_PORT: "8085"
+
+  # gRPC clients
+  CURRICULUM_SERVICE_GRPC_PARSE_TOKEN_ADDRESS: static://localhost:9090
+  CURRICULUM_SERVICE_GRPC_PARSE_TOKEN_NEGOTIATION_TYPE: plaintext
+  CURRICULUM_SERVICE_GRPC_INSTRUCTOR_ADDRESS: static://localhost:9090
+  CURRICULUM_SERVICE_GRPC_INSTRUCTOR_NEGOTIATION_TYPE: plaintext
+
+  # RabbitMQ (app-level exchanges/queues)
+  CURRICULUM_SERVICE_RABBITMQ_EXCHANGE_NAME: ache-lecturers-data
+  CURRICULUM_SERVICE_RABBITMQ_CACHE_DATA_ROUTING_KEY: cache-lecturers-data
+  CURRICULUM_SERVICE_RABBITMQ_CACHE_DATA_QUEUE: cache-data-queue
+  CURRICULUM_SERVICE_RABBITMQ_EXCHANGE_CREATE_TESTS_NAME: create-tests-exchange
+  CURRICULUM_SERVICE_RABBITMQ_CREATE_TESTS_ROUTING_KEY: create-tests-routing-key
+  CURRICULUM_SERVICE_RABBITMQ_CREATE_TESTS_QUEUE: create-tests-queue
+  CURRICULUM_SERVICE_RABBITMQ_EXCHANGE_UPLOADING_VIDEO: uploading-video-exchange
+  CURRICULUM_SERVICE_RABBITMQ_ROUTING_KEY_UPLOADING_VIDEO: uploading-video-routing-key
+  CURRICULUM_SERVICE_RABBITMQ_QUEUE_UPLOADING_VIDEO: uploading-video-queue
+
+  # MinIO
+  CURRICULUM_SERVICE_MINIO_URL: http://localhost:9000
+  CURRICULUM_SERVICE_MINIO_ACCESS_KEY: admin
+  CURRICULUM_SERVICE_MINIO_SECRET_KEY: "12345678"
+  CURRICULUM_SERVICE_MINIO_THUMBNAIL_BUCKET: thumbnail-bucket
+  CURRICULUM_SERVICE_MINIO_VIDEO_BUCKET: video-bucket
+
+  # Cloudinary
+  CURRICULUM_SERVICE_CLOUDINARY_NAME: dvynemzxx
+  CURRICULUM_SERVICE_CLOUDINARY_API_KEY: "368324453129176"
+  CURRICULUM_SERVICE_CLOUDINARY_API_SECRET: FyxpYajXxv58KvfsbG9mYuYWOh8
+
+########################################################################################################################
+
+
+

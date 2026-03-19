@@ -2,65 +2,66 @@ spring:
   application:
     name: curriculum-service
   datasource:
-    url: jdbc:postgresql://localhost:5432/db_curriculum_service_lms
-    username: postgres
-    password: 123456
-    driver-class-name: org.postgresql.Driver
+    url: ${CURRICULUM_SERVICE_SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/db_curriculum_service_lms}
+    username: ${CURRICULUM_SERVICE_SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${CURRICULUM_SERVICE_SPRING_DATASOURCE_PASSWORD:123456}
+    driver-class-name: ${CURRICULUM_SERVICE_SPRING_DATASOURCE_DRIVER_CLASS_NAME:org.postgresql.Driver}
   jpa:
-    show-sql: true
+    show-sql: ${CURRICULUM_SERVICE_SPRING_JPA_SHOW_SQL:true}
     properties:
       hibernate:
-        format_sql: true
-  cache:
-    type: redis
+        format_sql: ${CURRICULUM_SERVICE_SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL:true}
+  data:
     redis:
-      time-to-live: 600000ms
+      host: ${GLOBAL_REDIS_HOST:localhost}
+      port: ${GLOBAL_REDIS_PORT:6379}
   rabbitmq:
-    port: 5672
-    host: localhost
-    username: guest
-    password: guest
+    port: ${CURRICULUM_SERVICE_SPRING_RABBITMQ_PORT:5672}
+    host: ${CURRICULUM_SERVICE_SPRING_RABBITMQ_HOST:localhost}
+    username: ${CURRICULUM_SERVICE_SPRING_RABBITMQ_USERNAME:guest}
+    password: ${CURRICULUM_SERVICE_SPRING_RABBITMQ_PASSWORD:guest}
 server:
-  port: 8085
+  port: ${CURRICULUM_SERVICE_SERVER_PORT:8085}
 ---
 grpc:
   client:
     parse-token:
-      address: 'static://localhost:9090'
-      negotiationType: plaintext
+      address: ${CURRICULUM_SERVICE_GRPC_PARSE_TOKEN_ADDRESS:static://localhost:9090}
+      negotiationType: ${CURRICULUM_SERVICE_GRPC_PARSE_TOKEN_NEGOTIATION_TYPE:plaintext}
     instructor:
-      address: 'static://localhost:9090'
-      negotiationType: plaintext
+      address: ${CURRICULUM_SERVICE_GRPC_INSTRUCTOR_ADDRESS:static://localhost:9090}
+      negotiationType: ${CURRICULUM_SERVICE_GRPC_INSTRUCTOR_NEGOTIATION_TYPE:plaintext}
 ---
 rabbitmq:
-  exchange-name: ache-lecturers-data
-  cache-data-routing-key: cache-lecturers-data
-  cache-data-queue: cache-data-queue
-  exchange-create-tests-name: create-tests-exchange
-  create-tests-routing-key: create-tests-routing-key
-  create-tests-queue: create-tests-queue
-  exchange-uploading-video: uploading-video-exchange
-  routing-key-uploading-video: uploading-video-routing-key
-  queue-uploading-video: uploading-video-queue
+  exchange-name: ${CURRICULUM_SERVICE_RABBITMQ_EXCHANGE_NAME:ache-lecturers-data}
+  cache-data-routing-key: ${CURRICULUM_SERVICE_RABBITMQ_CACHE_DATA_ROUTING_KEY:cache-lecturers-data}
+  cache-data-queue: ${CURRICULUM_SERVICE_RABBITMQ_CACHE_DATA_QUEUE:cache-data-queue}
+  exchange-create-tests-name: ${CURRICULUM_SERVICE_RABBITMQ_EXCHANGE_CREATE_TESTS_NAME:create-tests-exchange}
+  create-tests-routing-key: ${CURRICULUM_SERVICE_RABBITMQ_CREATE_TESTS_ROUTING_KEY:create-tests-routing-key}
+  create-tests-queue: ${CURRICULUM_SERVICE_RABBITMQ_CREATE_TESTS_QUEUE:create-tests-queue}
+  exchange-uploading-video: ${CURRICULUM_SERVICE_RABBITMQ_EXCHANGE_UPLOADING_VIDEO:uploading-video-exchange}
+  routing-key-uploading-video: ${CURRICULUM_SERVICE_RABBITMQ_ROUTING_KEY_UPLOADING_VIDEO:uploading-video-routing-key}
+  queue-uploading-video: ${CURRICULUM_SERVICE_RABBITMQ_QUEUE_UPLOADING_VIDEO:uploading-video-queue}
 ---
 minio:
-  url: ${MINIO_URL:http://localhost:9000}
-  access-key: admin
-  secret-key: 12345678
-  thumbnail-bucket: thumbnail-bucket
-  video-bucket: video-bucket
+  url: ${CURRICULUM_SERVICE_MINIO_URL:http://localhost:9000}
+  access-key: ${CURRICULUM_SERVICE_MINIO_ACCESS_KEY:admin}
+  secret-key: ${CURRICULUM_SERVICE_MINIO_SECRET_KEY:12345678}
+  thumbnail-bucket: ${CURRICULUM_SERVICE_MINIO_THUMBNAIL_BUCKET:thumbnail-bucket}
+  video-bucket: ${CURRICULUM_SERVICE_MINIO_VIDEO_BUCKET:video-bucket}
 logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %clr([%thread]){faint} %clr(%-5level) %clr(%logger{36}){cyan} %clr(%X{requestId}){yellow} - %clr(%X{email}){green} - %msg%n"
 
 cloudinary:
-  cloudinary-name: dvynemzxx
-  api-key: 368324453129176
-  api-secret: FyxpYajXxv58KvfsbG9mYuYWOh8
+  cloudinary-name: ${CURRICULUM_SERVICE_CLOUDINARY_NAME:dvynemzxx}
+  api-key: ${CURRICULUM_SERVICE_CLOUDINARY_API_KEY:368324453129176}
+  api-secret: ${CURRICULUM_SERVICE_CLOUDINARY_API_SECRET:FyxpYajXxv58KvfsbG9mYuYWOh8}
+
 eureka:
   client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
+    serviceUrl:
+      defaultZone: http://${EUREKA_DOMAIN:localhost}:${EUREKA_PORT:8761}/eureka
 
 ---
 management:

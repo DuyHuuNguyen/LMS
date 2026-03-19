@@ -1,66 +1,66 @@
 spring:
   application:
-    name: ${SPRING_APPLICATION_NAME:user-service}
+    name: ${USER_SERVICE_SPRING_APPLICATION_NAME:user-service}
   config:
     import: optional:file:.env[.properties],optional:file:../.env[.properties]
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/db_user_service_lms}
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:123456}
+    url: ${USER_SERVICE_DB_URL:jdbc:postgresql://localhost:5432/db_user_service_lms}
+    username: ${USER_SERVICE_DB_USERNAME:postgres}
+    password: ${USER_SERVICE_DB_PASSWORD:123456}
     driver-class-name: org.postgresql.Driver
   jpa:
-    show-sql: ${JPA_SHOW_SQL:false}
+    show-sql: ${USER_SERVICE_JPA_SHOW_SQL:false}
     properties:
       hibernate:
-        format_sql: ${JPA_FORMAT_SQL:false}
-  cache:
-    type: redis
+        format_sql: ${USER_SERVICE_JPA_FORMAT_SQL:false}
+  data:
     redis:
-      time-to-live: ${REDIS_TTL:600000ms}
+      host: ${GLOBAL_REDIS_HOST:localhost}
+      port: ${GLOBAL_REDIS_PORT:6379}
   rabbitmq:
-    port: ${RABBITMQ_PORT:5672}
-    host: ${RABBITMQ_HOST:localhost}
-    username: ${RABBITMQ_USERNAME:guest}
-    password: ${RABBITMQ_PASSWORD:guest}
+    port: ${USER_SERVICE_RABBITMQ_PORT:5672}
+    host: ${USER_SERVICE_RABBITMQ_HOST:localhost}
+    username: ${USER_SERVICE_RABBITMQ_USERNAME:guest}
+    password: ${USER_SERVICE_RABBITMQ_PASSWORD:guest}
   mail:
-    host: smtp.gmail.com
-    port: 587
-    username: hotrotoyworld@gmail.com
-    password: tknm zdhx fiox vazw
+    host: ${USER_SERVICE_MAIL_HOST:smtp.gmail.com}
+    port: ${USER_SERVICE_MAIL_PORT:587}
+    username: ${USER_SERVICE_MAIL_USERNAME:}
+    password: ${USER_SERVICE_MAIL_PASSWORD:}
     properties:
       mail:
         smtp:
-          auth: ${MAIL_SMTP_AUTH:true}
+          auth: ${USER_SERVICE_MAIL_SMTP_AUTH:true}
           starttls:
-            enable: ${MAIL_SMTP_STARTTLS_ENABLE:true}
+            enable: ${USER_SERVICE_MAIL_SMTP_STARTTLS_ENABLE:true}
 
 jwt:
-  secretKey: ${JWT_SECRET_KEY:}
-  accessTokenExpirationTime: ${JWT_ACCESS_TOKEN_EXPIRATION:259200000} # 3 days
-  refreshTokenExpirationTime: ${JWT_REFRESH_TOKEN_EXPIRATION:2419200000} # 2 weeks
-  resetPasswordTokenExpirationTime: ${JWT_RESET_PASSWORD_TOKEN_EXPIRATION:900000} # 15 minutes
+  secretKey: ${USER_SERVICE_JWT_SECRET_KEY:}
+  accessTokenExpirationTime: ${USER_SERVICE_JWT_ACCESS_TOKEN_EXPIRATION:259200000} # 3 days
+  refreshTokenExpirationTime: ${USER_SERVICE_JWT_REFRESH_TOKEN_EXPIRATION:2419200000} # 2 weeks
+  resetPasswordTokenExpirationTime: ${USER_SERVICE_JWT_RESET_PASSWORD_TOKEN_EXPIRATION:900000} # 15 minutes
 
 rabbitmq:
-  exchange-name: ${RABBITMQ_EXCHANGE_NAME:demo}
-  user-mail-routing-key: ${RABBITMQ_USER_MAIL_ROUTING_KEY:demo}
-  user-mail-queue: ${RABBITMQ_USER_MAIL_QUEUE:lms-queue}
+  exchange-name: ${USER_SERVICE_RABBITMQ_EXCHANGE_NAME:demo}
+  user-mail-routing-key: ${USER_SERVICE_RABBITMQ_USER_MAIL_ROUTING_KEY:demo}
+  user-mail-queue: ${USER_SERVICE_RABBITMQ_USER_MAIL_QUEUE:lms-queue}
 
-  exchange-cache-data-name: ${RABBITMQ_EXCHANGE_CACHE_DATA_NAME:cache-lecturers-data}
-  cache-data-routing-key: ${RABBITMQ_CACHE_DATA_ROUTING_KEY:cache-lecturers-data}
-  cache-data-queue: ${RABBITMQ_CACHE_DATA_QUEUE:cache-data-queue}
+  exchange-cache-data-name: ${USER_SERVICE_RABBITMQ_EXCHANGE_CACHE_DATA_NAME:cache-lecturers-data}
+  cache-data-routing-key: ${USER_SERVICE_RABBITMQ_CACHE_DATA_ROUTING_KEY:cache-lecturers-data}
+  cache-data-queue: ${USER_SERVICE_RABBITMQ_CACHE_DATA_QUEUE:cache-data-queue}
 
 server:
-  port: ${SERVER_PORT:8083}
+  port: ${USER_SERVICE_SERVER_PORT:8083}
 
 cloudinary:
-  cloudinary-name: ${CLOUDINARY_NAME:dvynemzxx}
-  api-key: ${CLOUDINARY_API_KEY:368324453129176}
-  api-secret: ${CLOUDINARY_API_SECRET:FyxpYajXxv58KvfsbG9mYuYWOh8}
+  cloudinary-name: ${USER_SERVICE_CLOUDINARY_NAME:dvynemzxx}
+  api-key: ${USER_SERVICE_CLOUDINARY_API_KEY:368324453129176}
+  api-secret: ${USER_SERVICE_CLOUDINARY_API_SECRET:FyxpYajXxv58KvfsbG9mYuYWOh8}
 
 grpc:
   server:
     security:
-      enabled: ${GRPC_SERVER_SECURITY_ENABLED:false}
+      enabled: ${USER_SERVICE_GRPC_SERVER_SECURITY_ENABLED:false}
 
 logging:
   pattern:
@@ -68,8 +68,8 @@ logging:
 
 eureka:
   client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
+    serviceUrl:
+      defaultZone: http://${EUREKA_DOMAIN:localhost}:${EUREKA_PORT:8761}/eureka
 
 management:
   endpoints:
