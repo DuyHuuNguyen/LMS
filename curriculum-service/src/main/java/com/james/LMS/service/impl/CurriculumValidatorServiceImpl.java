@@ -1,9 +1,9 @@
 package com.james.LMS.service.impl;
 
 import com.james.LMS.dto.*;
+import com.james.LMS.dto.ValidInstructorHoldVideoDTO;
 import com.james.LMS.repository.CurriculumRepository;
 import com.james.LMS.service.CurriculumValidatorService;
-import com.james.LMS.service.ValidInstructorHoldVideoDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

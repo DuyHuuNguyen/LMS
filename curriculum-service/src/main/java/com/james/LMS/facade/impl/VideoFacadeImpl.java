@@ -3,6 +3,7 @@ package com.james.LMS.facade.impl;
 import com.james.LMS.config.MinioConfig;
 import com.james.LMS.config.SecurityUserDetails;
 import com.james.LMS.dto.ValidChangeSessionVideoAccessDTO;
+import com.james.LMS.dto.ValidInstructorHoldVideoDTO;
 import com.james.LMS.dto.ValidVideoUploadingAccessDTO;
 import com.james.LMS.dto.ValidateVideoAccessDTO;
 import com.james.LMS.entity.Session;

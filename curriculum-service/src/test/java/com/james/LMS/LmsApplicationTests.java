@@ -3,10 +3,10 @@ package com.james.LMS;
 import com.james.LMS.config.SecurityUserDetails;
 import com.james.LMS.dto.AuthDTO;
 import com.james.LMS.dto.BannerDTO;
-import com.james.LMS.dto.ValidUserPurchasedCurriculumAccessDTO;
 import com.james.LMS.enums.IdentifyTemplate;
 import com.james.LMS.facade.VideoFacade;
 import com.james.LMS.repository.CurriculumRepository;
+import com.james.LMS.repository.NoteRepository;
 import com.james.LMS.repository.TopicRepository;
 import com.james.LMS.repository.UserTopicRepository;
 import com.james.LMS.request.VideoUploadingPresignUrlRequest;
@@ -37,20 +37,27 @@ class LmsApplicationTests {
 
   @Autowired private VideoFacade videoFacade;
 
+  @Autowired private NoteRepository noteRepository;
+
   @Test
   public void testFindByCriteria() {}
 
   @Test
-  void run() {
-
-    log.info(
-        "{}",
-        this.curriculumRepository.isPurchasedCurriculum(
-            ValidUserPurchasedCurriculumAccessDTO.builder()
-                .userId(1L)
-                .curriculumId(1000L)
-                .build()));
+  public void run() {
+    noteRepository.findCurrentGlobalIndexByUserIdAndCurriculumId(2L, 2L);
   }
+
+  //  @Test
+  //  void run() {
+  //
+  //    log.info(
+  //        "{}",
+  //        this.curriculumRepository.isPurchasedCurriculum(
+  //            ValidUserPurchasedCurriculumAccessDTO.builder()
+  //                .userId(1L)
+  //                .curriculumId(1000L)
+  //                .build()));
+  //  }
 
   //    @Test
   //    void channelCurriculum(){

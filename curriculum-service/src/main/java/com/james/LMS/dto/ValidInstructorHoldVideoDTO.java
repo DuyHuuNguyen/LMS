@@ -1,4 +1,4 @@
-package com.james.LMS.service;
+package com.james.LMS.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
