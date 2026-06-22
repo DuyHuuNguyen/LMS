@@ -62,4 +62,9 @@ public class Curriculum extends BaseEntity {
 
   @OneToOne(mappedBy = "curriculum", fetch = FetchType.LAZY)
   private CurriculumAudit curriculumAudit;
+
+
+  public Long getChanelUserId(){
+    return this.channel.getUserId();
+  }
 }

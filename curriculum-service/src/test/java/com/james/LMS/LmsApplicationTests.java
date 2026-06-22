@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -44,7 +45,7 @@ class LmsApplicationTests {
 
   @Test
   public void run() {
-    noteRepository.findCurrentGlobalIndexByUserIdAndCurriculumId(2L, 2L);
+    noteRepository.findAllByUserIdAndCurriculumIdWithIsActiveIsTrue(2L, 2L, PageRequest.of(0,10));
   }
 
   //  @Test

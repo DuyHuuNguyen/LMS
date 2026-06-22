@@ -1,6 +1,9 @@
 package com.james.LMS.repository;
 
+import com.james.LMS.dto.NoteDTO;
 import com.james.LMS.entity.Note;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -17,4 +20,28 @@ public interface NoteRepository extends JpaRepository<Note,Long> {
      where uc is not null and uc.curriculum.id =:curriculumId
     """)
     Integer findCurrentGlobalIndexByUserIdAndCurriculumId(Long userId,Long curriculumId);
+
+
+    @Deprecated
+    @Query("""
+    select new com.james.LMS.dto.NoteDTO(
+        n.id,
+        n.globalIndex,
+        n.content,
+        n.notedAt,
+        n.noteType,
+        CAST( COALESCE(v.id, n.id) as long)
+    )
+    from Note n
+    left join n.video v
+    left join n.exam e
+    where n.userId = :userId
+      and n.isActive = true
+      and (
+            v.session.curriculum.id = :curriculumId
+         or e.session.curriculum.id = :curriculumId
+      )
+    order by n.globalIndex
+    """)
+    Page<NoteDTO> findAllByUserIdAndCurriculumIdWithIsActiveIsTrue(Long userId, Long curriculumId, Pageable pageable);
 }

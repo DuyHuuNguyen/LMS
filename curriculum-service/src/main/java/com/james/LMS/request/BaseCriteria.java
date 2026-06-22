@@ -20,4 +20,8 @@ public abstract class BaseCriteria {
   public String toString() {
     return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
   }
+
+  public Integer getCurrentPage(){
+    return currentPage - 1;
+  }
 }

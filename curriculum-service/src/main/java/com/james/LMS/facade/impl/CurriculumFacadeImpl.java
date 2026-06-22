@@ -22,6 +22,8 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
+
+import com.james.LMS.util.SecurityUserDetailsUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -54,41 +56,24 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
   @Override
   public BaseResponse<CurriculumReviewResponse> findCurriculumForReviewById(Long id) {
 
-    SecurityUserDetails principal =
-        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    SecurityUserDetails principal = SecurityUserDetailsUtil.PRINCIPAL;
 
     Curriculum curriculum =
         this.curriculumService
             .findByIdAndFetchChannel(id)
             .orElseThrow(() -> new EntityNotFoundException(ErrorCode.CURRICULUM_NOT_FOUND));
-    CompletableFuture<List<Session>> sessionsFuture =
-        CompletableFuture.supplyAsync(
-            () -> this.sessionService.findAllByCurriculumId(curriculum.getId()));
 
-    CompletableFuture<List<TopicDTO>> topicDTOSFuture =
-        CompletableFuture.supplyAsync(
-            () -> this.topicService.findAllTopicDTOByCurriculumId(curriculum.getId()));
-    CompletableFuture<Boolean> isExistWishListFuture =
-        CompletableFuture.supplyAsync(
-            () -> this.wishlistService.isExistByCurriculumIdAndUserId(id, principal.getId()));
+    CurriculumReviewFuturesDTO curriculumReviewFuturesDTO = buildCurriculumReviewCompletableFuture(curriculum.getId(),principal.getId(), curriculum.getChanelUserId());
 
-    CompletableFuture<Map<Long, List<BaseSessionContentDTO>>> collectContentSessionMapFuture =
-        sessionsFuture.thenApplyAsync(
-            sessions -> {
-              List<Long> sessionIds = sessions.stream().map(BaseEntity::getId).toList();
-              List<BaseSessionContentDTO> sessionContentDTOS =
-                  this.buildSessionContentDTO(sessionIds);
-              return sessionContentDTOS.stream()
-                  .collect(Collectors.groupingBy(BaseSessionContentDTO::getSessionId));
-            });
+    CompletableFuture<List<Session>> sessionsFuture = curriculumReviewFuturesDTO.getSessionsFuture();
 
-    CompletableFuture<InstructorDTO> instructorDTOFuture =
-        CompletableFuture.supplyAsync(
-            () ->
-                this.instructorService
-                    .findByUserId(curriculum.getChannel().getUserId())
-                    .orElseThrow(
-                        () -> new EntityNotFoundException(ErrorCode.INSTRUCTOR_NOT_FOUND)));
+    CompletableFuture<List<TopicDTO>> topicDTOSFuture = curriculumReviewFuturesDTO.getTopicDTOSFuture();
+
+    CompletableFuture<Boolean> isExistWishListFuture = curriculumReviewFuturesDTO.getIsExistWishListFuture();
+
+    CompletableFuture<Map<Long, List<BaseSessionContentDTO>>> collectContentSessionMapFuture = curriculumReviewFuturesDTO.getCollectContentSessionMapFuture();
+
+    CompletableFuture<InstructorDTO> instructorDTOFuture = curriculumReviewFuturesDTO.getInstructorDTOFuture();
 
     CompletableFuture.allOf(
             sessionsFuture,
@@ -132,11 +117,52 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
         true);
   }
 
+  private CurriculumReviewFuturesDTO buildCurriculumReviewCompletableFuture(Long curriculumId,Long userId, Long ownerChanelUserId){
+    CompletableFuture<List<Session>> sessionsFuture =
+            CompletableFuture.supplyAsync(
+                    () -> this.sessionService.findAllByCurriculumId(curriculumId));
+
+    CompletableFuture<List<TopicDTO>> topicDTOSFuture =
+            CompletableFuture.supplyAsync(
+                    () -> this.topicService.findAllTopicDTOByCurriculumId(curriculumId));
+
+    CompletableFuture<Boolean> isExistWishListFuture =
+            CompletableFuture.supplyAsync(
+                    () -> this.wishlistService.isExistByCurriculumIdAndUserId(curriculumId, userId));
+
+    CompletableFuture<Map<Long, List<BaseSessionContentDTO>>> collectContentSessionMapFuture =
+            sessionsFuture.thenApplyAsync(
+                    sessions -> {
+                      List<Long> sessionIds = sessions.stream().map(BaseEntity::getId).toList();
+                      List<BaseSessionContentDTO> sessionContentDTOS =
+                              this.buildSessionContentDTO(sessionIds);
+                      return sessionContentDTOS.stream()
+                              .collect(Collectors.groupingBy(BaseSessionContentDTO::getSessionId));
+                    });
+
+    CompletableFuture<InstructorDTO> instructorDTOFuture =
+            CompletableFuture.supplyAsync(
+                    () ->
+                            this.instructorService
+                                    .findByUserId(ownerChanelUserId)
+                                    .orElseThrow(
+                                            () -> new EntityNotFoundException(ErrorCode.INSTRUCTOR_NOT_FOUND)));
+
+    return CurriculumReviewFuturesDTO.builder()
+            .sessionsFuture(sessionsFuture)
+            .topicDTOSFuture(topicDTOSFuture)
+            .isExistWishListFuture(isExistWishListFuture)
+            .collectContentSessionMapFuture(collectContentSessionMapFuture)
+            .instructorDTOFuture(instructorDTOFuture)
+            .build();
+  }
+
   @Override
   public BaseResponse<CurriculumHomeResponse> findCurriculumForHome(
       CurriculumHomeRequest curriculumHomeRequest) {
     SecurityUserDetails principal =
         (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
     List<Long> followedTopicIds =
         this.topicService.findAllTopicIdsByUserId(
             principal.getId(),
@@ -147,6 +173,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
     Pageable pageable =
         PageRequest.of(
             curriculumHomeRequest.getCurrentPage() - 1, curriculumHomeRequest.getPageSize());
+
     Page<CurriculumDTO> curriculumDTOPage =
         this.curriculumService.findAllCurriculumsByFollowedTopicIdsOfUser(
             followedTopicIds, principal.getId(), pageable);
@@ -168,7 +195,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
                                 .totalItems(list.size())
                                 .data(list)
                                 .build())));
-    log.info("Curriculum response");
+
     return BaseResponse.build(
         CurriculumHomeResponse.builder()
             .topicNamePaginationDTOMap(topicNamePaginationDTOMap)
@@ -426,28 +453,36 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
     return BaseResponse.build(sessionDetailResponse, true);
   }
 
+
+  private static  final int DEFAULT_CURRENT_PAGE = 1;
+  private static final int DEFAULT_PAGE_SIZE = 10;
+  private static final long DEFAULT_DURATION_SECONDS = 0l;
+
   @Override
   public BaseResponse<PaginationResponse<SearchCurriculumResponse>> findAllByCriteria(
       CurriculumCriteria curriculumCriteria) {
-    int currentPage =
-        Objects.nonNull(curriculumCriteria) && Objects.nonNull(curriculumCriteria.getCurrentPage())
-            ? curriculumCriteria.getCurrentPage()
-            : 1;
-    int pageSize =
-        Objects.nonNull(curriculumCriteria) && Objects.nonNull(curriculumCriteria.getPageSize())
-            ? curriculumCriteria.getPageSize()
-            : 10;
-    String keyword = Objects.nonNull(curriculumCriteria) ? curriculumCriteria.getKeyword() : null;
-    long totalDurationSeconds =
-        Objects.nonNull(curriculumCriteria) && Objects.nonNull(curriculumCriteria.getDuration())
-            ? curriculumCriteria.getDuration()
-            : 0L;
-    Set<Long> requestedTopicIds =
-        Objects.nonNull(curriculumCriteria) ? curriculumCriteria.getTopicIds() : null;
-    boolean applyTopicFilter = Objects.nonNull(requestedTopicIds) && !requestedTopicIds.isEmpty();
-    Set<Long> topicIds = applyTopicFilter ? requestedTopicIds : Set.of(-1L);
 
-    Pageable pageable = PageRequest.of(currentPage - 1, pageSize);
+
+
+    int currentPage = Objects.nonNull(curriculumCriteria.getCurrentPage()) ? curriculumCriteria.getCurrentPage()
+            : DEFAULT_CURRENT_PAGE;
+
+    int pageSize =
+       Objects.nonNull(curriculumCriteria.getPageSize()) ? curriculumCriteria.getPageSize()
+            : DEFAULT_PAGE_SIZE;
+
+    String keyword = Objects.nonNull(curriculumCriteria.getKeyword())  ? curriculumCriteria.getKeyword() : null;
+
+    long totalDurationSeconds =  Objects.nonNull(curriculumCriteria.getDuration())
+            ? curriculumCriteria.getDuration()
+            : DEFAULT_DURATION_SECONDS;
+
+    Set<Long> requestedTopicIds = Objects.nonNull(curriculumCriteria.getTopicIds())  ? curriculumCriteria.getTopicIds() : null;
+
+    boolean applyTopicFilter = Objects.nonNull(requestedTopicIds) && !requestedTopicIds.isEmpty();
+    Set<Long> topicIds = applyTopicFilter ? requestedTopicIds : Set.of();
+
+    Pageable pageable = PageRequest.of(currentPage, pageSize);
 
     Page<CurriculumSearchDTO> curriculumSearchDTOPage =
         this.curriculumService.findAllByCriteria(

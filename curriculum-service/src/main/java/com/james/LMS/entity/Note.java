@@ -25,6 +25,9 @@ public class Note extends BaseEntity implements Comparable<Note> {
   @Column(name = "noted_at", nullable = false)
   private Long notedAt;
 
+  @Column(name = "user_id",nullable = false)
+  private Long userId;
+
   @Column(name = "note_type")
   @Enumerated(EnumType.STRING)
   private NoteType noteType;
