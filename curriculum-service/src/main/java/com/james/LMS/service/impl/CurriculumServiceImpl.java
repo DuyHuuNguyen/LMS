@@ -92,4 +92,7 @@ public class CurriculumServiceImpl implements CurriculumService {
     return this.curriculumRepository.findAllByCriteria(
         keyword, totalDurationSeconds, topicIds, applyTopicFilter, pageable);
   }
+
+
+
 }

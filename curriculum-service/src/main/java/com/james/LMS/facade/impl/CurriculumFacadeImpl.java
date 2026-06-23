@@ -117,18 +117,15 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
         true);
   }
 
-  private CurriculumReviewFuturesDTO buildCurriculumReviewCompletableFuture(Long curriculumId,Long userId, Long ownerChanelUserId){
-    CompletableFuture<List<Session>> sessionsFuture =
-            CompletableFuture.supplyAsync(
-                    () -> this.sessionService.findAllByCurriculumId(curriculumId));
+  private CurriculumReviewFuturesDTO buildCurriculumReviewCompletableFuture(Long curriculumId,Long userId, Long chanelUserId){
+    CompletableFuture<List<Session>> sessionsFuture = this.sessionService.findSessionsFutureByCurriculumId(curriculumId);
 
-    CompletableFuture<List<TopicDTO>> topicDTOSFuture =
-            CompletableFuture.supplyAsync(
-                    () -> this.topicService.findAllTopicDTOByCurriculumId(curriculumId));
+    CompletableFuture<List<TopicDTO>> topicDTOSFuture = this.topicService.findTopicsFutureByCurriculumId(curriculumId);
 
-    CompletableFuture<Boolean> isExistWishListFuture =
-            CompletableFuture.supplyAsync(
-                    () -> this.wishlistService.isExistByCurriculumIdAndUserId(curriculumId, userId));
+
+
+    CompletableFuture<Boolean> isExistWishListFuture = this.wishlistService.isExistCurriculumFutureByCurriculumIdAndUserId(userId,curriculumId);
+
 
     CompletableFuture<Map<Long, List<BaseSessionContentDTO>>> collectContentSessionMapFuture =
             sessionsFuture.thenApplyAsync(
@@ -144,7 +141,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
             CompletableFuture.supplyAsync(
                     () ->
                             this.instructorService
-                                    .findByUserId(ownerChanelUserId)
+                                    .findByUserId(chanelUserId)
                                     .orElseThrow(
                                             () -> new EntityNotFoundException(ErrorCode.INSTRUCTOR_NOT_FOUND)));
 
