@@ -15,9 +15,9 @@ public interface CurriculumService {
       List<Long> topicIdsOfUser, Integer currentPage, Integer limit);
 
   Page<CurriculumDTO> findAllCurriculumsByFollowedTopicIdsOfUser(
-      List<Long> followedTopicIds, Pageable pageable);
+      List<Long> followedTopicIds, Long userId, Pageable pageable);
 
-  Page<CurriculumDTO> findAllCurriculumByTopicId(Long topicId, Pageable pageable);
+  Page<CurriculumDTO> findAllCurriculumByTopicId(Long topicId, Long userId, Pageable pageable);
 
   Boolean existsCurriculumById(Long id);
 

@@ -20,6 +20,14 @@ spring:
     host: localhost
     username: guest
     password: guest
+  threads:
+    virtual:
+      enabled: true
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
 server:
   port: 8085
 ---
@@ -49,6 +57,7 @@ minio:
   secret-key: 12345678
   thumbnail-bucket: thumbnail-bucket
   video-bucket: video-bucket
+  part-size-mb: 16
 logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %clr([%thread]){faint} %clr(%-5level) %clr(%logger{36}){cyan} %clr(%X{requestId}){yellow} - %clr(%X{email}){green} - %msg%n"

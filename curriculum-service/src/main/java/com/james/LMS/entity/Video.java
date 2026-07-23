@@ -1,6 +1,8 @@
 package com.james.LMS.entity;
 
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,6 +38,11 @@ public class Video extends BaseSessionContent {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "session_id")
   private Session session;
+
+  @OneToMany(mappedBy = "video")
+  private List<Note> notes = new ArrayList<>();
+
+  //   private
 
   public void addSession(Session session) {
     this.session = session;

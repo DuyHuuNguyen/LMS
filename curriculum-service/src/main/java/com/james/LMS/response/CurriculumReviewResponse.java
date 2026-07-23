@@ -26,4 +26,5 @@ public class CurriculumReviewResponse {
   private Integer totalSessions;
   private Integer totalLectures;
   private List<SessionDTO> sessionDTOs;
+  private Boolean isWishlisted;
 }

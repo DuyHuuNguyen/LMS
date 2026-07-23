@@ -23,6 +23,7 @@ public class CurriculumDTO {
   private String thumbnail;
   private Long topicId;
   private String topicName;
+  private Boolean isWishListed;
 
   public void addLectureInfo(InstructorDTO lecturerDTO) {
     this.userId = lecturerDTO.getUserId();

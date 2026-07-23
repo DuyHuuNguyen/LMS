@@ -33,6 +33,10 @@ spring:
           auth: ${MAIL_SMTP_AUTH:true}
           starttls:
             enable: ${MAIL_SMTP_STARTTLS_ENABLE:true}
+  threads:
+    virtual:
+      enabled: true
+
 
 jwt:
   secretKey: ${JWT_SECRET_KEY:}

@@ -43,6 +43,9 @@ spring:
               - ${BE_ORIGIN}
               - ${FE_LOCAL_ORIGIN}
               - ${BE_LOCAL_ORIGIN}
+              - http://localhost:5173
+              - https://cnet-base-britney-rpm.trycloudflare.com
+              - https://geography-restrict-enormous-conditioning.trycloudflare.com
             allowedMethods:
               - GET
               - POST

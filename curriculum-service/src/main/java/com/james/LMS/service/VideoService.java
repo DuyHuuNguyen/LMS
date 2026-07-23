@@ -19,4 +19,6 @@ public interface VideoService {
   Optional<Video> findByIdentifyCode(String identifyCode);
 
   Optional<Video> findVideoAndFetchSessionById(Long id);
+
+  Optional<Video> findByIdAndIsActiveIsTrue(Long id);
 }

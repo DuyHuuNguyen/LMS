@@ -29,15 +29,20 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
             c.requirement,
             c.thumbnail,
             t.id,
-            t.name
+            t.name,
+            CASE
+             WHEN w IS NULL THEN false 
+             ELSE true
+           END
             )
           from Curriculum c
           join CurriculumTopic ct on ct.curriculum.id = c.id
           join Topic t on t.id = ct.topic.id
           join Channel ch on ch.id = c.channel.id
-          where t.id in (:followedTopicIds) and c.isActive and t.isActive and ch.isActive and  ct.isActive
+                left join Wishlist  w on w.userId =:userId and w.curriculum.id = c.id
+          where t.id in (:followedTopicIds) and c.isActive and t.isActive and ch.isActive and  ct.isActive 
       """)
-      Page<CurriculumDTO> findAllCurriculumsByFollowedTopicIdsOfUser(List<Long> followedTopicIds, Pageable pageable);
+      Page<CurriculumDTO> findAllCurriculumsByFollowedTopicIdsOfUser(List<Long> followedTopicIds,Long userId, Pageable pageable);
 
 
       @Query("""
@@ -53,15 +58,20 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
             c.requirement,
             c.thumbnail,
             t.id,
-            t.name
+            t.name, 
+            CASE
+             WHEN wl IS NULL THEN false 
+             ELSE wl.isActive
+           END
             )
           from Curriculum c
           join CurriculumTopic ct on ct.curriculum.id = c.id
           join Topic t on t.id = ct.topic.id
           join Channel ch on ch.id = c.channel.id
-          where t.id = :topicId and c.isActive and t.isActive and ch.isActive and  ct.isActive
+          left join Wishlist  wl on wl.curriculum.id = c.id
+          where t.id = :topicId and c.isActive and t.isActive and ch.isActive and  ct.isActive and wl.userId =:userId
       """)
-      Page<CurriculumDTO> findAllCurriculumByTopicId(Long topicId, Pageable pageable);
+      Page<CurriculumDTO> findAllCurriculumByTopicId(Long topicId,Long userId, Pageable pageable);
 
 
       Boolean existsCurriculumByIdAndIsActiveIsTrue(Long id);
@@ -162,7 +172,8 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
             c.requirement,
             c.thumbnail,
             t.id,
-            t.name
+            t.name,
+            wl.isActive
             )
           from Curriculum c
           join CurriculumTopic ct on ct.curriculum.id = c.id

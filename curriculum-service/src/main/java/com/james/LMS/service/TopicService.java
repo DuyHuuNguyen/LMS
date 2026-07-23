@@ -4,6 +4,7 @@ import com.james.LMS.dto.TopicDTO;
 import com.james.LMS.entity.Topic;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -19,4 +20,6 @@ public interface TopicService {
   Page<TopicDTO> findAllByUserId(Long userId, Pageable pageable);
 
   Optional<Topic> findById(Long id);
+
+  CompletableFuture<List<TopicDTO>> findTopicsFutureByCurriculumId(Long curriculumId);
 }

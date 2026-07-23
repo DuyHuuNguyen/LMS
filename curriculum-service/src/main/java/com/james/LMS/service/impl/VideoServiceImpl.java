@@ -48,4 +48,9 @@ public class VideoServiceImpl implements VideoService {
   public Optional<Video> findVideoAndFetchSessionById(Long id) {
     return this.videoRepository.findVideoAndFetchSessionById(id);
   }
+
+  @Override
+  public Optional<Video> findByIdAndIsActiveIsTrue(Long id) {
+    return this.videoRepository.findByIdAndIsActiveIsTrue(id);
+  }
 }

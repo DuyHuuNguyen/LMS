@@ -21,4 +21,7 @@ public class Exam extends BaseSessionContent {
 
   @OneToMany(mappedBy = "exam", fetch = FetchType.LAZY)
   private List<Test> tests = new ArrayList<>();
+
+  @OneToMany(mappedBy = "exam")
+  private List<Note> notes = new ArrayList<>();
 }

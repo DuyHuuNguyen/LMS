@@ -35,6 +35,7 @@ public class SecurityConfig implements WebMvcConfigurer {
   public static final String SECURITY_REQUIREMENT = "Bearer Authentication";
   public static final String COOKIE_SECURITY_NAME = "access-token";
   public static final String COOKIE_REFRESH_TOKEN_NAME = "refresh-token";
+  public static final String VALIDATE_LOGIN = "validate-login";
 
   private final String[] WHITE_LISTS = {
     "/swagger-ui/**",
@@ -76,7 +77,6 @@ public class SecurityConfig implements WebMvcConfigurer {
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     http.csrf(AbstractHttpConfigurer::disable)
-        .cors(cors -> {})
         .formLogin(AbstractHttpConfigurer::disable)
         .sessionManagement(
             session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

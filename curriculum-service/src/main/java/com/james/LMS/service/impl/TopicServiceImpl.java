@@ -6,7 +6,10 @@ import com.james.LMS.repository.TopicRepository;
 import com.james.LMS.service.TopicService;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.task.AsyncTaskExecutor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -15,6 +18,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TopicServiceImpl implements TopicService {
   private final TopicRepository topicRepository;
+
+  @Qualifier("VirtualThreadPerTaskExecutor")
+  private final AsyncTaskExecutor asyncTaskExecutor;
 
   @Override
   public List<TopicDTO> findAllTopicDTOByCurriculumId(Long curriculumId) {
@@ -44,5 +50,11 @@ public class TopicServiceImpl implements TopicService {
   @Override
   public Optional<Topic> findById(Long id) {
     return this.topicRepository.findById(id);
+  }
+
+  @Override
+  public CompletableFuture<List<TopicDTO>> findTopicsFutureByCurriculumId(Long curriculumId) {
+    return CompletableFuture.supplyAsync(
+        () -> this.findAllTopicDTOByCurriculumId(curriculumId), this.asyncTaskExecutor);
   }
 }

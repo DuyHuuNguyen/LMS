@@ -49,4 +49,6 @@ public interface VideoRepository extends JpaRepository<Video, Long> {
     where v.id =:id and v.isActive
     """)
     Optional<Video> findVideoAndFetchSessionById(Long id);
+
+    Optional<Video> findByIdAndIsActiveIsTrue(Long id);
 }
