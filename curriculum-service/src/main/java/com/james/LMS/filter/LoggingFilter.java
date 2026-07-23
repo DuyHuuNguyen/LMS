@@ -57,7 +57,7 @@ public class LoggingFilter extends OncePerRequestFilter {
       log.info(
           "Incoming Request: method={}, path={}, request={}",
           wrappedRequest.getMethod(),
-          wrappedRequest.getRequestURI(),
+          this.getRequestURL(wrappedRequest),
           requestBody);
 
       filterChain.doFilter(wrappedRequest, wrappedResponse);
@@ -118,5 +118,11 @@ public class LoggingFilter extends OncePerRequestFilter {
   private String formatBody(byte[] content) {
     String raw = new String(content, StandardCharsets.UTF_8);
     return raw;
+  }
+
+  private String getRequestURL(ContentCachingRequestWrapper wrappedRequest) {
+    String query =
+        wrappedRequest.getQueryString() == null ? "" : "?".concat(wrappedRequest.getQueryString());
+    return wrappedRequest.getRequestURI() + query;
   }
 }

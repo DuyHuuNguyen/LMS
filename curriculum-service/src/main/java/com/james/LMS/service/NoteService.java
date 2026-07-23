@@ -10,5 +10,6 @@ public interface NoteService {
 
   Integer findCurrentGlobalIndexByUserIdAndCurriculumId(Long userId, Long curriculumId);
 
-  Page<NoteDTO> findAllByUserIdAndCurriculumIdWithIsActiveIsTrue(Long userId, Long curriculumId, Pageable pageable);
+  Page<NoteDTO> findAllByUserIdAndCurriculumIdWithIsActiveIsTrue(
+      Long userId, Long curriculumId, Pageable pageable);
 }

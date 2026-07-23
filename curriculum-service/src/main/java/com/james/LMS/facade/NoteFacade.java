@@ -9,5 +9,5 @@ import com.james.LMS.response.PaginationResponse;
 public interface NoteFacade {
   BaseResponse<Void> createNote(UpsertNoteRequest upsertNoteRequest);
 
-    BaseResponse<PaginationResponse<NoteResponse>> findAllNote(NoteCriteria noteCriteria);
+  BaseResponse<PaginationResponse<NoteResponse>> findAllNote(NoteCriteria noteCriteria);
 }

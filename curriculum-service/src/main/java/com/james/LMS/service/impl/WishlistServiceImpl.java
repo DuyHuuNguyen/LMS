@@ -6,7 +6,6 @@ import com.james.LMS.repository.WishlistRepository;
 import com.james.LMS.service.WishlistService;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -44,8 +43,9 @@ public class WishlistServiceImpl implements WishlistService {
   }
 
   @Override
-  public CompletableFuture<Boolean> isExistCurriculumFutureByCurriculumIdAndUserId(Long curriculumId, Long userId) {
-    return  CompletableFuture.supplyAsync(
-            () -> this.isExistByCurriculumIdAndUserId(curriculumId, userId));
+  public CompletableFuture<Boolean> isExistCurriculumFutureByCurriculumIdAndUserId(
+      Long curriculumId, Long userId) {
+    return CompletableFuture.supplyAsync(
+        () -> this.isExistByCurriculumIdAndUserId(curriculumId, userId));
   }
 }

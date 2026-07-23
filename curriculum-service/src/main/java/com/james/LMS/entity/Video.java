@@ -42,6 +42,8 @@ public class Video extends BaseSessionContent {
   @OneToMany(mappedBy = "video")
   private List<Note> notes = new ArrayList<>();
 
+  //   private
+
   public void addSession(Session session) {
     this.session = session;
   }

@@ -36,8 +36,8 @@ public class NoteController {
   @Operation(tags = {"Note APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("isAuthenticated()")
-  public BaseResponse<PaginationResponse<NoteResponse>> findAllNotes(@NotNull NoteCriteria noteCriteria){
-      return this.noteFacade.findAllNote(noteCriteria);
+  public BaseResponse<PaginationResponse<NoteResponse>> findAllNotes(
+      @NotNull NoteCriteria noteCriteria) {
+    return this.noteFacade.findAllNote(noteCriteria);
   }
-
 }

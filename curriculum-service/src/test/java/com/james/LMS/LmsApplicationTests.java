@@ -45,7 +45,7 @@ class LmsApplicationTests {
 
   @Test
   public void run() {
-    noteRepository.findAllByUserIdAndCurriculumIdWithIsActiveIsTrue(2L, 2L, PageRequest.of(0,10));
+    noteRepository.findAllByUserIdAndCurriculumIdWithIsActiveIsTrue(2L, 2L, PageRequest.of(0, 10));
   }
 
   //  @Test

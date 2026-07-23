@@ -21,7 +21,7 @@ public abstract class BaseCriteria {
     return ReflectionToStringBuilder.toString(this, ToStringStyle.SHORT_PREFIX_STYLE);
   }
 
-  public Integer getCurrentPage(){
+  public Integer getCurrentPage() {
     return currentPage - 1;
   }
 }

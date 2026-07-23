@@ -20,7 +20,7 @@ import com.james.LMS.request.VideoStreamingPresignRequest;
 import com.james.LMS.request.VideoUploadingPresignUrlRequest;
 import com.james.LMS.response.BaseResponse;
 import com.james.LMS.service.*;
-import com.james.LMS.util.HashMD5Util;
+import com.james.LMS.util.IdentifyCodeOfVideoUtil;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
@@ -98,10 +98,9 @@ public class VideoFacadeImpl implements VideoFacade {
       throw new PermissionDeniedException(ErrorCode.UPLOADING_VIDEO_IS_DENIED);
 
     String identifyCode =
-        String.format(
-            IdentifyTemplate.IDENTIFY_CODE_TEMPLATE.getTemplate(),
-            principal.getUsername(),
-            HashMD5Util.encryptMd5(request.getVideoName()));
+        IdentifyCodeOfVideoUtil.genVideoIdentifyCode(
+            principal.getUsername(), request.getVideoName());
+
     Optional<Video> videoOptional = this.videoService.findByIdentifyCode(identifyCode);
 
     String videoUrl = UUID.randomUUID().toString().concat(DOT_MP4);

@@ -4,7 +4,6 @@ import com.james.LMS.dto.WishlistDTO;
 import com.james.LMS.entity.Wishlist;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -19,5 +18,6 @@ public interface WishlistService {
 
   Page<WishlistDTO> findAllByUserId(Long userId, Pageable pageable);
 
-  CompletableFuture<Boolean> isExistCurriculumFutureByCurriculumIdAndUserId(Long curriculumId, Long userId);
+  CompletableFuture<Boolean> isExistCurriculumFutureByCurriculumIdAndUserId(
+      Long curriculumId, Long userId);
 }

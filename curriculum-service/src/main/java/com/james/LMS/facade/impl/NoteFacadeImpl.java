@@ -19,14 +19,11 @@ import com.james.LMS.service.NoteService;
 import com.james.LMS.service.VideoService;
 import com.james.LMS.util.DurationConverterUtil;
 import java.time.Duration;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,51 +61,48 @@ public class NoteFacadeImpl implements NoteFacade {
     return BaseResponse.ok();
   }
 
-    @Override
-    public BaseResponse<PaginationResponse<NoteResponse>> findAllNote(NoteCriteria noteCriteria) {
-        SecurityUserDetails principal =
-                (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+  @Override
+  public BaseResponse<PaginationResponse<NoteResponse>> findAllNote(NoteCriteria noteCriteria) {
+    SecurityUserDetails principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        Long userId = principal.getId();
-        Long curriculumId = noteCriteria.getCurriculumId();
-        this.validateUserAccess(userId, curriculumId);
+    Long userId = principal.getId();
+    Long curriculumId = noteCriteria.getCurriculumId();
+    this.validateUserAccess(userId, curriculumId);
 
-        Pageable pageable =
-            PageRequest.of(
-                noteCriteria.getCurrentPage() - 1,
-                noteCriteria.getPageSize());
-        Page<NoteDTO> noteDTOPage =
-            this.noteService.findAllByUserIdAndCurriculumIdWithIsActiveIsTrue(
-                userId, curriculumId, pageable);
+    Pageable pageable =
+        PageRequest.of(noteCriteria.getCurrentPage() - 1, noteCriteria.getPageSize());
+    Page<NoteDTO> noteDTOPage =
+        this.noteService.findAllByUserIdAndCurriculumIdWithIsActiveIsTrue(
+            userId, curriculumId, pageable);
 
-        List<NoteResponse> noteResponses =
-            noteDTOPage
-                .stream()
-                .map(
-                    noteDTO ->
-                        NoteResponse.builder()
-                            .id(noteDTO.getId())
-                            .globalIndex(noteDTO.getGlobalIndex())
-                            .content(noteDTO.getContent())
-                            .notedAt(
-                                DurationConverterUtil.toStringDuration(
-                                    Duration.ofSeconds(noteDTO.getNotedAt())))
-                            .noteType(noteDTO.getNoteType())
-                            .sessionContentId(noteDTO.getSessionContentId())
-                            .build())
-                .toList();
+    List<NoteResponse> noteResponses =
+        noteDTOPage.stream()
+            .map(
+                noteDTO ->
+                    NoteResponse.builder()
+                        .id(noteDTO.getId())
+                        .globalIndex(noteDTO.getGlobalIndex())
+                        .content(noteDTO.getContent())
+                        .notedAt(
+                            DurationConverterUtil.toStringDuration(
+                                Duration.ofSeconds(noteDTO.getNotedAt())))
+                        .noteType(noteDTO.getNoteType())
+                        .sessionContentId(noteDTO.getSessionContentId())
+                        .build())
+            .toList();
 
-        return BaseResponse.build(
-            PaginationResponse.<NoteResponse>builder()
-                .data(noteResponses)
-                .currentPage(noteCriteria.getCurrentPage())
-                .totalPages(noteDTOPage.getTotalPages())
-                .totalElements(noteDTOPage.getNumberOfElements())
-                .build(),
-            true);
-    }
+    return BaseResponse.build(
+        PaginationResponse.<NoteResponse>builder()
+            .data(noteResponses)
+            .currentPage(noteCriteria.getCurrentPage())
+            .totalPages(noteDTOPage.getTotalPages())
+            .totalElements(noteDTOPage.getNumberOfElements())
+            .build(),
+        true);
+  }
 
-    private void validateUserAccess(Long userId, Long curriculumId) {
+  private void validateUserAccess(Long userId, Long curriculumId) {
     ValidUserPurchasedCurriculumAccessDTO dto =
         ValidUserPurchasedCurriculumAccessDTO.builder()
             .userId(userId)
@@ -132,7 +126,7 @@ public class NoteFacadeImpl implements NoteFacade {
         .globalIndex(globalIndex)
         .content(request.getContent())
         .notedAt(request.getNotedAt())
-            .userId(userId)
+        .userId(userId)
         .noteType(request.getNoteType());
   }
 

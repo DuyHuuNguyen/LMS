@@ -1,16 +1,11 @@
 package com.james.LMS.service.impl;
 
-import com.james.LMS.dto.BaseSessionContentDTO;
-import com.james.LMS.entity.BaseEntity;
 import com.james.LMS.entity.Session;
 import com.james.LMS.repository.SessionRepository;
 import com.james.LMS.service.SessionService;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -45,11 +40,7 @@ public class SessionServiceImpl implements SessionService {
     return this.sessionRepository.findAllSessionAndFetchVideosAndExamsByCurriculumId(curriculumId);
   }
 
-
-
   public CompletableFuture<List<Session>> findSessionsFutureByCurriculumId(Long curriculumId) {
-    return CompletableFuture.supplyAsync(
-                    () -> this.findAllByCurriculumId(curriculumId));
+    return CompletableFuture.supplyAsync(() -> this.findAllByCurriculumId(curriculumId));
   }
-
 }

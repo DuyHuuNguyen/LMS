@@ -25,8 +25,9 @@ public class NoteServiceImpl implements NoteService {
   }
 
   @Override
-  public Page<NoteDTO> findAllByUserIdAndCurriculumIdWithIsActiveIsTrue(Long userId, Long curriculumId, Pageable pageable) {
-    return this.noteRepository.findAllByUserIdAndCurriculumIdWithIsActiveIsTrue(userId,curriculumId,pageable);
+  public Page<NoteDTO> findAllByUserIdAndCurriculumIdWithIsActiveIsTrue(
+      Long userId, Long curriculumId, Pageable pageable) {
+    return this.noteRepository.findAllByUserIdAndCurriculumIdWithIsActiveIsTrue(
+        userId, curriculumId, pageable);
   }
-
 }

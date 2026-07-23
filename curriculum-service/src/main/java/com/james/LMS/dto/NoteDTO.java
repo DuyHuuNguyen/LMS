@@ -11,10 +11,10 @@ import lombok.ToString;
 @Getter
 @ToString
 public class NoteDTO {
-    private Long id;
-    private Integer globalIndex;
-    private String content;
-    private Long notedAt;
-    private NoteType noteType;
-    private Long sessionContentId;
+  private Long id;
+  private Integer globalIndex;
+  private String content;
+  private Long notedAt;
+  private NoteType noteType;
+  private Long sessionContentId;
 }
