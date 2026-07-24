@@ -12,7 +12,7 @@ public class CreateVideoPayload implements Serializable {
   private String videoUrl;
   private Long curriculumId;
   private Long sessionId;
-  private Long durationSeconds;
+  private Integer durationSeconds;
   private Integer index;
   private Boolean isPreView;
   private String name;

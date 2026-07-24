@@ -15,6 +15,6 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Bucket extends BaseEntity{
-    @Column("bucket_name")
+    @Column(name = "bucket_name")
     private String bucketName;
 }

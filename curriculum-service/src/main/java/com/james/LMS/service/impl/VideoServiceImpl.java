@@ -71,15 +71,19 @@ public class VideoServiceImpl implements VideoService {
   @SneakyThrows
   public Optional<String> generatePresignUrlToWatchVideo(Long id) {
     Video video = this.videoRepository.findByIdAndFetchBucket(id).orElseThrow(()-> new EntityNotFoundException(ErrorCode.VIDEO_METADATA_NOT_FOUND));
+    try {
 
-    String presignUrl = minioClient.getPresignedObjectUrl(
-            GetPresignedObjectUrlArgs.builder()
-                    .method(Method.GET)
-                    .bucket(video.getBucket().getBucketName())
-                    .object(video.getIdentifyCode())
-                    .expiry(video.getDurationSeconds())
-                    .build());
+      String presignUrl = minioClient.getPresignedObjectUrl(
+              GetPresignedObjectUrlArgs.builder()
+                      .method(Method.GET)
+                      .bucket(video.getBucket().getBucketName())
+                      .object(video.getIdentifyCode())
+                      .expiry(video.getDurationSeconds())
+                      .build());
+      return Optional.of(presignUrl);
+    } catch (Exception e) {
+      return Optional.empty();
+    }
 
-    return Optional.of(presignUrl);
   }
 }

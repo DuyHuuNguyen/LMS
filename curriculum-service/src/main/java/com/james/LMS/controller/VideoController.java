@@ -7,6 +7,7 @@ import com.james.LMS.request.UpsertMetadataVideoRequest;
 import com.james.LMS.request.VideoStreamingPresignRequest;
 import com.james.LMS.request.VideoUploadingPresignUrlRequest;
 import com.james.LMS.response.BaseResponse;
+import com.james.LMS.response.PresignUrlResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
@@ -29,7 +30,7 @@ public class VideoController {
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
   public BaseResponse<Void> createMetadataVideo(@RequestBody @Valid UpsertMetadataVideoRequest request){
-    return this.videoFacade.createVideoMetedata(request);
+    return this.videoFacade.createVideoMetadata(request);
   }
 
   @PostMapping("/presign-url-video-streaming")
@@ -37,7 +38,7 @@ public class VideoController {
   @Operation(tags = {"Video APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("isAuthenticated()")
-  public BaseResponse<String> generateVideoStreamingPresignUrl(
+  public BaseResponse<PresignUrlResponse> generateVideoStreamingPresignUrl(
       @RequestBody @Valid VideoStreamingPresignRequest request) {
     return this.videoFacade.generateVideoStreamingPresignUrl(request);
   }

@@ -17,5 +17,5 @@ public class VideoUploadingPresignUrlRequest {
   @NotNull private String videoName;
   @NotNull private Boolean isPreView;
   @Positive @NotNull private Integer index;
-  @Positive @NotNull private Long durationSeconds;
+  @Positive @NotNull private Integer durationSeconds;
 }

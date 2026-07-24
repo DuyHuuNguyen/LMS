@@ -6,6 +6,8 @@ import com.james.LMS.service.LastestWatchingVideoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class LastestWatchingVideoServiceImpl implements LastestWatchingVideoService {
@@ -14,5 +16,15 @@ public class LastestWatchingVideoServiceImpl implements LastestWatchingVideoServ
   @Override
   public void save(LastestWatchingVideo lastestWatchingVideo) {
     this.lastestWatchingVideoRepository.save(lastestWatchingVideo);
+  }
+
+  @Override
+  public Optional<LastestWatchingVideo> findById(Long id) {
+    return this.lastestWatchingVideoRepository.findByIdAndActive(id);
+  }
+
+  @Override
+  public Optional<LastestWatchingVideo> findByVideoId(Long videoId) {
+    return this.lastestWatchingVideoRepository.findByVideoId(videoId);
   }
 }
