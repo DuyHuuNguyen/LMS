@@ -45,7 +45,7 @@ public class UploadingLargeFileController {
   }
 
 
-  @PostMapping("/completation/{id}")
+  @PostMapping("/completion/{id}")
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"Upload large file APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
