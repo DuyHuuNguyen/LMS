@@ -33,24 +33,38 @@ public class UploadingLargeFileController {
     return uploadingLargeFileFacade.initialUploadLargeFileSession(request);
   }
 
-  @PostMapping(value = "/chunk/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+  @PostMapping(
+      value = "/chunk/{id}",
+      consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
+      produces = MediaType.APPLICATION_JSON_VALUE)
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"Upload large file APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
-  public BaseResponse<Void> uploadChunkFile(@PathVariable("id") Long id, @RequestPart("chunk") MultipartFile chunk, @ModelAttribute UploadFileChunkRequest request){
+  public BaseResponse<Void> uploadChunkFile(
+      @PathVariable("id") Long id,
+      @RequestPart("chunk") MultipartFile chunk,
+      @ModelAttribute UploadFileChunkRequest request) {
     request.withId(id);
     request.withChunk(chunk);
     return this.uploadingLargeFileFacade.uploadChunkFile(request);
   }
 
-
-  @PostMapping("/completation/{id}")
+  @PostMapping("/completion/{id}")
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"Upload large file APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
-  BaseResponse<Void> completeUploadFile(@PathVariable("id") Long id){
+  BaseResponse<Void> completeUploadFile(@PathVariable("id") Long id) {
     return this.uploadingLargeFileFacade.completeUploadFile(id);
+  }
+
+  @PostMapping("/cancellation/{id}")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Upload large file APIs"})
+  @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
+  @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
+  BaseResponse<Void> cancellationUploadFile(@PathVariable("id") Long id) {
+    return this.uploadingLargeFileFacade.cancellationUploadFile(id);
   }
 }

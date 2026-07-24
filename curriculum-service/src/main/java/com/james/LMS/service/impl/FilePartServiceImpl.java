@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class FilePartServiceImpl implements FilePartService {
-    private final FilePartRepository filePartRepository;
+  private final FilePartRepository filePartRepository;
 
-    @Override
-    public void save(FilePart filePart) {
-        this.filePartRepository.save(filePart);
-    }
+  @Override
+  public void save(FilePart filePart) {
+    this.filePartRepository.save(filePart);
+  }
 }

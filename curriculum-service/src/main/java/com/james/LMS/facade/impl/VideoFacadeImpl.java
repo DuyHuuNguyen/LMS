@@ -16,6 +16,7 @@ import com.james.LMS.facade.VideoFacade;
 import com.james.LMS.message.BaseMessage;
 import com.james.LMS.message.CreateVideoPayload;
 import com.james.LMS.request.UpdateSessionVideoRequest;
+import com.james.LMS.request.UpsertMetadataVideoRequest;
 import com.james.LMS.request.VideoStreamingPresignRequest;
 import com.james.LMS.request.VideoUploadingPresignUrlRequest;
 import com.james.LMS.response.BaseResponse;
@@ -185,6 +186,11 @@ public class VideoFacadeImpl implements VideoFacade {
         this.minioService.generatePresignedVideoStreamingUrl(
             "pWF2AmF0GwAAAZyo5AxrYWYAYXUCYXMaACWwUQ.mp4", 100000);
     return BaseResponse.build(presignUrl, true);
+  }
+
+  @Override
+  public BaseResponse<Void> createVideoMetadata(UpsertMetadataVideoRequest request) {
+    throw new UnsupportedOperationException("Chua code");
   }
 
   private BaseResponse<String> generatePresignUrlForUpload(String videoUrl) {

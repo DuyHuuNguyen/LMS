@@ -29,6 +29,7 @@ public class ConsumerCreateNewExamFacadeImpl implements ConsumerCreateNewExamFac
   @RabbitHandler
   @RabbitListener(queues = {"${rabbitmq.create-tests-queue}"})
   public void consume(BaseMessage<CreateTestsPayload> createTestsBaseMessage) {
+    log.info("Receive create tests message:");
     try {
       Exam exam =
           this.examService

@@ -13,5 +13,5 @@ public interface UploadingLargeFileFacade {
 
   BaseResponse<Void> completeUploadFile(Long uploadingSessionId);
 
-
+  BaseResponse<Void> cancellationUploadFile(Long id);
 }

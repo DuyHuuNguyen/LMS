@@ -21,8 +21,11 @@ public enum ErrorCode {
   SESSION_OR_VIDEO_NOT_FOUND("3002", "Video or session not found"),
   WISHLIST_NOT_FOUND("3002", "Wishlist not found"),
   CREATED_WISH_LIST("3003", "Created wishlist"),
-  UPLOADING_SESSION_NOT_FOUND("3004","Uploading session not found"),
-  THE_FILE_CHUNKS_MUST_BE_UPLOADED_IN_SEQUENTIAL_ORDER("3005", "The file chunks must be uploaded in sequential order" );
+  UPLOADING_SESSION_NOT_FOUND("3004", "Uploading session not found"),
+  THE_FILE_CHUNKS_MUST_BE_UPLOADED_IN_SEQUENTIAL_ORDER(
+      "3005", "The file chunks must be uploaded in sequential order"),
+  COMPLETE_UPLOAD_ERROR("3006", "Complete uploading file error"),
+  ABORT_UPLOAD_ERROR("3007", "Abort uploading error");
   private final String code;
   private final String message;
 }

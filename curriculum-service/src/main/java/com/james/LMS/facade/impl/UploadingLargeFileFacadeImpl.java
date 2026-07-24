@@ -1,6 +1,7 @@
 package com.james.LMS.facade.impl;
 
 import com.james.LMS.config.MinioConfig;
+import com.james.LMS.dto.AbortMultiPartUploadDTO;
 import com.james.LMS.dto.CompletedMultiPartDTO;
 import com.james.LMS.dto.UploadingPartDTO;
 import com.james.LMS.entity.FilePart;
@@ -26,10 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.awscore.exception.AwsServiceException;
 import software.amazon.awssdk.core.exception.SdkClientException;
-import software.amazon.awssdk.services.s3.model.CompletedPart;
-import software.amazon.awssdk.services.s3.model.S3Exception;
-
-import java.util.List;
 
 @Slf4j
 @Service
@@ -40,7 +37,7 @@ public class UploadingLargeFileFacadeImpl implements UploadingLargeFileFacade {
   private final UploadingSessionService uploadingSessionService;
   private final FilePartService filePartService;
   private final MinioConfig minioConfig;
-  private final Long PART_SIZE_BYTES = 16 * 1024 *1024L;
+  private final Long PART_SIZE_BYTES = 16 * 1024 * 1024L;
 
   @Override
   @Transactional
@@ -78,6 +75,7 @@ public class UploadingLargeFileFacadeImpl implements UploadingLargeFileFacade {
 
   /**
    * May be use queue to save entity in order to enhance performance !!
+   *
    * @param request
    * @return
    */
@@ -87,16 +85,22 @@ public class UploadingLargeFileFacadeImpl implements UploadingLargeFileFacade {
   public BaseResponse<Void> uploadChunkFile(UploadFileChunkRequest request) {
 
     boolean isTheFirstPart = request.getPartNumber().equals(1);
-    boolean isVerifyNextPartNumber = isTheFirstPart || this.uploadingSessionService.verifyNextPartNumberBySessionId(request.getUploadingSessionId(), request.getPartNumber());
+    boolean isVerifyNextPartNumber =
+        isTheFirstPart
+            || this.uploadingSessionService.verifyNextPartNumberBySessionId(
+                request.getUploadingSessionId(), request.getPartNumber());
 
     if (!isVerifyNextPartNumber)
-      throw new EntityNotFoundException(ErrorCode.THE_FILE_CHUNKS_MUST_BE_UPLOADED_IN_SEQUENTIAL_ORDER);
+      throw new EntityNotFoundException(
+          ErrorCode.THE_FILE_CHUNKS_MUST_BE_UPLOADED_IN_SEQUENTIAL_ORDER);
 
+    UploadingSession uploadingSession =
+        this.uploadingSessionService
+            .findById(request.getUploadingSessionId())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.UPLOADING_SESSION_NOT_FOUND));
 
-    UploadingSession uploadingSession = this.uploadingSessionService
-            .findById(request.getUploadingSessionId()).orElseThrow(()-> new EntityNotFoundException(ErrorCode.UPLOADING_SESSION_NOT_FOUND));
-
-    UploadingPartDTO uploadingPartDTO = UploadingPartDTO.builder()
+    UploadingPartDTO uploadingPartDTO =
+        UploadingPartDTO.builder()
             .bucket(uploadingSession.getBucket())
             .objectKey(uploadingSession.getObjectKey())
             .uploadId(uploadingSession.getS3UploadId())
@@ -107,7 +111,8 @@ public class UploadingLargeFileFacadeImpl implements UploadingLargeFileFacade {
 
     String etag = s3Service.uploadPart(uploadingPartDTO);
 
-    FilePart filePart = FilePart.builder()
+    FilePart filePart =
+        FilePart.builder()
             .partNumber(request.getPartNumber())
             .contentLength(request.getChunk().getSize())
             .etag(etag)
@@ -121,12 +126,48 @@ public class UploadingLargeFileFacadeImpl implements UploadingLargeFileFacade {
 
   @Override
   public BaseResponse<Void> completeUploadFile(Long uploadingSessionId) {
-    CompletedMultiPartDTO completedMultiPartDTO = this.uploadingSessionService.findCompletedParts(uploadingSessionId);
+    CompletedMultiPartDTO completedMultiPartDTO =
+        this.uploadingSessionService.findCompletedParts(uploadingSessionId);
+
     try {
       this.s3Service.completeMultipartUpload(completedMultiPartDTO);
+
     } catch (AwsServiceException | SdkClientException e) {
       log.error(e.getMessage());
+      throw new UploadFileException(ErrorCode.COMPLETE_UPLOAD_ERROR);
     }
+
+    UploadingSession uploadingSession = completedMultiPartDTO.uploadingSession();
+    uploadingSession.completeUpload();
+    this.uploadingSessionService.save(uploadingSession);
+
+    return BaseResponse.ok();
+  }
+
+  @Override
+  public BaseResponse<Void> cancellationUploadFile(Long id) {
+    UploadingSession uploadingSession =
+        this.uploadingSessionService
+            .findById(id)
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.UPLOADING_SESSION_NOT_FOUND));
+
+    AbortMultiPartUploadDTO abortMultiPartUploadDTO =
+        AbortMultiPartUploadDTO.builder()
+            .bucket(uploadingSession.getBucket())
+            .objectKey(uploadingSession.getObjectKey())
+            .uploadId(uploadingSession.getS3UploadId())
+            .build();
+
+    try {
+      this.s3Service.abortMultipartUpload(abortMultiPartUploadDTO);
+    } catch (AwsServiceException | SdkClientException e) {
+      log.error(e.getMessage());
+      throw new UploadFileException(ErrorCode.ABORT_UPLOAD_ERROR);
+    }
+
+    uploadingSession.abortUpload();
+    this.uploadingSessionService.save(uploadingSession);
+
     return BaseResponse.ok();
   }
 }
