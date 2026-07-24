@@ -3,6 +3,7 @@ package com.james.LMS.controller;
 import com.james.LMS.config.SecurityConfig;
 import com.james.LMS.facade.VideoFacade;
 import com.james.LMS.request.UpdateSessionVideoRequest;
+import com.james.LMS.request.UpsertMetadataVideoRequest;
 import com.james.LMS.request.VideoStreamingPresignRequest;
 import com.james.LMS.request.VideoUploadingPresignUrlRequest;
 import com.james.LMS.response.BaseResponse;
@@ -21,6 +22,15 @@ import org.springframework.web.bind.annotation.*;
 @Validated
 public class VideoController {
   private final VideoFacade videoFacade;
+
+  @PostMapping()
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Video APIs"})
+  @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
+  @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
+  public BaseResponse<Void> createMetadataVideo(@RequestBody @Valid UpsertMetadataVideoRequest request){
+    return this.videoFacade.createVideoMetedata(request);
+  }
 
   @PostMapping("/presign-url-video-streaming")
   @ResponseStatus(HttpStatus.OK)

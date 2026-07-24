@@ -2,6 +2,9 @@ package com.james.LMS.entity;
 
 import jakarta.persistence.*;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -45,5 +48,11 @@ public class BaseEntity {
 
   public void softDelete() {
     this.isActive = false;
+  }
+
+  public LocalDateTime getLocalDateTimeCreatedAt(String timeZone) {
+    return Instant.ofEpochMilli(this.createdAt)
+            .atZone(ZoneId.of(timeZone))
+            .toLocalDateTime();
   }
 }
