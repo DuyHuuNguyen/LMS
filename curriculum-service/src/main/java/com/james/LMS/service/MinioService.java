@@ -14,5 +14,6 @@ public interface MinioService {
 
   Boolean isExistFile(String bucket, String fileUrl);
 
-  PresignURLAndPauseDTO generatePresignedVideoStreamingUrl(String fileName, Integer durationOfVideo, Long pausedAt);
+  PresignURLAndPauseDTO generatePresignedVideoStreamingUrl(
+      String fileName, Integer durationOfVideo, Long pausedAt);
 }

@@ -29,7 +29,8 @@ public class VideoController {
   @Operation(tags = {"Video APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
-  public BaseResponse<Void> createMetadataVideo(@RequestBody @Valid UpsertMetadataVideoRequest request){
+  public BaseResponse<Void> createMetadataVideo(
+      @RequestBody @Valid UpsertMetadataVideoRequest request) {
     return this.videoFacade.createVideoMetadata(request);
   }
 

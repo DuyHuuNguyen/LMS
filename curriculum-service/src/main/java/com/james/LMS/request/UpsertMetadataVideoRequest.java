@@ -8,13 +8,12 @@ import lombok.*;
 @Getter
 @ToString
 public class UpsertMetadataVideoRequest {
-    @Hidden
-    private Long id;
-    private Long durationSeconds;
-    private String thumbnail;
-    private Integer size;
+  @Hidden private Long id;
+  private Long durationSeconds;
+  private String thumbnail;
+  private Integer size;
 
-    public void withId(Long id){
-        this.id = id;
-    }
+  public void withId(Long id) {
+    this.id = id;
+  }
 }

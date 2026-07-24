@@ -6,10 +6,10 @@ import com.james.LMS.request.VideoStreamingPresignRequest;
 import com.james.LMS.request.VideoUploadingPresignUrlRequest;
 import com.james.LMS.response.BaseResponse;
 import com.james.LMS.response.PresignUrlResponse;
-import jakarta.validation.Valid;
 
 public interface VideoFacade {
-  BaseResponse<PresignUrlResponse> generateVideoStreamingPresignUrl(VideoStreamingPresignRequest request);
+  BaseResponse<PresignUrlResponse> generateVideoStreamingPresignUrl(
+      VideoStreamingPresignRequest request);
 
   BaseResponse<String> generateVideoUploadPresignUrl(VideoUploadingPresignUrlRequest request);
 
@@ -17,5 +17,5 @@ public interface VideoFacade {
 
   BaseResponse<String> genPresignStreamingVideo(String videoName);
 
-    BaseResponse<Void> createVideoMetadata(@Valid UpsertMetadataVideoRequest request);
+  BaseResponse<Void> createVideoMetadata(UpsertMetadataVideoRequest request);
 }

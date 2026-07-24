@@ -8,4 +8,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BucketRepository extends JpaRepository<Bucket, Long> {
   Optional<Bucket> findByBucketNameAndIsActiveIsTrue(String bucketName);
+  Optional<Bucket> findByActive();
 }

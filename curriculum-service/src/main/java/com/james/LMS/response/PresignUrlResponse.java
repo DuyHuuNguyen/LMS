@@ -8,6 +8,6 @@ import lombok.*;
 @Builder
 @Getter
 public class PresignUrlResponse {
-    private String presignUrl;
-    private Integer pausedAt;
+  private String presignUrl;
+  private Integer pausedAt;
 }

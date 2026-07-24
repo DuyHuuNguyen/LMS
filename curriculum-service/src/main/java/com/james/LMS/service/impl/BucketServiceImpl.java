@@ -28,4 +28,9 @@ public class BucketServiceImpl implements BucketService {
   public Page<Bucket> findAll(Pageable pageable) {
     return this.bucketRepository.findAll(pageable);
   }
+
+  @Override
+  public Optional<Bucket> findByActive() {
+    return this.bucketRepository.findByActive();
+  }
 }

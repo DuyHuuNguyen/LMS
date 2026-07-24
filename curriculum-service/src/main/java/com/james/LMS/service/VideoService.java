@@ -4,6 +4,7 @@ import com.james.LMS.dto.VideoDTO;
 import com.james.LMS.entity.Video;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public interface VideoService {
   List<Video> findAllBySessionIds(List<Long> sessionIds);
@@ -23,4 +24,6 @@ public interface VideoService {
   Optional<Video> findByIdAndIsActiveIsTrue(Long id);
 
   Optional<String> generatePresignUrlToWatchVideo(Long id);
+
+  CompletableFuture<Video> findCompletableFutureVideoAndFetchSessionById(Long videoId);
 }

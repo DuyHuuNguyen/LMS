@@ -8,6 +8,9 @@ import com.james.LMS.response.BaseResponse;
 import com.james.LMS.response.ExceptionResponse;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutionException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -17,6 +20,46 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 public class RestHandlerException {
+
+  @ExceptionHandler(java.util.concurrent.ExecutionException.class)
+  public ResponseEntity<BaseResponse<ExceptionResponse>> handleCompletionException(
+          ExecutionException ex) {
+
+    Throwable cause = ex.getCause();
+
+    if (cause instanceof EntityNotFoundException e) {
+      return handleEntityNotFoundException(e);
+    }
+
+    if (cause instanceof PermissionDeniedException e) {
+      return handlePermissionDeniedException(e);
+    }
+
+    return new ResponseEntity<>(
+            BaseResponse.build(
+                    new ExceptionResponse("23130075", "Server is error, Call dev right now"), false),
+            HttpStatus.BAD_REQUEST);
+  }
+
+  @ExceptionHandler(java.util.concurrent.CompletionException.class)
+  public ResponseEntity<BaseResponse<ExceptionResponse>> handleCompletionException(
+          CompletionException ex) {
+
+    Throwable cause = ex.getCause();
+
+    if (cause instanceof EntityNotFoundException e) {
+      return handleEntityNotFoundException(e);
+    }
+
+    if (cause instanceof PermissionDeniedException e) {
+      return handlePermissionDeniedException(e);
+    }
+
+    return new ResponseEntity<>(
+            BaseResponse.build(
+                    new ExceptionResponse("23130370", "Server is error, Call dev right now"), false),
+            HttpStatus.BAD_REQUEST);
+  }
 
   @ExceptionHandler(EntityNotFoundException.class)
   public ResponseEntity<BaseResponse<ExceptionResponse>> handleEntityNotFoundException(

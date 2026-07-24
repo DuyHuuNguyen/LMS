@@ -3,10 +3,9 @@ package com.james.LMS.service.impl;
 import com.james.LMS.entity.LastestWatchingVideo;
 import com.james.LMS.repository.LastestWatchingVideoRepository;
 import com.james.LMS.service.LastestWatchingVideoService;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

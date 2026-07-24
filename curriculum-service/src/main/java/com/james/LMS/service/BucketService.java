@@ -11,4 +11,6 @@ public interface BucketService {
   Optional<Bucket> findByName(String bucketName);
 
   Page<Bucket> findAll(Pageable pageable);
+
+  Optional<Bucket> findByActive();
 }

@@ -24,12 +24,11 @@ import com.james.LMS.response.BaseResponse;
 import com.james.LMS.response.PresignUrlResponse;
 import com.james.LMS.service.*;
 import com.james.LMS.util.IdentifyCodeOfVideoUtil;
+import com.james.LMS.util.SecurityUserDetailsUtil;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
-
-import com.james.LMS.util.SecurityUserDetailsUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -69,19 +68,21 @@ public class VideoFacadeImpl implements VideoFacade {
     if (!isPurchasedCurriculumToHaveVideo)
       throw new PermissionDeniedException(ErrorCode.PERMISSION_DENIED_VIDEO);
 
-    String presignUrl = this.videoService.generatePresignUrlToWatchVideo(request.getVideoId()).orElseThrow(()-> new EntityNotFoundException(ErrorCode.VIDEO_NOT_FOUND_AT_STORAGE));
+    String presignUrl =
+        this.videoService
+            .generatePresignUrlToWatchVideo(request.getVideoId())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.VIDEO_NOT_FOUND_AT_STORAGE));
 
     int pausedAt = ZERO;
-    Optional<LastestWatchingVideo> lastestWatchingVideo = this.lastestWatchingVideoService.findByVideoId(request.getVideoId());
+    Optional<LastestWatchingVideo> lastestWatchingVideo =
+        this.lastestWatchingVideoService.findByVideoId(request.getVideoId());
 
-    if (lastestWatchingVideo.isPresent()){
-       pausedAt = lastestWatchingVideo.get().getPausedAt();
+    if (lastestWatchingVideo.isPresent()) {
+      pausedAt = lastestWatchingVideo.get().getPausedAt();
     }
 
-    return BaseResponse.build(PresignUrlResponse.builder()
-                    .presignUrl(presignUrl)
-                    .pausedAt(pausedAt)
-            .build(), true);
+    return BaseResponse.build(
+        PresignUrlResponse.builder().presignUrl(presignUrl).pausedAt(pausedAt).build(), true);
   }
 
   @Override
@@ -159,19 +160,10 @@ public class VideoFacadeImpl implements VideoFacade {
       throw new PermissionDeniedException(ErrorCode.PERMISSION_DENIED_VIDEO);
 
     CompletableFuture<Video> videoFuture =
-        CompletableFuture.supplyAsync(
-            () ->
-                this.videoService
-                    .findVideoAndFetchSessionById(request.getId())
-                    .orElseThrow(
-                        () -> new EntityNotFoundException(ErrorCode.VIDEO_METADATA_NOT_FOUND)));
+        this.videoService.findCompletableFutureVideoAndFetchSessionById(request.getId());
 
     CompletableFuture<Session> sessionFuture =
-        CompletableFuture.supplyAsync(
-            () ->
-                this.sessionService
-                    .findById(request.getNewSessionId())
-                    .orElseThrow(() -> new EntityNotFoundException(ErrorCode.SESSION_NOT_FOUND)));
+        this.sessionService.findCompletableFutureSessionById(request.getNewSessionId());
     try {
       CompletableFuture.allOf(videoFuture, sessionFuture).join();
 

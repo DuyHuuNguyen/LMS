@@ -16,7 +16,6 @@ public class BaseMessage<T> implements Serializable {
   private MessageType type;
   private Instant createdAt;
   private SourceMessageEnum source;
-  @Builder.Default
-  private String XRequestId = MDC.get("requestId").toString();
+  @Builder.Default private String XRequestId = MDC.get("requestId").toString();
   private T payload;
 }

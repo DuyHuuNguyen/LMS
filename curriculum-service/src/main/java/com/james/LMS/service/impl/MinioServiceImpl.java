@@ -14,10 +14,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-
 @Service
 @RequiredArgsConstructor
 public class MinioServiceImpl implements MinioService {
@@ -28,7 +24,8 @@ public class MinioServiceImpl implements MinioService {
   @Override
   @SneakyThrows
   public void createBucket(String bucketName) {
-    boolean bucketExists = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
+    boolean bucketExists =
+        minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
     if (!bucketExists) {
       minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
     }
@@ -87,10 +84,11 @@ public class MinioServiceImpl implements MinioService {
 
   @Override
   @SneakyThrows
-  public PresignURLAndPauseDTO generatePresignedVideoStreamingUrl(String fileName, Integer durationOfVideo, Long pausedAt){
+  public PresignURLAndPauseDTO generatePresignedVideoStreamingUrl(
+      String fileName, Integer durationOfVideo, Long pausedAt) {
     return PresignURLAndPauseDTO.builder()
-            .presignURL(this.generatePresignedVideoStreamingUrl(fileName,durationOfVideo))
-            .pausedAt(pausedAt)
-            .build();
+        .presignURL(this.generatePresignedVideoStreamingUrl(fileName, durationOfVideo))
+        .pausedAt(pausedAt)
+        .build();
   }
 }

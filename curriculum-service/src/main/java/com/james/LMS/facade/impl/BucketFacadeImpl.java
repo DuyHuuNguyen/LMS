@@ -11,10 +11,10 @@ import com.james.LMS.service.BucketService;
 import com.james.LMS.service.MinioService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,14 +29,18 @@ public class BucketFacadeImpl implements BucketFacade {
     Bucket bucket =
         this.bucketService
             .findByName(request.getBucketName())
-            .orElseGet(() -> this.bucketService.save(Bucket.builder().bucketName(request.getBucketName()).build()));
+            .orElseGet(
+                () ->
+                    this.bucketService.save(
+                        Bucket.builder().bucketName(request.getBucketName()).build()));
     return BaseResponse.build(this.toResponse(bucket), true);
   }
 
   @Override
   public BaseResponse<PaginationResponse<BucketResponse>> findAllBuckets(BucketCriteria criteria) {
     Page<Bucket> bucketPage =
-        this.bucketService.findAll(PageRequest.of(criteria.getCurrentPage(), criteria.getPageSize()));
+        this.bucketService.findAll(
+            PageRequest.of(criteria.getCurrentPage(), criteria.getPageSize()));
     List<BucketResponse> buckets = bucketPage.getContent().stream().map(this::toResponse).toList();
     return BaseResponse.build(
         PaginationResponse.<BucketResponse>builder()
