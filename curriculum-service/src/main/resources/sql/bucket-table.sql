@@ -1,0 +1,25 @@
+CREATE TABLE buckets
+(
+    id          BIGSERIAL PRIMARY KEY,
+
+    bucket_name       VARCHAR(100) NOT NULL UNIQUE,
+
+    is_active   BOOLEAN NOT NULL DEFAULT TRUE,
+    version     BIGINT NOT NULL DEFAULT 0,
+
+    created_at  BIGINT NOT NULL DEFAULT (EXTRACT(EPOCH FROM NOW()) * 1000)::BIGINT,
+    updated_at  BIGINT NOT NULL DEFAULT (EXTRACT(EPOCH FROM NOW()) * 1000)::BIGINT
+);
+
+create table video_buckets(
+  id          BIGSERIAL PRIMARY KEY,
+
+  bucket_id      VARCHAR(100) NOT NULL,
+  video_id      VARCHAR(100) NOT NULL,
+
+  is_active   BOOLEAN NOT NULL DEFAULT TRUE,
+  version     BIGINT NOT NULL DEFAULT 0,
+
+  created_at  BIGINT NOT NULL DEFAULT (EXTRACT(EPOCH FROM NOW()) * 1000)::BIGINT,
+  updated_at  BIGINT NOT NULL DEFAULT (EXTRACT(EPOCH FROM NOW()) * 1000)::BIGINT
+)

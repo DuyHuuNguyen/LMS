@@ -1,15 +1,22 @@
 package com.james.LMS.service.impl;
 
 import com.james.LMS.config.MinioConfig;
+import com.james.LMS.dto.PresignURLAndPauseDTO;
 import com.james.LMS.service.MinioService;
+import io.minio.BucketExistsArgs;
 import io.minio.GetPresignedObjectUrlArgs;
+import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import io.minio.StatObjectArgs;
-import io.minio.errors.ErrorResponseException;
+import io.minio.errors.*;
 import io.minio.http.Method;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +24,15 @@ public class MinioServiceImpl implements MinioService {
   private final MinioClient minioClient;
   private final MinioConfig config;
   private final int EXPIRED_AT = 60 * 10;
+
+  @Override
+  @SneakyThrows
+  public void createBucket(String bucketName) {
+    boolean bucketExists = minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build());
+    if (!bucketExists) {
+      minioClient.makeBucket(MakeBucketArgs.builder().bucket(bucketName).build());
+    }
+  }
 
   @Override
   @SneakyThrows
@@ -67,5 +83,14 @@ public class MinioServiceImpl implements MinioService {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  @Override
+  @SneakyThrows
+  public PresignURLAndPauseDTO generatePresignedVideoStreamingUrl(String fileName, Integer durationOfVideo, Long pausedAt){
+    return PresignURLAndPauseDTO.builder()
+            .presignURL(this.generatePresignedVideoStreamingUrl(fileName,durationOfVideo))
+            .pausedAt(pausedAt)
+            .build();
   }
 }

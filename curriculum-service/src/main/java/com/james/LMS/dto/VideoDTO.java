@@ -11,7 +11,7 @@ import lombok.*;
 @Getter
 @ToString
 public class VideoDTO extends BaseSessionContentDTO {
-  @JsonIgnore private Long durationSeconds;
+  @JsonIgnore private Integer durationSeconds;
 
   public VideoDTO(
       Long id,
@@ -19,7 +19,7 @@ public class VideoDTO extends BaseSessionContentDTO {
       Boolean isPreview,
       Integer index,
       Long sessionId,
-      Long durationSeconds) {
+      Integer durationSeconds) {
     super(id, name, isPreview, index, sessionId, SessionContentEnum.VIDEO);
     this.durationSeconds = durationSeconds;
   }

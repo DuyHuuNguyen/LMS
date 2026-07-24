@@ -21,4 +21,6 @@ public interface VideoService {
   Optional<Video> findVideoAndFetchSessionById(Long id);
 
   Optional<Video> findByIdAndIsActiveIsTrue(Long id);
+
+  Optional<String> generatePresignUrlToWatchVideo(Long id);
 }
