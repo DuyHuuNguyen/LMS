@@ -70,13 +70,13 @@ public class UserFacadeV2Impl implements UserFacadeV2 {
             .build();
 
     ResponseCookie validateLoginCookie =
-            ResponseCookie.from(SecurityConfig.VALIDATE_LOGIN, "true")
-                    .httpOnly(false)
-                    .secure(false)     // localhost
-                    .sameSite("Lax")
-                    .path("/")
-                    .maxAge(COOKIE_REFRESH_TOKEN_TTL)
-                    .build();
+        ResponseCookie.from(SecurityConfig.VALIDATE_LOGIN, "true")
+            .httpOnly(false)
+            .secure(false) // localhost
+            .sameSite("Lax")
+            .path("/")
+            .maxAge(COOKIE_REFRESH_TOKEN_TTL)
+            .build();
 
     response.addHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
     response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());

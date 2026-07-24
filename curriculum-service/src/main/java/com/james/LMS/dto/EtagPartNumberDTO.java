@@ -10,6 +10,6 @@ import lombok.ToString;
 @Getter
 @ToString
 public class EtagPartNumberDTO {
-    private String etag;
-    private Integer partNumber;
+  private String etag;
+  private Integer partNumber;
 }

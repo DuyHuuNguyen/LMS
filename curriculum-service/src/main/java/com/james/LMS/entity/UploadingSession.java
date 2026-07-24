@@ -39,4 +39,12 @@ public class UploadingSession extends BaseEntity {
   @OneToMany(mappedBy = "uploadingSession", fetch = FetchType.LAZY)
   @Builder.Default
   private List<FilePart> partFiles = new ArrayList<>();
+
+  public void completeUpload() {
+    this.status = UploadingSessionStatus.COMPETED;
+  }
+
+  public void abortUpload() {
+    this.status = UploadingSessionStatus.CANCELLATION;
+  }
 }
