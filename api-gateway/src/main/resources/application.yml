@@ -44,6 +44,7 @@ spring:
               - ${FE_LOCAL_ORIGIN}
               - ${BE_LOCAL_ORIGIN}
               - http://localhost:5173
+              - http://localhost:5173
               - https://goal-attended-mini-businesses.trycloudflare.com
               - https://geography-restrict-enormous-conditioning.trycloudflare.com
             allowedMethods:

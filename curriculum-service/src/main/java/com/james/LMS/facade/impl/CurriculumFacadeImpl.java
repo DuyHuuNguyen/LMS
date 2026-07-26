@@ -176,7 +176,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
 
     Pageable pageable =
         PageRequest.of(
-            curriculumHomeRequest.getCurrentPage() - 1, curriculumHomeRequest.getPageSize());
+            curriculumHomeRequest.getCurrentPage() , curriculumHomeRequest.getPageSize());
 
     Page<CurriculumDTO> curriculumDTOPage =
         this.curriculumService.findAllCurriculumsByFollowedTopicIdsOfUser(
@@ -212,7 +212,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
       TopicCriteria topicCriteria) {
     log.info("Query DB for topics...");
     Pageable pageable =
-        PageRequest.of(topicCriteria.getCurrentPage() - 1, topicCriteria.getPageSize());
+        PageRequest.of(topicCriteria.getCurrentPage() , topicCriteria.getPageSize());
     Page<TopicDTO> topicDTOPage = this.topicService.findAll(pageable);
     List<TopicResponse> topicResponses =
         topicDTOPage
@@ -273,7 +273,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
 
     Pageable pageable =
         PageRequest.of(
-            curriculumByTopicRequest.getCurrentPage() - 1, curriculumByTopicRequest.getPageSize());
+            curriculumByTopicRequest.getCurrentPage() , curriculumByTopicRequest.getPageSize());
     Page<CurriculumDTO> curriculumDTOPage =
         this.curriculumService.findAllCurriculumByTopicId(
             curriculumByTopicRequest.getTopicId(), principal.getId(), pageable);
@@ -298,7 +298,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
         (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     Pageable pageable =
         PageRequest.of(
-            purchasedCurriculumCriteria.getCurrentPage() - 1,
+            purchasedCurriculumCriteria.getCurrentPage() ,
             purchasedCurriculumCriteria.getPageSize());
 
     Page<PurchasedCurriculumDTO> purchasedCurriculumDTOPage =
@@ -347,7 +347,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
     SecurityUserDetails principal =
         (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     Pageable pageable =
-        PageRequest.of(wishlistRequest.getCurrentPage() - 1, wishlistRequest.getPageSize());
+        PageRequest.of(wishlistRequest.getCurrentPage() , wishlistRequest.getPageSize());
     Page<WishListCurriculumDTO> curriculumDTOPage =
         this.curriculumService.findAllWishlistCurriculum(principal.getId(), pageable);
 
