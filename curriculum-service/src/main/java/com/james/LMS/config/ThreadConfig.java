@@ -11,7 +11,6 @@ import org.springframework.scheduling.annotation.EnableAsync;
 
 @EnableAsync
 @Configuration
-@ConditionalOnProperty(value = "spring.thread-executor", havingValue = "virtual")
 public class ThreadConfig {
 
   @Bean

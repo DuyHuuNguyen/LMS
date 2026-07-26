@@ -20,8 +20,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -40,19 +38,22 @@ public class ConsumerCreateNewVideoFacadeImpl implements ConsumerCreateNewVideFa
     CreateVideoPayload payload = createVideosBaseMessage.getPayload();
 
     try {
-    Bucket bucket = this.bucketService.findByActive().orElseThrow(()-> new EntityNotFoundException(ErrorCode.BUCKET_NOT_FOUND));
+      Bucket bucket =
+          this.bucketService
+              .findByActive()
+              .orElseThrow(() -> new EntityNotFoundException(ErrorCode.BUCKET_NOT_FOUND));
 
-    Video video =
-        Video.builder()
-            .durationSeconds(payload.getDurationSeconds())
-            .view(0)
-            .videoUrl(payload.getVideoUrl()) // remove when update db
-            .index(payload.getIndex())
-            .name(payload.getName())
-            .isPreview(payload.getIsPreView())
-            .identifyCode(payload.getIdentifyCode())
-                .bucket(bucket)
-            .build();
+      Video video =
+          Video.builder()
+              .durationSeconds(payload.getDurationSeconds())
+              .view(0)
+              .videoUrl(payload.getVideoUrl()) // remove when update db
+              .index(payload.getIndex())
+              .name(payload.getName())
+              .isPreview(payload.getIsPreView())
+              .identifyCode(payload.getIdentifyCode())
+              .bucket(bucket)
+              .build();
 
       boolean isExistsCurriculumById =
           this.curriculumService.isExistsById(payload.getCurriculumId());
@@ -69,7 +70,7 @@ public class ConsumerCreateNewVideoFacadeImpl implements ConsumerCreateNewVideFa
       log.error("Create video error cause by curriculum not found by email={}", payload.getEmail());
     } catch (VideoUploadNotFoundSessionException e) {
       log.error("Create video error cause by session not found by email={}", payload.getEmail());
-    } catch (EntityNotFoundException e){
+    } catch (EntityNotFoundException e) {
       log.error("Create video error cause by bucket not found by email={}", payload.getEmail());
     }
   }

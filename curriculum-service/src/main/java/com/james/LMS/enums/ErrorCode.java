@@ -25,7 +25,8 @@ public enum ErrorCode {
   THE_FILE_CHUNKS_MUST_BE_UPLOADED_IN_SEQUENTIAL_ORDER(
       "3005", "The file chunks must be uploaded in sequential order"),
   COMPLETE_UPLOAD_ERROR("3006", "Complete uploading file error"),
-  ABORT_UPLOAD_ERROR("3007", "Abort uploading error"), BUCKET_NOT_FOUND("3008","Bucket not found" );
+  ABORT_UPLOAD_ERROR("3007", "Abort uploading error"),
+  BUCKET_NOT_FOUND("3008", "Bucket not found");
   private final String code;
   private final String message;
 }

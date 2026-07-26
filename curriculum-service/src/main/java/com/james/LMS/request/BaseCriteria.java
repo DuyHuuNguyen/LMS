@@ -1,5 +1,6 @@
 package com.james.LMS.request;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -12,7 +13,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @AllArgsConstructor
 @NoArgsConstructor
 public abstract class BaseCriteria {
-  @NotNull @Positive private Integer currentPage;
+
+  @NotNull @Min(1) private Integer currentPage;
 
   @NotNull @Positive private Integer pageSize;
 

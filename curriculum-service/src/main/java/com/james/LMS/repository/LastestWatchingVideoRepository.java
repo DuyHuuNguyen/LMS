@@ -9,6 +9,11 @@ import java.util.Optional;
 
 @Repository
 public interface LastestWatchingVideoRepository extends JpaRepository<LastestWatchingVideo, Long> {
+
+
+    @Query("""
+    SELECT l FROM LastestWatchingVideo l where  l.isActive and l.id =:id
+        """)
     Optional<LastestWatchingVideo> findByIdAndActive(Long id);
 
     @Query("""

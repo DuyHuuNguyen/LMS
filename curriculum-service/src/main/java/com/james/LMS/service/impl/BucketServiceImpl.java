@@ -31,6 +31,6 @@ public class BucketServiceImpl implements BucketService {
 
   @Override
   public Optional<Bucket> findByActive() {
-    return this.bucketRepository.findByActive();
+    return this.bucketRepository.findByActiveIsTrue();
   }
 }

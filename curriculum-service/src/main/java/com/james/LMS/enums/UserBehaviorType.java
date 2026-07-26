@@ -1,0 +1,11 @@
+package com.james.LMS.enums;
+
+public enum UserBehaviorType {
+  USER_CLICK_COURSE,
+  USER_VIEW_VIDEO,
+  USER_PAUSE_VIDEO,
+  USER_SEARCH,
+  USER_VIEW_COURSE,
+  USER_ONLINE_DURATION,
+  USER_LEARNING_PROGRESS
+}

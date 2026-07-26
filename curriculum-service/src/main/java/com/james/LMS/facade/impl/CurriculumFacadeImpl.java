@@ -234,45 +234,28 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
 
   @Override
   public BaseResponse<CurriculumHomeResponse> findCurriculumForHomeNewFlow(
-      CurriculumHomeRequest curriculumHomeRequest) {
-    SecurityUserDetails principal =
-        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+      CurriculumHomeRequest request) {
+
     List<Long> followedTopicIds =
         this.topicService.findAllTopicIdsByUserId(
-            principal.getId(),
-            PageRequest.of(INITIAL_HOME_PAGE, curriculumHomeRequest.getTopicSize()));
+            SecurityUserDetailsUtil.PRINCIPAL.getId(),
+            PageRequest.of(INITIAL_HOME_PAGE, request.getTopicSize()));
+
     boolean isNotSelectTopics = followedTopicIds == null || followedTopicIds.isEmpty();
     if (isNotSelectTopics) throw new EntityNotFoundException(ErrorCode.USER_TOPIC_NOT_FOUND);
 
-    Map<String, PaginationDTO<CurriculumDTO>> topicNameCurriculumDTOMap = new HashMap<>();
-    Pageable pageable =
-        PageRequest.of(
-            curriculumHomeRequest.getCurrentPage() - 1, curriculumHomeRequest.getPageSize());
+    PaginationCurriculumMapDTO  paginationCurriculumMapDTO =
+            this.curriculumService
+                    .findCurriculumPaginationByFollowedTopicIds(request.getCurrentPage(),request.getPageSize(),followedTopicIds);
 
-    for (var topicId : followedTopicIds) {
-      Page<CurriculumDTO> curriculumDTOPage =
-          this.curriculumService.findAllCurriculumByTopicId(topicId, principal.getId(), pageable);
-
-      boolean isNotFoundCurriculum = curriculumDTOPage.isEmpty();
-      if (isNotFoundCurriculum) continue;
-
-      List<CurriculumDTO> curriculumDTOS =
-          this.addLecturerIntoCurriculum(curriculumDTOPage.toList());
-      String topicName = curriculumDTOS.getFirst().getTopicName();
-      PaginationDTO<CurriculumDTO> curriculumDTOPaginationDTO =
-          PaginationDTO.<CurriculumDTO>builder()
-              .totalItems(curriculumDTOS.size())
-              .currentPage(curriculumHomeRequest.getCurrentPage())
-              .pageSize(curriculumHomeRequest.getPageSize())
-              .data(curriculumDTOS)
-              .build();
-
-      topicNameCurriculumDTOMap.put(topicName, curriculumDTOPaginationDTO);
+    for (List<CurriculumDTO> curriculumDTOS :paginationCurriculumMapDTO.curriculumDTOSList()){
+      this.addLecturerIntoCurriculums(curriculumDTOS);
     }
+
 
     return BaseResponse.build(
         CurriculumHomeResponse.builder()
-            .topicNamePaginationDTOMap(topicNameCurriculumDTOMap)
+            .topicNamePaginationDTOMap(paginationCurriculumMapDTO.topicNameCurriculumDTOMap())
             .build(),
         true);
   }
@@ -506,6 +489,37 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
             .totalElements(curriculumSearchDTOPage.getNumberOfElements())
             .build(),
         true);
+  }
+
+  private void addLecturerIntoCurriculums(List<CurriculumDTO> curriculumDTOS) {
+
+    for (CurriculumDTO curriculumDTO : curriculumDTOS) {
+      String instructorKey =
+              String.format(InstructorEnum.INSTRUCTOR_KEY.getContent(), curriculumDTO.getUserId());
+      boolean isAvailableInstructorData = this.cacheService.hasKey(instructorKey);
+
+      if (!isAvailableInstructorData) {
+        BaseMessage<LoadLecturerIntoCachePayload> loadLecturerIntoCachePayloadMessage =
+                BaseMessage.<LoadLecturerIntoCachePayload>builder()
+                        .type(MessageType.READ_LECTURER_INFO_AND_CACHE)
+                        .source(SourceMessageEnum.CURRICULUM_SERVICE)
+                        .createdAt(Instant.now())
+                        .payload(
+                                LoadLecturerIntoCachePayload.builder()
+                                        .userId(curriculumDTO.getUserId())
+                                        .build())
+                        .build();
+        this.producerLoadLecturesIntoCacheService.send(loadLecturerIntoCachePayloadMessage);
+
+        Optional<InstructorDTO> instructorDTOOptional =
+                this.instructorService.findByUserId(curriculumDTO.getUserId());
+        instructorDTOOptional.ifPresent(curriculumDTO::addLectureInfo);
+        continue;
+      }
+
+      InstructorDTO lecturerDTO = this.cacheService.retrieveInstructorDTOAndRenewTTL(instructorKey);
+      curriculumDTO.addLectureInfo(lecturerDTO);
+    }
   }
 
   private List<CurriculumDTO> addLecturerIntoCurriculum(List<CurriculumDTO> curriculumDTOS) {

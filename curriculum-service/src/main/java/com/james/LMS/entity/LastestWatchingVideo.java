@@ -33,6 +33,6 @@ public class LastestWatchingVideo extends BaseEntity {
   private Integer pausedAt;
 
   @Column(name = "content_type")
-  @Enumerated
+  @Enumerated(value = EnumType.STRING)
   private WatchingContentType contentType;
 }
