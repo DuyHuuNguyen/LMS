@@ -48,6 +48,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
   private final ChannelService channelService;
   private final WishlistService wishlistService;
   private final CurriculumValidatorService curriculumValidatorService;
+  private final AutoTaggingProducerService autoTaggingProducerService;
 
   private static final Integer ZERO_LECTURE = 0;
   private static final Integer INITIAL_HOME_PAGE = 0;
@@ -489,6 +490,26 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
             .totalElements(curriculumSearchDTOPage.getNumberOfElements())
             .build(),
         true);
+  }
+
+  @Override
+  @Transactional
+  public BaseResponse<CreateCurriculumResponse> createCurriculum(UpsertCurriculumRequest request) {
+
+    Channel channel = this.channelService.findChannelByUserId(SecurityUserDetailsUtil.PRINCIPAL.getId()).orElseThrow(()-> new EntityNotFoundException(ErrorCode.CHANNEL_NOT_FOUND));
+
+    Curriculum curriculum = Curriculum.builder().title(request.getTitle())
+            .headLine(request.getHeadLine()).cost(request.getCost()).description(request.getDescription())
+            .requirement(request.getRequirement())
+            .thumbnail(request.getThumbnail()).channel(channel)
+            .build();
+    long curriculumId = this.curriculumService.saveAndFetchId(curriculum);
+
+
+    this.autoTaggingProducerService.send("Send data into ai-service to handle make tags");
+
+
+    return BaseResponse.build(CreateCurriculumResponse.builder().curriculumId(curriculumId).build(), true);
   }
 
   private void addLecturerIntoCurriculums(List<CurriculumDTO> curriculumDTOS) {

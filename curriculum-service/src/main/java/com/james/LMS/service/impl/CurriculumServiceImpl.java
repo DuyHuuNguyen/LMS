@@ -126,4 +126,9 @@ public class CurriculumServiceImpl implements CurriculumService {
 
     return PaginationCurriculumMapDTO.builder().curriculumDTOSList(curriculumDTOSList).topicNameCurriculumDTOMap(topicNameCurriculumDTOMap).build();
   }
+
+  @Override
+  public Long saveAndFetchId(Curriculum curriculum) {
+    return this.curriculumRepository.save(curriculum).getId();
+  }
 }

@@ -7,4 +7,7 @@ public interface ChannelService {
   Optional<Channel> findByCurriculumId(Long curriculumId);
 
   Optional<Channel> findChannelByUserId(Long userId);
+
+  Boolean verifyChannelOfLecturer(Long userId, Long channelId);
+
 }

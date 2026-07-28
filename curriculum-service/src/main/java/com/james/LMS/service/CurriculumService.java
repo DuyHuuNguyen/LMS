@@ -45,4 +45,5 @@ public interface CurriculumService {
 
   PaginationCurriculumMapDTO  findCurriculumPaginationByFollowedTopicIds(Integer currentPage, Integer pageSize, List<Long> followedTopicIds);
 
+  Long saveAndFetchId(Curriculum curriculum);
 }
