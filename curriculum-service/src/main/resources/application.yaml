@@ -50,6 +50,15 @@ rabbitmq:
   exchange-uploading-video: uploading-video-exchange
   routing-key-uploading-video: uploading-video-routing-key
   queue-uploading-video: uploading-video-queue
+  auto-tagging:
+    queue-name: auto.tagging.queue
+    topic-exchange: auto.tagging.topic.exchange
+    routing-key: auto.tagging.routing.key
+  tag-curriculum-data:
+    queue-name: tag.data.curriculum.queue
+    topic-exchange: tag.data.curriculum.topic.exchange
+    routing-key: tag.data.curriculum.routing.key
+
 ---
 minio:
   url: ${MINIO_URL:http://localhost:9000}

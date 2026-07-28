@@ -13,9 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 public class SecurityUserDetails implements UserDetails {
   @Getter @Setter public Long id;
   private String email;
-  @Getter
-  @Builder.Default
-  private String timeZone ="Asia/Ho_Chi_Minh";
+  @Getter @Builder.Default private String timeZone = "Asia/Ho_Chi_Minh";
   @Getter private Collection<? extends GrantedAuthority> authorities;
 
   public static SecurityUserDetails build(AuthDTO authDTO, List<GrantedAuthority> authorities) {

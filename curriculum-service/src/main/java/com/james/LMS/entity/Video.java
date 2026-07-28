@@ -18,7 +18,7 @@ import lombok.experimental.SuperBuilder;
 public class Video extends BaseSessionContent {
 
   @Column(name = "duration_seconds", nullable = false)
-  private Long durationSeconds;
+  private Integer durationSeconds;
 
   @Column(name = "thumbnail")
   private String thumbnail;
@@ -42,7 +42,9 @@ public class Video extends BaseSessionContent {
   @OneToMany(mappedBy = "video")
   private List<Note> notes = new ArrayList<>();
 
-  //   private
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "bucket_id")
+  private Bucket bucket;
 
   public void addSession(Session session) {
     this.session = session;

@@ -41,7 +41,7 @@ public class TopicFacadeImpl implements TopicFacade {
         (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     Pageable pageable =
         PageRequest.of(
-            personalFollowedTopicsRequest.getCurrentPage() - 1,
+            personalFollowedTopicsRequest.getCurrentPage(),
             personalFollowedTopicsRequest.getPageSize());
     Page<TopicDTO> topicDTOPage = this.topicService.findAllByUserId(principal.getId(), pageable);
 

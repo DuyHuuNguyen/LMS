@@ -89,7 +89,7 @@ class LmsApplicationTests {
             .sessionId(1L)
             .isPreView(true)
             .index(20)
-            .durationSeconds(1000L)
+            //            .durationSeconds(1000L)
             .build();
     var response = this.videoFacade.generateVideoUploadPresignUrl(request);
     log.info("test resp {}", response);

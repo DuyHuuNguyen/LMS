@@ -1,11 +1,14 @@
 package com.james.LMS.service.impl;
 
 import com.james.LMS.entity.Session;
+import com.james.LMS.enums.ErrorCode;
+import com.james.LMS.exception.EntityNotFoundException;
 import com.james.LMS.repository.SessionRepository;
 import com.james.LMS.service.SessionService;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SessionServiceImpl implements SessionService {
   private final SessionRepository sessionRepository;
+  private final ExecutorService newVirtualThreadPerTaskExecutor;
 
   @Override
   public List<Session> findAllByCurriculumId(Long curriculumId) {
@@ -42,5 +46,14 @@ public class SessionServiceImpl implements SessionService {
 
   public CompletableFuture<List<Session>> findSessionsFutureByCurriculumId(Long curriculumId) {
     return CompletableFuture.supplyAsync(() -> this.findAllByCurriculumId(curriculumId));
+  }
+
+  @Override
+  public CompletableFuture<Session> findCompletableFutureSessionById(Long id) {
+    return CompletableFuture.supplyAsync(
+        () ->
+            this.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.SESSION_NOT_FOUND)),
+        this.newVirtualThreadPerTaskExecutor);
   }
 }

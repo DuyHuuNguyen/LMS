@@ -23,6 +23,15 @@ public class CurriculumController {
 
   private final CurriculumFacade curriculumFacade;
 
+  @PostMapping
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"Curriculum APIs"})
+  @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
+  @PreAuthorize("!hasRole('ROLE_INSTRUCTOR')")
+  public BaseResponse<CreateCurriculumResponse> createCurriculum(@RequestBody @Valid UpsertCurriculumRequest request) {
+    return this.curriculumFacade.createCurriculum(request);
+  }
+
   @GetMapping("/review/{id}")
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"Curriculum APIs"})
@@ -63,6 +72,7 @@ public class CurriculumController {
     return this.curriculumFacade.findCurriculumByTopicId(curriculumByTopicRequest);
   }
 
+  // code ng# chua fix
   @GetMapping("/search")
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"Curriculum APIs"})

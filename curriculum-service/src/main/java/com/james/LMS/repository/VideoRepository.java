@@ -51,4 +51,12 @@ public interface VideoRepository extends JpaRepository<Video, Long> {
     Optional<Video> findVideoAndFetchSessionById(Long id);
 
     Optional<Video> findByIdAndIsActiveIsTrue(Long id);
+
+    @Query("""
+    select v
+    from Video v
+    join fetch v.bucket as b
+    where v.id =:id and v.isActive and b.isActive
+    """)
+    Optional<Video> findByIdAndFetchBucket(Long id);
 }

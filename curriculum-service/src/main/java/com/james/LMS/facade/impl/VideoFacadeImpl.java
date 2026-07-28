@@ -6,6 +6,7 @@ import com.james.LMS.dto.ValidChangeSessionVideoAccessDTO;
 import com.james.LMS.dto.ValidInstructorHoldVideoDTO;
 import com.james.LMS.dto.ValidVideoUploadingAccessDTO;
 import com.james.LMS.dto.ValidateVideoAccessDTO;
+import com.james.LMS.entity.LastestWatchingVideo;
 import com.james.LMS.entity.Session;
 import com.james.LMS.entity.Video;
 import com.james.LMS.enums.*;
@@ -20,8 +21,10 @@ import com.james.LMS.request.UpsertMetadataVideoRequest;
 import com.james.LMS.request.VideoStreamingPresignRequest;
 import com.james.LMS.request.VideoUploadingPresignUrlRequest;
 import com.james.LMS.response.BaseResponse;
+import com.james.LMS.response.PresignUrlResponse;
 import com.james.LMS.service.*;
 import com.james.LMS.util.IdentifyCodeOfVideoUtil;
+import com.james.LMS.util.SecurityUserDetailsUtil;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
@@ -43,16 +46,17 @@ public class VideoFacadeImpl implements VideoFacade {
   private final CurriculumValidatorService curriculumValidatorService;
   private final ProducerCreateVideoService producerCreateVideoService;
   private final SessionService sessionService;
+  private final LastestWatchingVideoService lastestWatchingVideoService;
   private static final String DOT_MP4 = ".mp4";
+  private static final int ZERO = 0;
 
   @Override
-  public BaseResponse<String> generateVideoStreamingPresignUrl(
+  public BaseResponse<PresignUrlResponse> generateVideoStreamingPresignUrl(
       VideoStreamingPresignRequest request) {
-    SecurityUserDetails principal =
-        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
     ValidateVideoAccessDTO validateVideoAccessDTO =
         ValidateVideoAccessDTO.builder()
-            .userId(principal.getId())
+            .userId(SecurityUserDetailsUtil.PRINCIPAL.getId())
             .curriculumId(request.getCurriculumId())
             .sessionId(request.getSessionId())
             .videoId(request.getVideoId())
@@ -64,18 +68,21 @@ public class VideoFacadeImpl implements VideoFacade {
     if (!isPurchasedCurriculumToHaveVideo)
       throw new PermissionDeniedException(ErrorCode.PERMISSION_DENIED_VIDEO);
 
-    Integer durationSecondsOfVideo = this.videoService.findDurationById(request.getVideoId());
+    String presignUrl =
+        this.videoService
+            .generatePresignUrlToWatchVideo(request.getVideoId())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.VIDEO_NOT_FOUND_AT_STORAGE));
 
-    try {
-      Video video =
-          this.videoService.findById(request.getVideoId()).orElseThrow(RuntimeException::new);
-      String fileName = String.format(ObjectStorageEnum.VIDEO.getContent(), video.getVideoUrl());
-      String presignUrl =
-          this.minioService.generatePresignedVideoStreamingUrl(fileName, durationSecondsOfVideo);
-      return BaseResponse.build(presignUrl, true);
-    } catch (RuntimeException e) {
-      throw new EntityNotFoundException(ErrorCode.VIDEO_NOT_FOUND_AT_STORAGE);
+    int pausedAt = ZERO;
+    Optional<LastestWatchingVideo> lastestWatchingVideo =
+        this.lastestWatchingVideoService.findByVideoId(request.getVideoId());
+
+    if (lastestWatchingVideo.isPresent()) {
+      pausedAt = lastestWatchingVideo.get().getPausedAt();
     }
+
+    return BaseResponse.build(
+        PresignUrlResponse.builder().presignUrl(presignUrl).pausedAt(pausedAt).build(), true);
   }
 
   @Override
@@ -153,19 +160,10 @@ public class VideoFacadeImpl implements VideoFacade {
       throw new PermissionDeniedException(ErrorCode.PERMISSION_DENIED_VIDEO);
 
     CompletableFuture<Video> videoFuture =
-        CompletableFuture.supplyAsync(
-            () ->
-                this.videoService
-                    .findVideoAndFetchSessionById(request.getId())
-                    .orElseThrow(
-                        () -> new EntityNotFoundException(ErrorCode.VIDEO_METADATA_NOT_FOUND)));
+        this.videoService.findCompletableFutureVideoAndFetchSessionById(request.getId());
 
     CompletableFuture<Session> sessionFuture =
-        CompletableFuture.supplyAsync(
-            () ->
-                this.sessionService
-                    .findById(request.getNewSessionId())
-                    .orElseThrow(() -> new EntityNotFoundException(ErrorCode.SESSION_NOT_FOUND)));
+        this.sessionService.findCompletableFutureSessionById(request.getNewSessionId());
     try {
       CompletableFuture.allOf(videoFuture, sessionFuture).join();
 
