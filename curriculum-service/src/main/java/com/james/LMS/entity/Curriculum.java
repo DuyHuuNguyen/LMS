@@ -63,6 +63,10 @@ public class Curriculum extends BaseEntity {
   @OneToOne(mappedBy = "curriculum", fetch = FetchType.LAZY)
   private CurriculumAudit curriculumAudit;
 
+  @OneToMany(mappedBy = "curriculum", fetch = FetchType.LAZY)
+  @Builder.Default
+  private List<CompanyPossessCurriculum> companyPossessCurriculums = new ArrayList<>();
+
   public Long getChanelUserId() {
     return this.channel.getUserId();
   }
