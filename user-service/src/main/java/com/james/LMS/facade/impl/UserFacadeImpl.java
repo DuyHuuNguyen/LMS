@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -199,11 +198,8 @@ public class UserFacadeImpl implements UserFacade {
   public BaseResponse<Void> instruct(InstructionRequest instructionRequest) {
     SecurityUserDetails principal =
         (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-    boolean isAlreadyInstructor =
-        principal.getAuthorities().stream()
-            .map(GrantedAuthority::getAuthority)
-            .anyMatch(RoleEnum.INSTRUCTOR.getContent()::equals);
-    if (isAlreadyInstructor)
+
+    if (principal.hasInstructorRole())
       throw new PermissionDeniedException(ErrorCode.INSTRUCTOR_ALREADY_EXISTS);
 
     User user =
@@ -319,6 +315,31 @@ public class UserFacadeImpl implements UserFacade {
     }
 
     this.userService.save(user);
+    return BaseResponse.ok();
+  }
+
+  @Override
+  public BaseResponse<Void> addCompanyRole() {
+    SecurityUserDetails principal =
+        (SecurityUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+    if (principal.hasCompanyAdminRole())
+      throw new PermissionDeniedException(ErrorCode.COMPANY_ADMIN_ROLE_ALREADY_EXISTS);
+
+    User user =
+        userService
+            .findByEmail(principal.getUsername())
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.USER_NOT_FOUND));
+
+    Role companyAdminRole =
+        this.roleService
+            .findByRoleName(RoleEnum.COMPANY_ADMIN)
+            .orElseThrow(() -> new EntityNotFoundException(ErrorCode.ROLE_NOT_FOUND));
+
+    user.addRole(companyAdminRole);
+
+    this.userService.save(user);
+
     return BaseResponse.ok();
   }
 }

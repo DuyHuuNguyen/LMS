@@ -134,4 +134,13 @@ public class UserController {
       @RequestBody UpdateUserProfileRequest updateUserProfileRequest) {
     return this.userFacade.updateProfile(updateUserProfileRequest);
   }
+
+  @PostMapping("/company-role")
+  @ResponseStatus(HttpStatus.OK)
+  @Operation(tags = {"User APIs"})
+  @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
+  @PreAuthorize("hasRole('ROLE_USER')")
+  public BaseResponse<Void> addCompanyRole() {
+    return this.userFacade.addCompanyRole();
+  }
 }

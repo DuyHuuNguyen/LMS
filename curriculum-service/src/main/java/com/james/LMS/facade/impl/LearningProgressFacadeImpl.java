@@ -10,7 +10,6 @@ import com.james.LMS.service.producer.UserBehaviorProducer;
 import com.james.LMS.util.SecurityUserDetailsUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jboss.logging.MDC;
 import org.springframework.stereotype.Service;
 
 @Slf4j
