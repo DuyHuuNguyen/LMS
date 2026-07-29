@@ -2,7 +2,6 @@ package com.james.LMS.facade;
 
 import com.james.LMS.request.*;
 import com.james.LMS.response.*;
-import jakarta.validation.Valid;
 
 public interface CurriculumFacade {
   BaseResponse<CurriculumReviewResponse> findCurriculumForReviewById(Long id);

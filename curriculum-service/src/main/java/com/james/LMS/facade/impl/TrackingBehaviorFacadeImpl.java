@@ -1,6 +1,5 @@
 package com.james.LMS.facade.impl;
 
-import com.james.LMS.config.SecurityUserDetails;
 import com.james.LMS.facade.TrackingBehaviorFacade;
 import com.james.LMS.message.final_lms_message.PauseVideoMessage;
 import com.james.LMS.request.StoppedWatchingContentRequest;
@@ -25,7 +24,7 @@ public class TrackingBehaviorFacadeImpl implements TrackingBehaviorFacade {
             .userId(SecurityUserDetailsUtil.PRINCIPAL.getId())
             .pausedAt(request.getPausedAt())
             .contentType(request.getContentType())
-                .messageName("Tracking stopped watch content")
+            .messageName("Tracking stopped watch content")
             .build();
     log.info("Received message : {}", pauseVideoMessage.toJsonString());
 

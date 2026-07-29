@@ -1,5 +1,5 @@
 package com.james.LMS.service;
 
 public interface AutoTaggingProducerService {
-    void send(String unSupportedOperation);
+  void send(String unSupportedOperation);
 }

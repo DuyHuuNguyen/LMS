@@ -68,8 +68,8 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
           join CurriculumTopic ct on ct.curriculum.id = c.id
           join Topic t on t.id = ct.topic.id
           join Channel ch on ch.id = c.channel.id
-          left join Wishlist  wl on wl.curriculum.id = c.id
-          where t.id = :topicId and c.isActive and t.isActive and ch.isActive and  ct.isActive and wl.userId =:userId
+          left join Wishlist  wl on wl.curriculum.id = c.id and wl.userId =:userId
+          where t.id = :topicId and c.isActive and t.isActive and ch.isActive and  ct.isActive 
       """)
       Page<CurriculumDTO> findAllCurriculumByTopicId(Long topicId,Long userId, Pageable pageable);
 

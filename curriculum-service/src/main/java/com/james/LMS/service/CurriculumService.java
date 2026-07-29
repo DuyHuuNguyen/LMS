@@ -3,7 +3,6 @@ package com.james.LMS.service;
 import com.james.LMS.dto.*;
 import com.james.LMS.entity.Curriculum;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.data.domain.Page;
@@ -43,7 +42,8 @@ public interface CurriculumService {
       boolean applyTopicFilter,
       Pageable pageable);
 
-  PaginationCurriculumMapDTO  findCurriculumPaginationByFollowedTopicIds(Integer currentPage, Integer pageSize, List<Long> followedTopicIds);
+  PaginationCurriculumMapDTO findCurriculumPaginationByFollowedTopicIds(
+      Integer currentPage, Integer pageSize, List<Long> followedTopicIds);
 
   Long saveAndFetchId(Curriculum curriculum);
 }

@@ -8,5 +8,5 @@ import lombok.*;
 @ToString
 @Builder
 public class CreateCurriculumResponse {
-    private Long curriculumId;
+  private Long curriculumId;
 }

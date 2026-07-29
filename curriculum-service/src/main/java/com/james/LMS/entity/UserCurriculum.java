@@ -19,4 +19,7 @@ public class UserCurriculum extends BaseEntity {
   @ManyToOne
   @JoinColumn(name = "curriculum_id")
   private Curriculum curriculum;
+
+  @OneToOne(mappedBy = "userCurriculum")
+  private LearningProgress learningProgress;
 }

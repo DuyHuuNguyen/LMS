@@ -24,6 +24,6 @@ public class ChannelServiceImpl implements ChannelService {
 
   @Override
   public Boolean verifyChannelOfLecturer(Long userId, Long channelId) {
-    return this.channelRepository.verifyChannelOfLecturer(userId,channelId);
+    return this.channelRepository.verifyChannelOfLecturer(userId, channelId);
   }
 }

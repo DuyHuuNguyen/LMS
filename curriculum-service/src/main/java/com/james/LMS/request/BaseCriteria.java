@@ -14,7 +14,9 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @NoArgsConstructor
 public abstract class BaseCriteria {
 
-  @NotNull @Min(1) private Integer currentPage;
+  @NotNull
+  @Min(1)
+  private Integer currentPage;
 
   @NotNull @Positive private Integer pageSize;
 
