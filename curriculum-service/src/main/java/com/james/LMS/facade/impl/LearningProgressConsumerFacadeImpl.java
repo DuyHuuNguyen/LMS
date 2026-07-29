@@ -66,11 +66,11 @@ public class LearningProgressConsumerFacadeImpl implements LearningProgressConsu
       learningProgress.addUserCurriculum(userCurriculum);
     }
 
-    boolean isVerifyVideoInCurriculum =
+    boolean shouldRejectMessageBecauseVideoNotInCurriculum =
         userCurriculum == null
             || (!learningProgress.isEmptyUserCurriculum()
                 && !learningProgress.equal(userCurriculum));
-    if (isVerifyVideoInCurriculum) {
+    if (shouldRejectMessageBecauseVideoNotInCurriculum) {
       log.warn(
           "The learningProgressMessage was rejected by curriculum not contain the video with id ={}",
           message.getContentId());
@@ -131,12 +131,12 @@ public class LearningProgressConsumerFacadeImpl implements LearningProgressConsu
       learningProgress.addUserCurriculum(userCurriculum);
     }
 
-    boolean isVerifyExamInCurriculum =
+    boolean shouldRejectMessageBecauseVideoNotInCurriculum =
         userCurriculum == null
             || (!learningProgress.isEmptyUserCurriculum()
                 && !learningProgress.equal(userCurriculum));
 
-    if (isVerifyExamInCurriculum) {
+    if (shouldRejectMessageBecauseVideoNotInCurriculum) {
       log.warn(
           "The learningProgressMessage was rejected because curriculum does not contain exam with id={}",
           message.getContentId());
