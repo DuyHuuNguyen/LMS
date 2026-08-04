@@ -27,7 +27,9 @@ public enum ErrorCode {
   COMPLETE_UPLOAD_ERROR("3006", "Complete uploading file error"),
   ABORT_UPLOAD_ERROR("3007", "Abort uploading error"),
   BUCKET_NOT_FOUND("3008", "Bucket not found"),
-  CHANNEL_NOT_FOUND("3009", "Channel not found");
+  CHANNEL_NOT_FOUND("3009", "Channel not found"),
+  COMPANY_NOT_FOUND("3010", "Company not found"),
+  NO_PERMISSION_ADMIN_COMPANY("3011","no permission admin company");
   private final String code;
   private final String message;
 }

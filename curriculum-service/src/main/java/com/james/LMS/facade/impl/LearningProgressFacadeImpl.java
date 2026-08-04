@@ -18,7 +18,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 
@@ -65,7 +64,8 @@ public class LearningProgressFacadeImpl implements LearningProgressFacade {
 
     Slice<CurriculumAuditLearningProgressDTO> learningProgressSlice =
         this.learningProgressService.findAllByUserId(
-            SecurityUserDetailsUtil.PRINCIPAL.getId(), PageRequest.of(request.computeCurrentPage(),pageSizeDefault));
+            SecurityUserDetailsUtil.PRINCIPAL.getId(),
+            PageRequest.of(request.computeCurrentPage(), pageSizeDefault));
 
     List<LearningProgressResponse> learningProgressResponses =
         learningProgressSlice

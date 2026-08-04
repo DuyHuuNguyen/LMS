@@ -1,3 +1,12 @@
 package com.james.LMS.service;
 
-public interface CompanyService {}
+import com.james.LMS.entity.Company;
+import java.util.Optional;
+
+public interface CompanyService {
+  Optional<Company> findById(Long id);
+
+  Optional<Company> findByUserAdminId(Long userAdminId);
+
+  void save(Company company);
+}

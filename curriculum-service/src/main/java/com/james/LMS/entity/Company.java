@@ -22,10 +22,18 @@ public class Company extends BaseEntity {
   @Column(name = "company_name")
   private String companyName;
 
-  @Column(name = "user_admin_comany_id")
+  @Column(name = "user_admin_company_id")
   private Long userAdminCompanyId;
 
   @OneToMany(mappedBy = "company")
   @Builder.Default
   private List<CompanyPossessCurriculum> companyPossessCurriculums = new ArrayList<>();
+
+  @OneToMany(mappedBy = "company")
+  @Builder.Default
+  private List<Group> groups = new ArrayList<>();
+
+  public void changeCompanyName(String companyName) {
+    this.companyName = companyName;
+  }
 }

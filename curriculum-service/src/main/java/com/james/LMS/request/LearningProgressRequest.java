@@ -14,7 +14,7 @@ public class LearningProgressRequest extends BaseRequest {
   @Min(1)
   private Integer currentPage;
 
-  public Integer computeCurrentPage(){
-    return this.currentPage -1;
+  public Integer computeCurrentPage() {
+    return this.currentPage - 1;
   }
 }

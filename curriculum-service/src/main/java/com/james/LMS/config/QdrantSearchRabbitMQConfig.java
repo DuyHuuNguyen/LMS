@@ -11,28 +11,29 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class QdrantSearchRabbitMQConfig {
 
-    @Value("${rabbitmq.qdrant-search.queue-name}")
-    private String queue;
+  @Value("${rabbitmq.qdrant-search.queue-name}")
+  private String queue;
 
-    @Value("${rabbitmq.qdrant-search.topic-exchange}")
-    private String topic;
+  @Value("${rabbitmq.qdrant-search.topic-exchange}")
+  private String topic;
 
-    @Value("${rabbitmq.qdrant-search.routing-key}")
-    private String routingKey;
+  @Value("${rabbitmq.qdrant-search.routing-key}")
+  private String routingKey;
 
-    @Bean
-    public TopicExchange qdrantSearchExchange() {
-        return new TopicExchange(topic);
-    }
+  @Bean
+  public TopicExchange qdrantSearchExchange() {
+    return new TopicExchange(topic);
+  }
 
-    @Bean
-    public Queue qdrantSearchQueue() {
-        return new Queue(queue, true);
-    }
+  @Bean
+  public Queue qdrantSearchQueue() {
+    return new Queue(queue, true);
+  }
 
-    @Bean
-    public Binding qdrantSearchBinding() {
-        return BindingBuilder.bind(this.qdrantSearchQueue()).to(this.qdrantSearchExchange()).with(routingKey);
-    }
-
+  @Bean
+  public Binding qdrantSearchBinding() {
+    return BindingBuilder.bind(this.qdrantSearchQueue())
+        .to(this.qdrantSearchExchange())
+        .with(routingKey);
+  }
 }

@@ -28,7 +28,10 @@ public abstract class BaseQueueMessage implements Serializable, JsonStringAble {
   }
 
   public void initialBaseInfoMessage() {
-    this.requestId =  MDC.get("requestId") == null ? "internal request by system" : MDC.get("requestId").toString() ;
+    this.requestId =
+        MDC.get("requestId") == null
+            ? "internal request by system"
+            : MDC.get("requestId").toString();
     this.serviceProducerMessage = "curriculum-service";
     this.createdAt = Instant.now().toEpochMilli();
   }

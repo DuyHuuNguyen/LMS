@@ -1,5 +1,6 @@
 package com.james.LMS.request;
 
+import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -18,7 +19,11 @@ public abstract class BaseCriteria {
   @Min(1)
   private Integer currentPage;
 
-  @NotNull @Positive private Integer pageSize;
+  @NotNull
+  @Positive
+  @Max(50)
+  @Min(1)
+  private Integer pageSize;
 
   @Override
   public String toString() {

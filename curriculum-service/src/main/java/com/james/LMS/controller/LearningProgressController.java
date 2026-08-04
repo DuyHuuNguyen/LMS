@@ -41,5 +41,4 @@ public class LearningProgressController {
       @NotNull LearningProgressRequest request) {
     return this.learningProgressFacade.findLearningProgress(request);
   }
-
 }
