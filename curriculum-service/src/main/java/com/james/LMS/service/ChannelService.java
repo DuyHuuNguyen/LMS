@@ -9,5 +9,4 @@ public interface ChannelService {
   Optional<Channel> findChannelByUserId(Long userId);
 
   Boolean verifyChannelOfLecturer(Long userId, Long channelId);
-
 }

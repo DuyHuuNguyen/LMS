@@ -30,7 +30,7 @@ public class TopicController {
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("isAuthenticated()")
   public BaseResponse<PaginationResponse<TopicResponse>> findPersonalFollowedTopics(
-    @Valid  PersonalFollowedTopicsRequest personalFlowedTopicsRequest) {
+      @Valid PersonalFollowedTopicsRequest personalFlowedTopicsRequest) {
     return this.topicFacade.findPersonalFollowedTopics(personalFlowedTopicsRequest);
   }
 
@@ -60,7 +60,7 @@ public class TopicController {
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("isAuthenticated()")
   public BaseResponse<PaginationResponse<TopicResponse>> findAll(
-          @Valid  @NotNull AllTopicRequest allTopicRequest) {
+      @Valid @NotNull AllTopicRequest allTopicRequest) {
     return this.topicFacade.findAll(allTopicRequest);
   }
 }

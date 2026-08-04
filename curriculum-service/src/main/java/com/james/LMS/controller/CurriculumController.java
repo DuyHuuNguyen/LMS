@@ -28,7 +28,8 @@ public class CurriculumController {
   @Operation(tags = {"Curriculum APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("!hasRole('ROLE_INSTRUCTOR')")
-  public BaseResponse<CreateCurriculumResponse> createCurriculum(@RequestBody @Valid UpsertCurriculumRequest request) {
+  public BaseResponse<CreateCurriculumResponse> createCurriculum(
+      @RequestBody @Valid UpsertCurriculumRequest request) {
     return this.curriculumFacade.createCurriculum(request);
   }
 

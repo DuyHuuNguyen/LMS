@@ -16,7 +16,8 @@ public enum ErrorCode {
   OTP_TIMEOUT("1007", "OTP timeout"),
   NOT_MATCHED_OTP("1008", "OPT doesn't match"),
   INSTRUCTOR_ALREADY_EXISTS("1009", "Instructor already exists"),
-  FILE_ERROR_UPLOAD("1010", "Upload error");
+  FILE_ERROR_UPLOAD("1010", "Upload error"),
+  COMPANY_ADMIN_ROLE_ALREADY_EXISTS("1011", "Company role already exists");
 
   private final String code;
   private final String message;

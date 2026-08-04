@@ -27,4 +27,6 @@ public interface UserFacade {
   BaseResponse<String> uploadFile(byte[] bytes);
 
   BaseResponse<Void> updateProfile(UpdateUserProfileRequest updateUserProfileRequest);
+
+  BaseResponse<Void> addCompanyRole();
 }

@@ -36,7 +36,7 @@ public class Curriculum extends BaseEntity {
   @Column(name = "thumbnail")
   private String thumbnail;
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne(fetch = FetchType.EAGER)
   @JoinColumn(name = "channel_id")
   private Channel channel;
 
@@ -62,6 +62,10 @@ public class Curriculum extends BaseEntity {
 
   @OneToOne(mappedBy = "curriculum", fetch = FetchType.LAZY)
   private CurriculumAudit curriculumAudit;
+
+  @OneToMany(mappedBy = "curriculum", fetch = FetchType.LAZY)
+  @Builder.Default
+  private List<CompanyPossessCurriculum> companyPossessCurriculums = new ArrayList<>();
 
   public Long getChanelUserId() {
     return this.channel.getUserId();

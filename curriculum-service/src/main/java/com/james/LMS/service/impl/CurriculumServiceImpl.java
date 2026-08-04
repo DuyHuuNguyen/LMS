@@ -4,10 +4,8 @@ import com.james.LMS.dto.*;
 import com.james.LMS.entity.Curriculum;
 import com.james.LMS.repository.CurriculumRepository;
 import com.james.LMS.service.CurriculumService;
-
-import java.util.*;
-
 import com.james.LMS.util.SecurityUserDetailsUtil;
+import java.util.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -95,8 +93,8 @@ public class CurriculumServiceImpl implements CurriculumService {
         keyword, totalDurationSeconds, topicIds, applyTopicFilter, pageable);
   }
 
-
-  public PaginationCurriculumMapDTO findCurriculumPaginationByFollowedTopicIds(Integer currentPage,Integer pageSize,List<Long> followedTopicIds){
+  public PaginationCurriculumMapDTO findCurriculumPaginationByFollowedTopicIds(
+      Integer currentPage, Integer pageSize, List<Long> followedTopicIds) {
     Map<String, PaginationDTO<CurriculumDTO>> topicNameCurriculumDTOMap = new HashMap<>();
     List<List<CurriculumDTO>> curriculumDTOSList = new ArrayList<>();
 
@@ -104,27 +102,31 @@ public class CurriculumServiceImpl implements CurriculumService {
 
     for (var topicId : followedTopicIds) {
       Page<CurriculumDTO> curriculumDTOPage =
-              this.findAllCurriculumByTopicId(topicId, SecurityUserDetailsUtil.PRINCIPAL.getId(), pageable);
+          this.findAllCurriculumByTopicId(
+              topicId, SecurityUserDetailsUtil.PRINCIPAL.getId(), pageable);
 
       boolean isNotFoundCurriculum = curriculumDTOPage.isEmpty();
       if (isNotFoundCurriculum) continue;
 
-      List<CurriculumDTO> curriculumDTOS =curriculumDTOPage.toList();
+      List<CurriculumDTO> curriculumDTOS = curriculumDTOPage.toList();
       curriculumDTOSList.add(curriculumDTOS);
 
       String topicName = curriculumDTOS.getFirst().getTopicName();
       PaginationDTO<CurriculumDTO> curriculumDTOPaginationDTO =
-              PaginationDTO.<CurriculumDTO>builder()
-                      .totalItems(curriculumDTOS.size())
-                      .currentPage(currentPage)
-                      .pageSize(pageSize)
-                      .data(curriculumDTOS)
-                      .build();
+          PaginationDTO.<CurriculumDTO>builder()
+              .totalItems(curriculumDTOS.size())
+              .currentPage(currentPage)
+              .pageSize(pageSize)
+              .data(curriculumDTOS)
+              .build();
 
       topicNameCurriculumDTOMap.put(topicName, curriculumDTOPaginationDTO);
     }
 
-    return PaginationCurriculumMapDTO.builder().curriculumDTOSList(curriculumDTOSList).topicNameCurriculumDTOMap(topicNameCurriculumDTOMap).build();
+    return PaginationCurriculumMapDTO.builder()
+        .curriculumDTOSList(curriculumDTOSList)
+        .topicNameCurriculumDTOMap(topicNameCurriculumDTOMap)
+        .build();
   }
 
   @Override

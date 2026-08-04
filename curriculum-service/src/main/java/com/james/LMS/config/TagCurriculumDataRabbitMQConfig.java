@@ -10,38 +10,34 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @ConditionalOnProperty(
-        prefix = "notification.sms",
-        name = "enabled",
-        havingValue = "Chua.code.nha.:))"
-)
+    prefix = "notification.sms",
+    name = "enabled",
+    havingValue = "Chua.code.nha.:))")
 @Configuration
 public class TagCurriculumDataRabbitMQConfig {
-    @Value("${rabbitmq.tag-curriculum-data.queue-name}")
-    private String queue;
+  @Value("${rabbitmq.tag-curriculum-data.queue-name}")
+  private String queue;
 
-    @Value("${rabbitmq.tag-curriculum-data.topic-exchange}")
-    private String topic;
+  @Value("${rabbitmq.tag-curriculum-data.topic-exchange}")
+  private String topic;
 
-    @Value("${rabbitmq.tag-curriculum-data.routing-key}")
-    private String routingKey;
+  @Value("${rabbitmq.tag-curriculum-data.routing-key}")
+  private String routingKey;
 
+  @Bean
+  public TopicExchange tagCurriculumDataExchange() {
+    return new TopicExchange(topic);
+  }
 
-    @Bean
-    public TopicExchange tagCurriculumDataExchange() {
-        return new TopicExchange(topic);
-    }
+  @Bean
+  public Queue tagCurriculumDataQueue() {
+    return new Queue(queue, true);
+  }
 
-    @Bean
-    public Queue tagCurriculumDataQueue() {
-        return new Queue(queue, true);
-    }
-
-    @Bean
-    public Binding tagCurriculumDataBinding() {
-        return BindingBuilder.bind(tagCurriculumDataQueue())
-                .to(tagCurriculumDataExchange())
-                .with(routingKey);
-    }
-
-
+  @Bean
+  public Binding tagCurriculumDataBinding() {
+    return BindingBuilder.bind(tagCurriculumDataQueue())
+        .to(tagCurriculumDataExchange())
+        .with(routingKey);
+  }
 }

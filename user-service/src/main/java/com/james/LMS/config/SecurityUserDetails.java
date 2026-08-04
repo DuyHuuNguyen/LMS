@@ -2,6 +2,7 @@ package com.james.LMS.config;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.james.LMS.entity.User;
+import com.james.LMS.enums.RoleEnum;
 import java.util.Collection;
 import java.util.List;
 import lombok.*;
@@ -47,5 +48,16 @@ public class SecurityUserDetails implements UserDetails {
   @Override
   public String getUsername() {
     return this.email;
+  }
+
+  public boolean hasInstructorRole() {
+    return this.authorities.stream()
+        .map(GrantedAuthority::getAuthority)
+        .anyMatch(RoleEnum.INSTRUCTOR.getContent()::equals);
+  }
+
+  public boolean hasCompanyAdminRole() {
+    return this.authorities.stream()
+        .anyMatch(role -> role.getAuthority().equals(RoleEnum.COMPANY_ADMIN.getContent()));
   }
 }

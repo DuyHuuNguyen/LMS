@@ -24,7 +24,8 @@ public class TrackingBehaviorController {
       summary = "api demo")
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("isAuthenticated()")
-  public BaseResponse<Void> trackingStoppedWatchingContent(@RequestBody StoppedWatchingContentRequest request) {
+  public BaseResponse<Void> trackingStoppedWatchingContent(
+      @RequestBody StoppedWatchingContentRequest request) {
     return this.trackingBehaviorFacade.trackingStoppedWatchingContent(request);
   }
 }

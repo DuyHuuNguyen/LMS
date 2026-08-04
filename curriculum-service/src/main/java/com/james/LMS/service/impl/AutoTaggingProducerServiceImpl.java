@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class AutoTaggingProducerServiceImpl implements AutoTaggingProducerService {
-    @Override
-    public void send(String unSupportedOperation) {
-        log.info("hehe chua code {}",unSupportedOperation);
-    }
+  @Override
+  public void send(String unSupportedOperation) {
+    log.info("hehe chua code {}", unSupportedOperation);
+  }
 }

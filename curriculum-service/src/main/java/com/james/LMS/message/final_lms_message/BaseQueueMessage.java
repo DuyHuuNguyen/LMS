@@ -3,7 +3,6 @@ package com.james.LMS.message.final_lms_message;
 import com.james.LMS.util.ObjectMapperUtil;
 import java.io.Serializable;
 import java.time.Instant;
-
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.jboss.logging.MDC;
@@ -14,12 +13,11 @@ import org.jboss.logging.MDC;
 @NoArgsConstructor
 public abstract class BaseQueueMessage implements Serializable, JsonStringAble {
 
-  @Builder.Default private Long createdAt = Instant.now().toEpochMilli();
+  private Long createdAt;
 
-  @Builder.Default
-  private String serviceProducerMessage = "curriculum-service";
+  private String serviceProducerMessage;
 
-  @Builder.Default private String xRequestId = MDC.get("requestId").toString();
+  private String requestId;
 
   private String messageName;
 
@@ -27,5 +25,14 @@ public abstract class BaseQueueMessage implements Serializable, JsonStringAble {
   @SneakyThrows
   public String toJsonString() {
     return ObjectMapperUtil.OBJECT_MAPPER.writeValueAsString(this);
+  }
+
+  public void initialBaseInfoMessage() {
+    this.requestId =
+        MDC.get("requestId") == null
+            ? "internal request by system"
+            : MDC.get("requestId").toString();
+    this.serviceProducerMessage = "curriculum-service";
+    this.createdAt = Instant.now().toEpochMilli();
   }
 }
