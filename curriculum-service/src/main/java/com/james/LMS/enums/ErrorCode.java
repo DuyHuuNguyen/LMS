@@ -29,7 +29,9 @@ public enum ErrorCode {
   BUCKET_NOT_FOUND("3008", "Bucket not found"),
   CHANNEL_NOT_FOUND("3009", "Channel not found"),
   COMPANY_NOT_FOUND("3010", "Company not found"),
-  NO_PERMISSION_ADMIN_COMPANY("3011","no permission admin company");
+  NO_PERMISSION_ADMIN_COMPANY("3011", "no permission admin company"),
+  NO_PERMISSION_ACCESS_TO_GROUP("3012", "No permission to access the group"),
+  GROUP_NOT_FOUND("3013", "Group not found");
   private final String code;
   private final String message;
 }

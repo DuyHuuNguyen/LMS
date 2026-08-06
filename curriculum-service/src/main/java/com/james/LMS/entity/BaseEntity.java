@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Objects;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -51,5 +52,21 @@ public class BaseEntity {
 
   public LocalDateTime getLocalDateTimeCreatedAt(String timeZone) {
     return Instant.ofEpochMilli(this.createdAt).atZone(ZoneId.of(timeZone)).toLocalDateTime();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null || getClass() != o.getClass()) return false;
+    BaseEntity that = (BaseEntity) o;
+    return isActive == that.isActive
+        && Objects.equals(id, that.id)
+        && Objects.equals(version, that.version)
+        && Objects.equals(createdAt, that.createdAt)
+        && Objects.equals(updatedAt, that.updatedAt);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, version, isActive, createdAt, updatedAt);
   }
 }

@@ -33,4 +33,8 @@ public class Group extends BaseEntity {
   @OneToMany(mappedBy = "group")
   @Builder.Default
   private List<GroupMember> groupMembers = new ArrayList<>();
+
+  @OneToMany(mappedBy = "group")
+  @Builder.Default
+  private List<TrainingSession> trainingSessions = new ArrayList<>();
 }

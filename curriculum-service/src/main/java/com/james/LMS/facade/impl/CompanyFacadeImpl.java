@@ -74,7 +74,7 @@ public class CompanyFacadeImpl implements CompanyFacade {
             SecurityUserDetailsUtil.PRINCIPAL.getId(),
             PageRequest.of(criteria.getCurrentPage(), criteria.getPageSize()));
 
-    if(!companyGroupDTOSlice.hasContent()){
+    if (!companyGroupDTOSlice.hasContent()) {
       throw new PermissionDeniedException(ErrorCode.NO_PERMISSION_ADMIN_COMPANY);
     }
 

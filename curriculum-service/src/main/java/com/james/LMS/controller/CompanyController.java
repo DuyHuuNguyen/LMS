@@ -37,7 +37,7 @@ public class CompanyController {
   @Operation(tags = {"Company APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("isAuthenticated()")
-  BaseResponse<Void> updateCompany(@RequestBody @Valid UpsertCompanyRequest request) {
+  public BaseResponse<Void> updateCompany(@RequestBody @Valid UpsertCompanyRequest request) {
     return this.companyFacade.upsertCompany(request);
   }
 
@@ -46,11 +46,11 @@ public class CompanyController {
   @Operation(tags = {"Company APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("isAuthenticated()")
-  BaseResponse<CompanyProfileResponse> findProfileCompany() {
+  public BaseResponse<CompanyProfileResponse> findProfileCompany() {
     return this.companyFacade.findProfileCompany();
   }
 
-  @GetMapping("/goups/{id}")
+  @GetMapping("/groups/{id}")
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"Company APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)

@@ -9,4 +9,6 @@ public interface CompanyService {
   Optional<Company> findByUserAdminId(Long userAdminId);
 
   void save(Company company);
+
+  Boolean isUserAdminCompanyAccessibleToGroup(Long userId, Long companyId, Long groupId);
 }
