@@ -26,4 +26,9 @@ public class CompanyServiceImpl implements CompanyService {
   public void save(Company company) {
     this.companyRepository.save(company);
   }
+
+  @Override
+  public Boolean isUserAdminCompanyAccessibleToGroup(Long userId, Long companyId, Long groupId) {
+    return this.companyRepository.isUserAdminCompanyAccessibleToGroup(userId, companyId, groupId);
+  }
 }

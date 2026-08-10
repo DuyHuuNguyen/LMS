@@ -20,6 +20,42 @@ CREATE TABLE "company_possess_curriculums"
     "updated_at"    bigint                NOT NULL DEFAULT (EXTRACT(EPOCH FROM NOW()) * 1000)::bigint
 );
 
+create table "curriculum_training_sets"
+(
+    "id"                BIGSERIAL PRIMARY KEY NOT NULL,
+    "company_id"        bigint                NOT NULL,
+    "training_set_name" varchar(255)          not null,
+    "is_active"         boolean               NOT NULL DEFAULT true,
+    "version"           bigint                NOT NULL DEFAULT 0,
+    "created_at"        bigint                NOT NULL DEFAULT (EXTRACT(EPOCH FROM NOW()) * 1000)::bigint,
+    "updated_at"        bigint                NOT NULL DEFAULT (EXTRACT(EPOCH FROM NOW()) * 1000)::bigint
+);
+
+create table "element_training_in_sets"
+(
+    "id"                            BIGSERIAL PRIMARY KEY NOT NULL,
+    "curriculum_training_set_id"    bigint                NOT NULL,
+    "company_possess_curriculum_id" bigint                NOT NULL,
+    "is_active"                     boolean               NOT NULL DEFAULT true,
+    "version"                       bigint                NOT NULL DEFAULT 0,
+    "created_at"                    bigint                NOT NULL DEFAULT (EXTRACT(EPOCH FROM NOW()) * 1000)::bigint,
+    "updated_at"                    bigint                NOT NULL DEFAULT (EXTRACT(EPOCH FROM NOW()) * 1000)::bigint
+);
+
+create table "curriculum_training_set_training_sessions"
+(
+
+    "id"                         BIGSERIAL PRIMARY KEY NOT NULL,
+    "curriculum_training_set_id" bigint                NOT NULL,
+    "training_session_id"        bigint                NOT NULL,
+    "is_active"                  boolean               NOT NULL DEFAULT true,
+    "version"                    bigint                NOT NULL DEFAULT 0,
+    "created_at"                 bigint                NOT NULL DEFAULT (EXTRACT(EPOCH FROM NOW()) * 1000)::bigint,
+    "updated_at"                 bigint                NOT NULL DEFAULT (EXTRACT(EPOCH FROM NOW()) * 1000)::bigint
+
+);
+
+
 CREATE TABLE "groups"
 (
     "id"                  BIGSERIAL PRIMARY KEY NOT NULL,

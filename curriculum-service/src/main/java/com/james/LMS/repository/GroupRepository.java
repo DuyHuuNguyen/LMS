@@ -22,4 +22,30 @@ public interface GroupRepository extends JpaRepository<Group, Long> {
     group by g.id,g.company_id ,g.group_name,c.company_name
     """,nativeQuery = true)
     Slice<CompanyGroupDTO> findAllByCompanyIdAndUserAdminCompanyId(Long companyId,Long userAdminCompanyId, Pageable pageable);
+
+    Integer countById(Long id);
+
+    Boolean existsByIdAndUserAdminGroupId(Long id, Long userAdminGroupId);
+
+    @Query(value = """
+      select  exists(
+            select *
+            from companies c
+            join groups g on g.company_id =c.id
+            where c.id =:companyId and g.id =:groupId and g.is_active and g.user_admin_group_id =:userId
+    )
+  """, nativeQuery = true)
+    Boolean isUserAdminGroupInCompanyAccessibleToGroup(Long userId,Long companyId,Long groupId);
+
+
+
+    @Query(value = """
+        select  exists(
+              select *
+              from companies c
+              join groups g on g.company_id =c.id
+              where c.id =:companyId and g.id =:groupId and g.is_active and ( c.user_admin_company_id =:userId or g.user_admin_group_id =:userId)
+          )
+  """, nativeQuery = true)
+    Boolean isUserAccessibleToGroup(Long userId,Long companyId, Long groupId);
 }

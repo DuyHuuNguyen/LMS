@@ -1,0 +1,67 @@
+services:
+
+  eureka-server-lms:
+    container_name: eureka-server-lms
+    build:
+      context: ../..
+      dockerfile: eureka-server/docker/Dockerfile
+    ports:
+      - "8761:8761"
+    networks:
+      - application_lms_network
+
+  user-service-lms:
+    container_name: user-service-lms
+    build:
+      context: ../..
+      dockerfile: user-service/docker/Dockerfile
+    ports:
+      - "8083:8083"
+      - "9090:9090"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    env_file:
+      - .env
+    depends_on:
+      - eureka-server-lms
+    networks:
+      - application_lms_network
+
+  curriculum-service-lms:
+    container_name: curriculum-service-lms
+    build:
+      context: ../..
+      dockerfile: curriculum-service/docker/Dockerfile
+    ports:
+      - "8085:8085"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    env_file:
+      - .env
+    depends_on:
+      - eureka-server-lms
+    networks:
+      - application_lms_network
+
+  api-gateway-lms:
+    container_name: api-gateway-lms
+    build:
+      context: ../..
+      dockerfile: api-gateway/docker/Dockerfile
+    ports:
+      - "9222:9222"
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      EUREKA_URL: http://eureka-server-lms:8761/eureka/
+    env_file:
+      - .env
+    depends_on:
+      - eureka-server-lms
+      - user-service-lms
+      - curriculum-service-lms
+    networks:
+      - application_lms_network
+
+networks:
+  application_lms_network:
+    external: true

@@ -1,12 +1,12 @@
 spring:
   application:
-    name: ${SPRING_APPLICATION_NAME:user-service}
+    name: user-service
   config:
     import: optional:file:.env[.properties],optional:file:../.env[.properties]
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/db_user_service_lms}
-    username: ${DB_USERNAME:postgres}
-    password: ${DB_PASSWORD:123456}
+    url: ${USER_SERVICE_DB_URL:jdbc:postgresql://localhost:5432/db_user_service_lms}
+    username: ${DB_USERNAME_OF_USER_SERVICE:postgres}
+    password: ${DB_PASSWORD_OF_USER_SERVICE:123456}
     driver-class-name: org.postgresql.Driver
   jpa:
     show-sql: ${JPA_SHOW_SQL:false}
@@ -45,9 +45,9 @@ jwt:
   resetPasswordTokenExpirationTime: ${JWT_RESET_PASSWORD_TOKEN_EXPIRATION:900000} # 15 minutes
 
 rabbitmq:
-  exchange-name: ${RABBITMQ_EXCHANGE_NAME:demo}
-  user-mail-routing-key: ${RABBITMQ_USER_MAIL_ROUTING_KEY:demo}
-  user-mail-queue: ${RABBITMQ_USER_MAIL_QUEUE:lms-queue}
+  exchange-name: ${USER_SERVICE_RABBITMQ_EXCHANGE_NAME:demo}
+  user-mail-routing-key: ${USER_SERVICE_RABBITMQ_USER_MAIL_ROUTING_KEY:demo}
+  user-mail-queue: ${USER_SERVICE_RABBITMQ_USER_MAIL_QUEUE:lms-queue}
 
   exchange-cache-data-name: ${RABBITMQ_EXCHANGE_CACHE_DATA_NAME:cache-lecturers-data}
   cache-data-routing-key: ${RABBITMQ_CACHE_DATA_ROUTING_KEY:cache-lecturers-data}
@@ -66,11 +66,11 @@ grpc:
     security:
       enabled: ${GRPC_SERVER_SECURITY_ENABLED:false}
 
-logging:
-  pattern:
-    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %clr([%thread]){faint} %clr(%-5level) %clr(%logger{1}){cyan} %clr(%X{requestId}){yellow} - %clr(%X{email}){green} - %msg%n"
+#logging:
+#  pattern:
+#    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} %clr([%thread]){faint} %clr(%-5level) %clr(%logger{1}){cyan} %clr(%X{requestId}){yellow} - %clr(%X{email}){green} - %msg%n"
 
 eureka:
   client:
     service-url:
-      defaultZone: http://localhost:8761/eureka
+      defaultZone: ${EUREKA_URL:http://localhost:8761/eureka}
