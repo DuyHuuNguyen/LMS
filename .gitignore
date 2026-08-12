@@ -35,4 +35,5 @@ build/
 # Environment variables
 docker/production/.env
 .env.*
+.env
 Internal*
