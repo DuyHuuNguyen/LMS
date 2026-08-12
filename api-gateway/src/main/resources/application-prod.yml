@@ -10,14 +10,14 @@ spring:
       routes:
 
         - id: curriculum-service
-          uri: ${CURRICULUM_SERVICE_URI}
+          uri: http://${CURRICULUM_SERVICE_NAME}:${CURRICULUM_SERVICE_PORT}
           predicates:
             - Path=/curriculum-service/**
           filters:
             - StripPrefix=1
 
         - id: user-service
-          uri: ${USER_SERVICE_URI}
+          uri: http://${USER_SERVICE_NAME}:${USER_SERVICE_PORT}
           predicates:
             - Path=/user-service/**
           filters:

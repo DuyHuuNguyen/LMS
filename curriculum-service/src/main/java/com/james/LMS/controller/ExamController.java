@@ -26,7 +26,7 @@ public class ExamController {
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("hasRole('ROLE_USER')||hasRole('ROLE_INSTRUCTOR')")
   public BaseResponse<ExamDetailResponse> findDetailById(
-      @PathVariable Long id, ExamDetailRequest examDetailRequest) {
+      @PathVariable("id") Long id, ExamDetailRequest examDetailRequest) {
     examDetailRequest.withId(id);
     return this.examFacade.findExamDetail(examDetailRequest);
   }

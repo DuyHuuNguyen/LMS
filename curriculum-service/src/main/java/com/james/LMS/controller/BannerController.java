@@ -49,7 +49,7 @@ public class BannerController {
   @Operation(tags = {"Banner APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("hasRole('ROLE_SYSTEM_ADMIN')")
-  public BaseResponse<Void> hiddenBanner(@PathVariable String id) {
+  public BaseResponse<Void> hiddenBanner( @PathVariable("id") String id) {
     return this.bannerFacade.hiddenBannerById(id);
   }
 }

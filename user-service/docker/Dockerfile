@@ -41,6 +41,6 @@ WORKDIR /app
 
 COPY --from=builder /app/user-service/target/*.jar user-service-lms.jar
 
-EXPOSE 8083 9090
+EXPOSE 8083 9221
 
 ENTRYPOINT ["java", "-jar", "user-service-lms.jar"]

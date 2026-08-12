@@ -25,17 +25,17 @@ public class ChannelController {
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("isAuthenticated()")
   public BaseResponse<PaginationResponse<ChannelCurriculumResponse>> findAllCurriculumsInChannel(
-      @PathVariable Long id, ChannelCurriculumsRequest request) {
+      @PathVariable("id") Long id, ChannelCurriculumsRequest request) {
     request.setChannelId(id);
     return this.channelFacade.findAllCurriculumsInChannel(request);
   }
 
-  @GetMapping("/internal/id")
+  @GetMapping("/internal/channel-id")
   @ResponseStatus(HttpStatus.OK)
   @Operation(
       tags = {"Channel APIs"},
       summary = "Only get id of channel")
-  public Long findChannelIdByUserId(@RequestParam Long userId) {
+  public Long findChannelIdByUserId(@RequestParam("userId") Long userId) {
     return this.channelFacade.findChannelIdByUserId(userId);
   }
 }

@@ -26,7 +26,7 @@ public class GroupController {
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("isAuthenticated()")
   public BaseResponse<Void> addTrainingSession(
-      @PathVariable Long id, @RequestBody @Valid UpsertTrainingSessionRequest request) {
+      @PathVariable("id") Long id, @RequestBody @Valid UpsertTrainingSessionRequest request) {
     request.withGroupId(id);
     return this.groupFacade.createTrainingSession(request);
   }
@@ -37,7 +37,7 @@ public class GroupController {
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("isAuthenticated()")
   public BaseResponse<DashBoardResponse> dashBoard(
-      @PathVariable Long id, @Valid DashBoardRequest request) {
+      @PathVariable("id") Long id, @Valid DashBoardRequest request) {
     request.withGroupId(id);
     return this.groupFacade.dashBoard(request);
   }

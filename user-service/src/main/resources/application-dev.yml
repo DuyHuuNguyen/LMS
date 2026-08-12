@@ -53,8 +53,6 @@ rabbitmq:
   user-mail-routing-key: demo
   user-mail-queue: lms-queue
 
-  exchange-cache-data-name: cache-lecturers-data
-  cache-data-routing-key: cache-lecturers-data
   cache-data-queue: cache-data-queue
 
 server:
@@ -74,3 +72,5 @@ eureka:
   client:
     service-url:
       defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka}
+
+curriculum-service: CURRICULUM-SERVICE
