@@ -1,45 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-         http://maven.apache.org/xsd/maven-4.0.0.xsd">
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
+
+    <!-- ========================= -->
+    <!-- Project Information -->
+    <!-- ========================= -->
 
     <groupId>com.example</groupId>
     <artifactId>microservices-parent</artifactId>
     <version>1.0.0</version>
     <packaging>pom</packaging>
 
-    <name>Microservices System</name>
-    <description>Spring Boot Microservices Architecture</description>
+    <name>Microservices Parent</name>
+    <description>Spring Boot Microservices Parent POM</description>
 
-    <modules>
-        <module>curriculum-service</module>
-        <module>forum-service</module>
-        <module>order-service</module>
-        <module>user-service</module>
-        <module>eureka-server</module>
-        <module>api-gateway</module>
-        <module>grpc-protocol</module>
-    </modules>
-    <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-    </dependencies>
 
+    <!-- ========================= -->
+    <!-- Properties -->
+    <!-- ========================= -->
 
     <properties>
         <java.version>21</java.version>
-        <spring.boot.version>3.2.5</spring.boot.version>
-        <spring-cloud.version>2022.0.5</spring-cloud.version>
+
+        <!-- Use consistent property name for Spring Boot version -->
+        <spring.boot.version>3.3.7</spring.boot.version>
+        <!-- compatibility alias for older child poms -->
+        <spring-boot.version>${spring.boot.version}</spring-boot.version>
+        <!-- Spring Cloud compatible with Spring Boot 3.3.x -->
+        <spring-cloud.version>2023.0.5</spring-cloud.version>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
     </properties>
 
 
+    <!-- ========================= -->
+    <!-- Dependency Management -->
+    <!-- ========================= -->
+
     <dependencyManagement>
         <dependencies>
+
+            <!-- Spring Boot BOM -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
@@ -47,28 +54,79 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <!-- Spring Cloud BOM -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
+
+    <!-- ========================= -->
+    <!-- Dependencies -->
+    <!-- ========================= -->
+
+    <dependencies>
+
+        <!-- DevTools for all Spring Boot services -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+    </dependencies>
+
+    <!-- Modules: list child modules so they inherit this parent POM -->
+    <modules>
+        <module>grpc-protocol</module>
+        <module>eureka-server</module>
+        <module>user-service</module>
+        <module>curriculum-service</module>
+        <module>api-gateway</module>
+        <module>forum-service</module>
+        <module>order-service</module>
+    </modules>
+
+    <!-- ========================= -->
+    <!-- Build -->
+    <!-- ========================= -->
+
     <build>
+
         <pluginManagement>
             <plugins>
+
+                <!-- Spring Boot Maven Plugin -->
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
                     <version>${spring.boot.version}</version>
                 </plugin>
+
             </plugins>
         </pluginManagement>
+
         <plugins>
+
+            <!-- Spring Boot -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
+            <!-- Code formatter -->
             <plugin>
                 <groupId>com.coveo</groupId>
                 <artifactId>fmt-maven-plugin</artifactId>
                 <version>2.9</version>
+
                 <executions>
                     <execution>
                         <goals>
@@ -77,7 +135,9 @@
                     </execution>
                 </executions>
             </plugin>
+
         </plugins>
+
     </build>
 
 </project>

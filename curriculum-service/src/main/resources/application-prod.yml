@@ -1,0 +1,109 @@
+spring:
+  config:
+    activate:
+      on-profile:
+        - prod
+  datasource:
+    url: ${CURRICULUM_SERVICE_DB_URL}
+    username: ${DB_USERNAME_OF_CURRICULUM_SERVICE}
+    password: ${DB_PASSWORD_OF_CURRICULUM_SERVICE}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+  cache:
+    type: redis
+    redis:
+      time-to-live: 600000ms
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      password: ${REDIS_PASSWORD}
+  rabbitmq:
+    port: ${RABBITMQ_PORT:5672}
+    host: ${RABBITMQ_HOST}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+  threads:
+    virtual:
+      enabled: true
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+server:
+  port: ${CURRICULUM_SERVICE_PORT:8085}
+---
+grpc:
+  client:
+    parse-token:
+      address: ${GRPC_PARSE_TOKEN_ADDRESS}
+      negotiationType: ${GRPC_PARSE_TOKEN_NEGOTIATION_TYPE:plaintext}
+
+    instructor:
+      address: ${GRPC_INSTRUCTOR_ADDRESS}
+      negotiationType: ${GRPC_INSTRUCTOR_NEGOTIATION_TYPE:plaintext}
+---
+rabbitmq:
+  exchange-name: ${RABBITMQ_EXCHANGE_NAME:ache-lecturers-data}
+  cache-data-routing-key: ${RABBITMQ_CACHE_DATA_ROUTING_KEY:cache-lecturers-data}
+  cache-data-queue: ${RABBITMQ_CACHE_DATA_QUEUE:cache-data-queue}
+
+  exchange-create-tests-name: ${RABBITMQ_EXCHANGE_CREATE_TESTS_NAME:create-tests-exchange}
+  create-tests-routing-key: ${RABBITMQ_CREATE_TESTS_ROUTING_KEY:create-tests-routing-key}
+  create-tests-queue: ${RABBITMQ_CREATE_TESTS_QUEUE:create-tests-queue}
+
+  exchange-uploading-video: ${RABBITMQ_EXCHANGE_UPLOADING_VIDEO:uploading-video-exchange}
+  routing-key-uploading-video: ${RABBITMQ_ROUTING_KEY_UPLOADING_VIDEO:uploading-video-routing-key}
+  queue-uploading-video: ${RABBITMQ_QUEUE_UPLOADING_VIDEO:uploading-video-queue}
+
+  auto-tagging:
+    queue-name: ${RABBITMQ_AUTO_TAGGING_QUEUE_NAME:auto.tagging.queue}
+    topic-exchange: ${RABBITMQ_AUTO_TAGGING_TOPIC_EXCHANGE:auto.tagging.topic.exchange}
+    routing-key: ${RABBITMQ_AUTO_TAGGING_ROUTING_KEY:auto.tagging.routing.key}
+
+  tag-curriculum-data:
+    queue-name: ${RABBITMQ_TAG_CURRICULUM_DATA_QUEUE_NAME:tag.data.curriculum.queue}
+    topic-exchange: ${RABBITMQ_TAG_CURRICULUM_DATA_TOPIC_EXCHANGE:tag.data.curriculum.topic.exchange}
+    routing-key: ${RABBITMQ_TAG_CURRICULUM_DATA_ROUTING_KEY:tag.data.curriculum.routing.key}
+
+  learning-progress:
+    queues:
+      queue-video: ${RABBITMQ_LEARNING_PROGRESS_QUEUE_VIDEO:learning.progress.video.queue}
+      queue-exam: ${RABBITMQ_LEARNING_PROGRESS_QUEUE_EXAM:learning.progress.exam.queue}
+    topic-exchange: ${RABBITMQ_LEARNING_PROGRESS_TOPIC_EXCHANGE:learning.progress.topic.exchange}
+    routing-keys:
+      video: ${RABBITMQ_LEARNING_PROGRESS_ROUTING_KEY_VIDEO:learning-progress.video}
+      exam: ${RABBITMQ_LEARNING_PROGRESS_ROUTING_KEY_EXAM:learning-progress.exam}
+
+  qdrant-search:
+    queue-name: ${RABBITMQ_QDRANT_SEARCH_QUEUE_NAME:qdrant.curriculum.queue}
+    topic-exchange: ${RABBITMQ_QDRANT_SEARCH_TOPIC_EXCHANGE:qdrant.curriculum.topic.exchange}
+    routing-key: ${RABBITMQ_QDRANT_SEARCH_ROUTING_KEY:qdrant.curriculum.routing.key}
+
+---
+minio:
+  url: ${MINIO_URL}
+  access-key: ${MINIO_ACCESS_KEY}
+  secret-key: ${MINIO_SECRET_KEY}
+  thumbnail-bucket: ${MINIO_THUMBNAIL_BUCKET}
+  video-bucket: ${MINIO_VIDEO_BUCKET}
+  part-size-mb: ${MINIO_PART_SIZE_MB}
+
+
+cloudinary:
+  cloudinary-name: ${CLOUDINARY_NAME_OF_USER_SERVICE}
+  api-key: ${CLOUDINARY_API_KEY_OF_USER_SERVICE}
+  api-secret: ${CLOUDINARY_API_SECRET_OF_USER_SERVICE}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URL}
+---
+learing-progress:
+  watch-precents: ${WATCH_PERCENTS:75}

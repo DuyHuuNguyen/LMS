@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
     join CurriculumTopic  ct on ct.topic.id = t.id
     where ct.curriculum.id = :curriculumId and t.isActive = true and ct.isActive = true
     """)
-    List<TopicDTO> findAllTopicDTOByCurriculumId(Long curriculumId);
+    List<TopicDTO> findAllTopicDTOByCurriculumId(@Param("curriculumId") Long curriculumId);
 
 
     @Query(value = """
@@ -30,7 +31,7 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
     from UserTopic ut
     where ut.userId =:userId and ut.isActive = true
     """)
-    List<Long> findAllTopicIdsByUserId(Long userId, Pageable pageable);
+    List<Long> findAllTopicIdsByUserId(@Param("userId") Long userId, Pageable pageable);
 
     @Query(value = """
     select new com.james.LMS.dto.TopicDTO(
@@ -52,5 +53,5 @@ public interface TopicRepository extends JpaRepository<Topic, Long> {
     join UserTopic  ut on t.id = ut.topic.id
     where t.isActive = true and ut.isActive = true and ut.userId = :userId
     """)
-    Page<TopicDTO> findAllByUserId(Long userId, Pageable pageable);
+    Page<TopicDTO> findAllByUserId(@Param("userId") Long userId, Pageable pageable);
 }

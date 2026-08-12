@@ -4,6 +4,7 @@ import com.james.LMS.dto.UserCurriculumValidationDTO;
 import com.james.LMS.entity.UserCurriculum;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -28,7 +29,7 @@ public interface UserCurriculumRepository extends JpaRepository<UserCurriculum, 
            and uc.curriculum_id =:curriculumId
    
    """,nativeQuery = true)
-  Optional<UserCurriculum> findByUserIdAndCurriculumIdAndVideoId(Long videoId, Long userId, Long curriculumId);
+  Optional<UserCurriculum> findByUserIdAndCurriculumIdAndVideoId(@Param("videoId") Long videoId, @Param("userId") Long userId, @Param("curriculumId") Long curriculumId);
 
   @Query(value = """
 
@@ -42,5 +43,5 @@ public interface UserCurriculumRepository extends JpaRepository<UserCurriculum, 
            and uc.curriculum_id =:curriculumId
    
    """,nativeQuery = true)
-  Optional<UserCurriculum> findByUserIdAndCurriculumIdAndExamId(Long examId, Long userId, Long curriculumId);
+  Optional<UserCurriculum> findByUserIdAndCurriculumIdAndExamId(@Param("examId") Long examId, @Param("userId") Long userId, @Param("curriculumId") Long curriculumId);
 }

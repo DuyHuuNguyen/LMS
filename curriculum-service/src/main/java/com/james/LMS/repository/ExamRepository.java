@@ -4,6 +4,7 @@ import com.james.LMS.dto.ExamDTO;
 import com.james.LMS.entity.Exam;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,7 +17,7 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
     from Exam  e
     where e.session.id in (:sessionIds)
     """)
-    List<Exam> findAllBySessionIds(List<Long> sessionIds);
+    List<Exam> findAllBySessionIds(@Param("sessionIds") List<Long> sessionIds);
 
     @Query(value = """
     select new com.james.LMS.dto.ExamDTO(
@@ -29,7 +30,7 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
     from Exam  e
     where e.session.id in (:sessionIds)
     """)
-    List<ExamDTO> findExamDTOBySessionIds(List<Long> sessionIds);
+    List<ExamDTO> findExamDTOBySessionIds(@Param("sessionIds") List<Long> sessionIds);
 
     Boolean existsByIdAndSession_IdAndIsActiveIsTrue(Long examId,Long sessionId);
 
@@ -41,5 +42,5 @@ public interface ExamRepository extends JpaRepository<Exam, Long> {
     left join fetch e.tests t
     where e.id =:id and e.isActive = true
     """)
-    Optional<Exam> findExamFetchTestsAndSessionById(Long id);
+    Optional<Exam> findExamFetchTestsAndSessionById(@Param("id") Long id);
 }

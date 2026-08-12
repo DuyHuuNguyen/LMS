@@ -7,5 +7,5 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "CURRICULUM-SERVICE")
 public interface ChannelService {
   @GetMapping(value = "/api/v1/channels/internal/id")
-  Long findChannelIdByUserId(@RequestParam Long userId);
+  Long findChannelIdByUserId(@RequestParam("userId") Long userId);
 }

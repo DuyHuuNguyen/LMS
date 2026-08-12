@@ -4,6 +4,7 @@ import com.james.LMS.entity.User;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -19,5 +20,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     join fetch u.instructor
     where u.id = :id
   """)
-  Optional<User> findUserAndInstructorById(Long id);
+  Optional<User> findUserAndInstructorById(@Param("id") Long id);
 }

@@ -3,6 +3,7 @@ package com.james.LMS.repository;
 import com.james.LMS.entity.Session;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.swing.text.html.Option;
@@ -18,7 +19,7 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
     where s.curriculum.id = :curriculumId
     ORDER BY s.index
     """)
-    List<Session> findAllByCurriculumId(Long curriculumId);
+    List<Session> findAllByCurriculumId(@Param("curriculumId") Long curriculumId);
 
 
     Boolean existsByIdAndCurriculum_IdAndIsActiveIsTrue(Long userId,Long curriculumId);
@@ -33,5 +34,5 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
     join fetch  s.exams
     where s.isActive and s.curriculum.id =:curriculumId
     """)
-    List<Session> findAllSessionAndFetchVideosAndExamsByCurriculumId(Long curriculumId);
+    List<Session> findAllSessionAndFetchVideosAndExamsByCurriculumId(@Param("curriculumId") Long curriculumId);
 }

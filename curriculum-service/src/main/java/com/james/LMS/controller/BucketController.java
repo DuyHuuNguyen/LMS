@@ -38,6 +38,7 @@ public class BucketController {
     return this.bucketFacade.createBucket(request);
   }
 
+  @Hidden
   @GetMapping
   @ResponseStatus(HttpStatus.OK)
   @Operation(tags = {"Bucket APIs"})

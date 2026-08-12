@@ -50,6 +50,26 @@ public class SecurityUserDetails implements UserDetails {
     return this.email;
   }
 
+  //  @Override
+  //  public boolean isAccountNonExpired() {
+  //    return false;
+  //  }
+  //
+  //  @Override
+  //  public boolean isAccountNonLocked() {
+  //    return false;
+  //  }
+  //
+  //  @Override
+  //  public boolean isCredentialsNonExpired() {
+  //    return false;
+  //  }
+  //
+  //  @Override
+  //  public boolean isEnabled() {
+  //    return false;
+  //  }
+
   public boolean hasInstructorRole() {
     return this.authorities.stream()
         .map(GrantedAuthority::getAuthority)
