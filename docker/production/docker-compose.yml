@@ -2,7 +2,7 @@ services:
 
   eureka-server-lms:
     container_name: eureka-server-lms
-    image: nhduy0909/production-lms-eureka-server:1.0.1
+    image: nhduy0909/production-lms-eureka-server:1.0.2
     ports:
       - "8761:8761"
     env_file:
@@ -13,7 +13,7 @@ services:
 
   user-service-lms:
     container_name: user-service-lms
-    image: nhduy0909/production-lms-user-service:1.0.1
+    image: nhduy0909/production-lms-user-service:1.0.2
     ports:
       - "8083:8083"
       - "9221:9221"
@@ -28,7 +28,7 @@ services:
 
   curriculum-service-lms:
     container_name: curriculum-service-lms
-    image: nhduy0909/production-lms-curriculum-service:1.0.1
+    image: nhduy0909/production-lms-curriculum-service:1.0.2
     ports:
       - "8085:8085"
     env_file:
@@ -42,7 +42,7 @@ services:
 
   api-gateway-lms:
     container_name: api-gateway-lms
-    image: nhduy0909/production-lms-api-gateway:1.0.1
+    image: nhduy0909/production-lms-api-gateway:1.0.2
     ports:
       - "9222:9222"
     env_file:
