@@ -36,8 +36,8 @@ public class AuthenticationTokenProviderInterceptor extends OncePerRequestFilter
     String path = request.getRequestURI();
 
     boolean isPublicEndPoints =
-            PublicEndpointsValidatorUtil.isSwaggerUrl(path)
-                    || PublicEndpointsValidatorUtil.isPublicEndpoint(path);
+        PublicEndpointsValidatorUtil.isSwaggerUrl(path)
+            || PublicEndpointsValidatorUtil.isPublicEndpoint(path);
 
     if (isPublicEndPoints) {
       filterChain.doFilter(request, response);

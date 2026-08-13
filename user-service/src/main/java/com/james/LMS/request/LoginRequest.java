@@ -18,6 +18,5 @@ public class LoginRequest {
   @Schema(defaultValue = "23130075@st.hcmuaf.edu.vn")
   private String email;
 
-  @NotBlank
-  private String password;
+  @NotBlank private String password;
 }

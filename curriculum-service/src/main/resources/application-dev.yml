@@ -34,6 +34,10 @@ spring:
     multipart:
       max-file-size: 50MB
       max-request-size: 50MB
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    enabled: true
 server:
   port: 8085
 ---

@@ -1,12 +1,9 @@
 package com.james.apigateway.config;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
+import jakarta.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
-
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -33,10 +30,8 @@ public class AuthenticationFilter implements GlobalFilter {
 
   @PostConstruct
   public void initPublicUrls() {
-    PUBLIC_APIS = Arrays.stream(publicUrls.split(","))
-            .map(String::trim)
-            .filter(s -> !s.isBlank())
-            .toList();
+    PUBLIC_APIS =
+        Arrays.stream(publicUrls.split(",")).map(String::trim).filter(s -> !s.isBlank()).toList();
     log.info("init public urls : {}", PUBLIC_APIS);
   }
 
