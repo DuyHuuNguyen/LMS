@@ -49,6 +49,7 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
   private final WishlistService wishlistService;
   private final CurriculumValidatorService curriculumValidatorService;
   private final AutoTaggingProducerService autoTaggingProducerService;
+  private final LastestWatchingVideoService lastestWatchingVideoService;
 
   private static final Integer ZERO_LECTURE = 0;
   private static final Integer INITIAL_HOME_PAGE = 0;
@@ -434,7 +435,11 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
         this.sessionService.findAllSessionAndFetchVideosAndExamsByCurriculumId(id);
 
     SessionDetailResponse sessionDetailResponse =
-        SessionDetailResponse.builder().sessionDTOS(this.mapSessionsToSessionDTO(sessions)).build();
+            SessionDetailResponse.builder().sessionDTOS(this.mapSessionsToSessionDTO(sessions)).build();
+    var lastestWatchingContent =this.lastestWatchingVideoService.findByUserIdAndCurriculumId(principal.getId(),id);
+
+    lastestWatchingContent.ifPresent(sessionDetailResponse::addActiveCurrentSessionDTO);
+
     return BaseResponse.build(sessionDetailResponse, true);
   }
 

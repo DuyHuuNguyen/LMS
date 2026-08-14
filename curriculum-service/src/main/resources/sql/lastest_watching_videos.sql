@@ -1,3 +1,12 @@
+
+
+--liquibase formatted sql
+
+--preconditions onFail:MARK_RAN onError:HALT
+--precondition-sql-check expectedResult:0 SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public' AND table_name = 'lastest_watching_videos';
+
+--changeset James:003
+
 CREATE TABLE lastest_watching_videos
 (
     id            BIGSERIAL PRIMARY KEY,

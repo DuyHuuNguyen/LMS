@@ -1,5 +1,6 @@
 package com.james.LMS.service.impl;
 
+import com.james.LMS.dto.ActiveCurrentSessionDTO;
 import com.james.LMS.entity.LastestWatchingVideo;
 import com.james.LMS.repository.LastestWatchingVideoRepository;
 import com.james.LMS.service.LastestWatchingVideoService;
@@ -25,5 +26,10 @@ public class LastestWatchingVideoServiceImpl implements LastestWatchingVideoServ
   @Override
   public Optional<LastestWatchingVideo> findByVideoId(Long videoId) {
     return this.lastestWatchingVideoRepository.findByVideoId(videoId);
+  }
+
+  @Override
+  public  Optional<ActiveCurrentSessionDTO> findByUserIdAndCurriculumId(Long userId, Long curriculumId) {
+    return this.lastestWatchingVideoRepository.findByUserIdAndCurriculumId(userId,curriculumId);
   }
 }

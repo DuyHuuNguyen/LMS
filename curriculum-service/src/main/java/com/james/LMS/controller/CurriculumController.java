@@ -124,12 +124,11 @@ public class CurriculumController {
 
   @GetMapping("/sessions/{id}")
   @ResponseStatus(HttpStatus.OK)
-  @Operation(
-      tags = {"Curriculum APIs"},
-      summary = "Only purchased, Can use api.")
+  @Operation(tags = {"Curriculum APIs"} , summary = "Api for user study")
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("!hasRole('ROLE_INSTRUCTOR')")
   public BaseResponse<SessionDetailResponse> findSessionsOfCurriculum(@PathVariable("id") Long id) {
     return this.curriculumFacade.findSessionsOfCurriculum(id);
   }
+
 }

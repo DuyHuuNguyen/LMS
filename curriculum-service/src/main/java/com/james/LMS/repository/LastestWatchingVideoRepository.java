@@ -1,5 +1,6 @@
 package com.james.LMS.repository;
 
+import com.james.LMS.dto.ActiveCurrentSessionDTO;
 import com.james.LMS.entity.LastestWatchingVideo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -24,4 +25,14 @@ public interface LastestWatchingVideoRepository extends JpaRepository<LastestWat
         """
     )
     Optional<LastestWatchingVideo> findByVideoId(@Param("videoId") Long videoId);
+
+
+    @Query(
+            """
+    select new com.james.LMS.dto.ActiveCurrentSessionDTO(l.session.id,l.contentId, l.contentType)
+        from LastestWatchingVideo l
+              WHERE l.isActive AND l.curriculum.id =:curriculumId AND l.userId =:userId
+    """
+    )
+    Optional<ActiveCurrentSessionDTO> findByUserIdAndCurriculumId(@Param("userId") Long userId, @Param("curriculumId") Long curriculumId );
 }

@@ -71,7 +71,7 @@ public class NoteFacadeImpl implements NoteFacade {
     this.validateUserAccess(userId, curriculumId);
 
     Pageable pageable =
-        PageRequest.of(noteCriteria.getCurrentPage() - 1, noteCriteria.getPageSize());
+        PageRequest.of(noteCriteria.getCurrentPage() , noteCriteria.getPageSize());
     Page<NoteDTO> noteDTOPage =
         this.noteService.findAllByUserIdAndCurriculumIdWithIsActiveIsTrue(
             userId, curriculumId, pageable);
