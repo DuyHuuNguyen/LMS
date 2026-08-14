@@ -33,5 +33,7 @@ build/
 .vscode/
 
 # Environment variables
-.env
+docker/production/.env
 .env.*
+.env
+Internal*

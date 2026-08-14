@@ -11,20 +11,21 @@ import org.springframework.stereotype.Component;
 @Component
 public class AppConfigLogger {
 
-    private static final Logger log = LoggerFactory.getLogger(AppConfigLogger.class);
+  private static final Logger log = LoggerFactory.getLogger(AppConfigLogger.class);
 
-    @EventListener(ApplicationReadyEvent.class)
-    public void logProperties(ApplicationReadyEvent event) {
-        ConfigurableEnvironment env = event.getApplicationContext().getEnvironment();
-        log.info("========== APPLICATION CONFIGURATIONS ==========");
-        env.getPropertySources().stream()
-                .filter(ps -> ps instanceof EnumerablePropertySource)
-                .map(ps -> (EnumerablePropertySource<?>) ps)
-                .forEach(ps -> {
-                    for (String propName : ps.getPropertyNames()) {
-                        log.info("{} = {}", propName, env.getProperty(propName));
-                    }
-                });
-        log.info("================================================");
-    }
+  @EventListener(ApplicationReadyEvent.class)
+  public void logProperties(ApplicationReadyEvent event) {
+    ConfigurableEnvironment env = event.getApplicationContext().getEnvironment();
+    log.info("========== APPLICATION CONFIGURATIONS ==========");
+    env.getPropertySources().stream()
+        .filter(ps -> ps instanceof EnumerablePropertySource)
+        .map(ps -> (EnumerablePropertySource<?>) ps)
+        .forEach(
+            ps -> {
+              for (String propName : ps.getPropertyNames()) {
+                log.info("{} = {}", propName, env.getProperty(propName));
+              }
+            });
+    log.info("================================================");
+  }
 }

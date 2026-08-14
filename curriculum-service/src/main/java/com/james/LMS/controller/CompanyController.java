@@ -56,7 +56,7 @@ public class CompanyController {
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("isAuthenticated()")
   BaseResponse<SlicePaginationResponse<GroupResponse>> findGroups(
-      @PathVariable Long id, @NotNull @Valid GroupCriteria criteria) {
+      @PathVariable("id") Long id, @NotNull @Valid GroupCriteria criteria) {
     criteria.setCompanyId(id);
     return this.companyFacade.findGroups(criteria);
   }

@@ -62,7 +62,7 @@ public class VideoController {
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("hasRole('ROLE_INSTRUCTOR')")
   public BaseResponse<Void> changeSessionVideo(
-      @PathVariable Long id, @RequestBody UpdateSessionVideoRequest request) {
+      @PathVariable("id") Long id, @RequestBody UpdateSessionVideoRequest request) {
     request.withId(id);
     return this.videoFacade.changeSessionVideo(request);
   }

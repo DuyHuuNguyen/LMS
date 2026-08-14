@@ -1,0 +1,38 @@
+# =========================
+# Stage 1: Build User Service
+# =========================
+FROM maven:3.9.6-eclipse-temurin-21 AS builder
+
+WORKDIR /app
+
+# Copy parent POM and strip <modules> block so Maven won't try to build all modules
+COPY pom.xml ./pom.xml
+RUN sed -i '/<modules>/,/<\/modules>/d' pom.xml || true
+
+# Copy grpc-protocol (dependency) and build it
+COPY grpc-protocol/pom.xml ./grpc-protocol/pom.xml
+COPY grpc-protocol/src ./grpc-protocol/src
+RUN mvn -f grpc-protocol/pom.xml clean install -DskipTests -B
+
+# Copy user-service pom and source
+COPY user-service/pom.xml ./user-service/pom.xml
+COPY user-service/src ./user-service/src
+
+# Pre-download dependencies and build user-service
+RUN mvn -f user-service/pom.xml dependency:go-offline -B
+RUN mvn -f user-service/pom.xml clean package -DskipTests -B
+
+# =========================
+# Stage 2: Runtime
+# =========================
+FROM eclipse-temurin:21-jre
+
+WORKDIR /app
+
+# Copy built JAR
+COPY --from=builder /app/user-service/target/*.jar user-service-lms.jar
+
+# HTTP + gRPC ports
+EXPOSE 8083 9090
+
+ENTRYPOINT ["java", "-jar", "user-service-lms.jar"]

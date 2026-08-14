@@ -182,7 +182,7 @@ public class VideoFacadeImpl implements VideoFacade {
   public BaseResponse<String> genPresignStreamingVideo(String videoName) {
     String presignUrl =
         this.minioService.generatePresignedVideoStreamingUrl(
-            "pWF2AmF0GwAAAZyo5AxrYWYAYXUCYXMaACWwUQ.mp4", 100000);
+            "Screencast from 2026-03-01 12-23-58.webm", 100000);
     return BaseResponse.build(presignUrl, true);
   }
 

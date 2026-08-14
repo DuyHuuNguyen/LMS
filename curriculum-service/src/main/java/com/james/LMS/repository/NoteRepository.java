@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -19,7 +20,7 @@ public interface NoteRepository extends JpaRepository<Note,Long> {
      left join UserCurriculum uc on uc.userId =:userId and ( uc.curriculum.id = v.session.curriculum.id  or uc.curriculum.id = e.session.curriculum.id)
      where uc is not null and uc.curriculum.id =:curriculumId
     """)
-    Integer findCurrentGlobalIndexByUserIdAndCurriculumId(Long userId,Long curriculumId);
+    Integer findCurrentGlobalIndexByUserIdAndCurriculumId(@Param("userId") Long userId, @Param("curriculumId") Long curriculumId);
 
 
     @Deprecated
@@ -43,5 +44,5 @@ public interface NoteRepository extends JpaRepository<Note,Long> {
       )
     order by n.globalIndex
     """)
-    Page<NoteDTO> findAllByUserIdAndCurriculumIdWithIsActiveIsTrue(Long userId, Long curriculumId, Pageable pageable);
+    Page<NoteDTO> findAllByUserIdAndCurriculumIdWithIsActiveIsTrue(@Param("userId") Long userId, @Param("curriculumId") Long curriculumId, Pageable pageable);
 }

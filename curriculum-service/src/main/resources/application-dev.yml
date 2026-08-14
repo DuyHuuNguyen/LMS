@@ -1,0 +1,106 @@
+spring:
+  config:
+    activate:
+      on-profile:
+        - dev
+  datasource:
+    url: ${CURRICULUM_DB_URL_DEV:jdbc:postgresql://localhost:5432/db_curriculum_service_lms}
+    username: postgres
+    password: 123456
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  cache:
+    type: redis
+    redis:
+      time-to-live: 600000ms
+  data:
+    redis:
+      host: ${REDIS_HOST_DEV:localhost}
+      port: ${REDIS_PORT_DEV:6379}
+  rabbitmq:
+    port: 5672
+    host: ${RABBIT_MQ_DEV:localhost}
+    username: guest
+    password: guest
+  threads:
+    virtual:
+      enabled: true
+
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+    enabled: true
+server:
+  port: 8085
+---
+grpc:
+  client:
+    parse-token:
+      address: ${GRPC_USER_SERVICE_DEV:static://localhost:9090}
+      negotiationType: plaintext
+    instructor:
+      address: ${GRPC_USER_SERVICE_DEV:static://localhost:9090}
+      negotiationType: plaintext
+---
+rabbitmq:
+  exchange-name: ache-lecturers-data
+  cache-data-routing-key: cache-lecturers-data
+  cache-data-queue: cache-data-queue
+  exchange-create-tests-name: create-tests-exchange
+  create-tests-routing-key: create-tests-routing-key
+  create-tests-queue: create-tests-queue
+  exchange-uploading-video: uploading-video-exchange
+  routing-key-uploading-video: uploading-video-routing-key
+  queue-uploading-video: uploading-video-queue
+  auto-tagging:
+    queue-name: auto.tagging.queue
+    topic-exchange: auto.tagging.topic.exchange
+    routing-key: auto.tagging.routing.key
+  tag-curriculum-data:
+    queue-name: tag.data.curriculum.queue
+    topic-exchange: tag.data.curriculum.topic.exchange
+    routing-key: tag.data.curriculum.routing.key
+  learning-progress:
+    queues:
+      queue-video: learning.progress.video.queue
+      queue-exam: learning.progress.exam.queue
+    topic-exchange: learning.progress.topic.exchange
+    routing-keys:
+      video: learning-progress.video
+      exam: learning-progress.exam
+  qdrant-search:
+    queue-name: qdrant.curriculum.queue
+    topic-exchange: qdrant.curriculum.topic.exchange
+    routing-key: qdrant.curriculum.routing.key
+
+---
+minio:
+  url: ${MINIO_URL_DEV:http://localhost:9000}
+  access-key: admin
+  secret-key: 12345678
+  thumbnail-bucket: thumbnail-bucket
+  video-bucket: video-bucket
+  part-size-mb: 16
+
+
+
+cloudinary:
+  cloudinary-name: ${CLOUDINARY_NAME_OF_USER_SERVICE}
+  api-key: ${CLOUDINARY_API_KEY_OF_USER_SERVICE}
+  api-secret: ${CLOUDINARY_API_SECRET_OF_USER_SERVICE}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka}
+---
+learing-progress:
+  watch-precents: 75

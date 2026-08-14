@@ -37,6 +37,7 @@ public class UserFacadeImpl implements UserFacade {
   private final MailProducerService mailProducerService;
   private final CloudinaryService cloudinaryService;
   private final ChannelService channelService;
+  private final InstructorService instructorService;
 
   @Override
   public BaseResponse<LoginResponse> login(LoginRequest loginRequest) {

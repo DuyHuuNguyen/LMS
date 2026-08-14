@@ -1,9 +1,12 @@
 package com.james.apigateway.config;
 
+import jakarta.annotation.PostConstruct;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.http.HttpCookie;
@@ -19,17 +22,22 @@ import reactor.core.publisher.Mono;
 public class AuthenticationFilter implements GlobalFilter {
   private static final List<String> SWAGGER_URLS = List.of("/swagger-ui/", "/v3/api-docs");
   private static final String COOKIE_NAME = "access-token";
-  private static final List<String> PUBLIC_APIS =
-      List.of(
-          "/api/v2/users/login",
-          "/api/v1/users/refresh-token",
-          "/api/v1/users/forgot-password",
-          "/api/v1/users/verify-otp",
-          "/api/v1/users/sign-up");
+
+  @Value("${auth.public-urls}")
+  private String publicUrls;
+
+  private List<String> PUBLIC_APIS;
+
+  @PostConstruct
+  public void initPublicUrls() {
+    PUBLIC_APIS =
+        Arrays.stream(publicUrls.split(",")).map(String::trim).filter(s -> !s.isBlank()).toList();
+    log.info("init public urls : {}", PUBLIC_APIS);
+  }
 
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
-
+    initPublicUrls();
     String path = exchange.getRequest().getPath().value();
 
     var isSwagger = SWAGGER_URLS.stream().anyMatch(path::startsWith);

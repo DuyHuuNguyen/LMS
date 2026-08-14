@@ -4,6 +4,7 @@ import com.james.LMS.dto.VideoDTO;
 import com.james.LMS.entity.Video;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,7 +18,7 @@ public interface VideoRepository extends JpaRepository<Video, Long> {
         from Video v
         where v.session.id in (:sessionIds)
         """)
-    List<Video> findAllBySessionIds(List<Long> sessionIds);
+    List<Video> findAllBySessionIds(@Param("sessionIds") List<Long> sessionIds);
     @Query("""
        select new com.james.LMS.dto.VideoDTO(
            v.id,
@@ -30,7 +31,7 @@ public interface VideoRepository extends JpaRepository<Video, Long> {
        from Video v
        where v.session.id in :sessionIds
     """)
-    List<VideoDTO> findVideoDTOBySessionId(List<Long> sessionIds);
+    List<VideoDTO> findVideoDTOBySessionId(@Param("sessionIds") List<Long> sessionIds);
 
 
     @Query("""
@@ -38,7 +39,7 @@ public interface VideoRepository extends JpaRepository<Video, Long> {
     from Video v
     where v.id =:id and v.isActive
     """)
-    Integer findDurationById(Long id);
+    Integer findDurationById(@Param("id") Long id);
 
     Optional<Video> findByIdentifyCode(String identifyCode);
 
@@ -48,7 +49,7 @@ public interface VideoRepository extends JpaRepository<Video, Long> {
     join fetch v.session
     where v.id =:id and v.isActive
     """)
-    Optional<Video> findVideoAndFetchSessionById(Long id);
+    Optional<Video> findVideoAndFetchSessionById(@Param("id") Long id);
 
     Optional<Video> findByIdAndIsActiveIsTrue(Long id);
 
@@ -58,5 +59,5 @@ public interface VideoRepository extends JpaRepository<Video, Long> {
     join fetch v.bucket as b
     where v.id =:id and v.isActive and b.isActive
     """)
-    Optional<Video> findByIdAndFetchBucket(Long id);
+    Optional<Video> findByIdAndFetchBucket(@Param("id") Long id);
 }

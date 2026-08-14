@@ -18,8 +18,6 @@ services:
     ports:
       - "8083:8083"
       - "9090:9090"
-    environment:
-      SPRING_PROFILES_ACTIVE: dev
     env_file:
       - .env
     depends_on:
@@ -34,8 +32,6 @@ services:
       dockerfile: curriculum-service/docker/Dockerfile
     ports:
       - "8085:8085"
-    environment:
-      SPRING_PROFILES_ACTIVE: dev
     env_file:
       - .env
     depends_on:
@@ -51,7 +47,6 @@ services:
     ports:
       - "9222:9222"
     environment:
-      SPRING_PROFILES_ACTIVE: dev
       EUREKA_URL: http://eureka-server-lms:8761/eureka/
     env_file:
       - .env

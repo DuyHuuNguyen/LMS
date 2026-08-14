@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: user-service
+
+---
+spring:
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+
+
+logging:
+  pattern:
+    console: ${LOG_PATTERN:%d{yyyy-MM-dd HH:mm:ss.SSS} %clr([%thread]){faint} %clr(%-5level) %clr(%logger{1}){cyan} %clr(%X{requestId}){yellow} - %clr(%X{email}){green} - %msg%n}

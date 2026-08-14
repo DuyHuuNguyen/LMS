@@ -1,0 +1,38 @@
+# =========================
+# Stage 1: Build Curriculum Service
+# =========================
+FROM maven:3.9.6-eclipse-temurin-21 AS builder
+
+WORKDIR /app
+
+# Copy parent POM and strip <modules> block so Maven won't try to build all modules
+COPY pom.xml ./pom.xml
+RUN sed -i '/<modules>/,/<\/modules>/d' pom.xml || true
+
+# Copy grpc-protocol (dependency) and build it
+COPY grpc-protocol/pom.xml ./grpc-protocol/pom.xml
+COPY grpc-protocol/src ./grpc-protocol/src
+RUN mvn -f grpc-protocol/pom.xml clean install -DskipTests -B
+
+# Copy curriculum-service pom and source
+COPY curriculum-service/pom.xml ./curriculum-service/pom.xml
+COPY curriculum-service/src ./curriculum-service/src
+
+# Pre-download dependencies and build curriculum-service
+RUN mvn -f curriculum-service/pom.xml dependency:go-offline -B
+RUN mvn -f curriculum-service/pom.xml clean package -DskipTests -B
+
+# =========================
+# Stage 2: Runtime
+# =========================
+FROM eclipse-temurin:21-jre
+
+WORKDIR /app
+
+# Copy built JAR
+COPY --from=builder /app/curriculum-service/target/*.jar curriculum-service-lms.jar
+
+# HTTP port
+EXPOSE 8085
+
+ENTRYPOINT ["java", "-jar", "curriculum-service-lms.jar"]

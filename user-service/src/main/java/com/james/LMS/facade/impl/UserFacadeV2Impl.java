@@ -12,6 +12,7 @@ import com.james.LMS.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserFacadeV2Impl implements UserFacadeV2 {
@@ -35,6 +37,7 @@ public class UserFacadeV2Impl implements UserFacadeV2 {
 
   @Override
   public BaseResponse<Void> login(LoginRequest loginRequest, HttpServletResponse response) {
+    log.info("Login v2");
     var authentication =
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(

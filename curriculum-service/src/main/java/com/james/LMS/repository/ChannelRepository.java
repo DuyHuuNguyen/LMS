@@ -4,6 +4,7 @@ import com.james.LMS.entity.Channel;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -18,5 +19,5 @@ public interface ChannelRepository extends JpaRepository<Channel, Long> {
             where c.isActive and c.id =:channelId and c.userId =:userId
             )
       """)
-  Boolean verifyChannelOfLecturer(Long userId, Long channelId);
+  Boolean verifyChannelOfLecturer(@Param("userId") Long userId, @Param("channelId") Long channelId);
 }

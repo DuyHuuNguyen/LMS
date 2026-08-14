@@ -42,7 +42,7 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
                 left join Wishlist  w on w.userId =:userId and w.curriculum.id = c.id
           where t.id in (:followedTopicIds) and c.isActive and t.isActive and ch.isActive and  ct.isActive 
       """)
-      Page<CurriculumDTO> findAllCurriculumsByFollowedTopicIdsOfUser(List<Long> followedTopicIds,Long userId, Pageable pageable);
+      Page<CurriculumDTO> findAllCurriculumsByFollowedTopicIdsOfUser(@Param("followedTopicIds") List<Long> followedTopicIds, @Param("userId") Long userId, Pageable pageable);
 
 
       @Query("""
@@ -71,7 +71,7 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
           left join Wishlist  wl on wl.curriculum.id = c.id and wl.userId =:userId
           where t.id = :topicId and c.isActive and t.isActive and ch.isActive and  ct.isActive 
       """)
-      Page<CurriculumDTO> findAllCurriculumByTopicId(Long topicId,Long userId, Pageable pageable);
+      Page<CurriculumDTO> findAllCurriculumByTopicId(@Param("topicId") Long topicId, @Param("userId") Long userId, Pageable pageable);
 
 
       Boolean existsCurriculumByIdAndIsActiveIsTrue(Long id);
@@ -105,7 +105,7 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
         left join Exam e on e.id = upr.exam.id
         where uc.userId =:userId and c.isActive and uc.isActive and COALESCE(upr.isActive,true) and COALESCE(se.isActive,true) and COALESCE(v.isActive,true) and COALESCE(e.isActive,true)
       """)
-      Page<PurchasedCurriculumDTO> findAllPurchasedCurriculums(Long userId,Pageable pageable);
+      Page<PurchasedCurriculumDTO> findAllPurchasedCurriculums(@Param("userId") Long userId,Pageable pageable);
 
 
       @Query("""
@@ -115,7 +115,7 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
       join Video v on v.session.id = s.id
       where uc.userId =:userId and uc.curriculum.id =:curriculumId and s.id =:sessionId and v.id = :videoId and uc.isActive and s.isActive and v.isActive
       """)
-      Boolean isPurchasedCurriculumToHaveVideo(Long userId,Long curriculumId,Long sessionId,Long videoId);
+      Boolean isPurchasedCurriculumToHaveVideo(@Param("userId") Long userId, @Param("curriculumId") Long curriculumId, @Param("sessionId") Long sessionId, @Param("videoId") Long videoId);
 
       @Query("""
       select COUNT(uc) > 0
@@ -124,7 +124,7 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
       join Exam e on e.session.id = s.id
       where uc.userId =:userId and uc.curriculum.id =:curriculumId and s.id =:sessionId and e.id = :examId and uc.isActive and s.isActive and e.isActive
       """)
-      Boolean isPurchasedCurriculumToHaveExam(Long userId,Long curriculumId,Long sessionId,Long examId);
+      Boolean isPurchasedCurriculumToHaveExam(@Param("userId") Long userId, @Param("curriculumId") Long curriculumId, @Param("sessionId") Long sessionId, @Param("examId") Long examId);
 
 
 
@@ -134,7 +134,7 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
       join fetch c.channel
       where c.id =:id and c.isActive and c.channel.isActive
       """)
-      Optional<Curriculum> findByIdFetchChannel(Long id);
+      Optional<Curriculum> findByIdFetchChannel(@Param("id") Long id);
 
 
 
@@ -145,7 +145,7 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
       join Session se on se.curriculum.id = c.id
       where c.id =:curriculumId and c.isActive and ch.userId =:userHolderChannelId and ch.isActive and se.id =:sessionId and se.isActive
       """)
-      Boolean isExistedChannelAndCurriculumForUploadVideo(Long userHolderChannelId,Long curriculumId,Long sessionId);
+      Boolean isExistedChannelAndCurriculumForUploadVideo(@Param("userHolderChannelId") Long userHolderChannelId, @Param("curriculumId") Long curriculumId, @Param("sessionId") Long sessionId);
 
 
 
@@ -156,7 +156,7 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
             join Video  v on v.session.id = se.id
             where c.channel.userId =:userHolderChannelId and c.isActive and c.id =:curriculumId and se.isActive and v.id = :videoId and v.isActive
             """)
-      Boolean isInstructorHoldVideo(Long userHolderChannelId,Long curriculumId,Long videoId);
+      Boolean isInstructorHoldVideo(@Param("userHolderChannelId") Long userHolderChannelId, @Param("curriculumId") Long curriculumId, @Param("videoId") Long videoId);
 
 
       @Query("""
@@ -182,7 +182,7 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
           join Wishlist wl on wl.curriculum.id = c.id
           where wl.userId =:userId and wl.isActive and c.isActive and t.isActive and ch.isActive and  ct.isActive
       """)
-      Page<CurriculumDTO> findAllWishlist(Long userId, Pageable pageable);
+      Page<CurriculumDTO> findAllWishlist(@Param("userId") Long userId, Pageable pageable);
 
 
       @Query("""
@@ -205,7 +205,7 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
           join Wishlist wl on wl.curriculum.id = c.id
           where wl.userId =:userId and wl.isActive and c.isActive and t.isActive and ch.isActive and  ct.isActive
       """)
-      Page<WishListCurriculumDTO> findAllWishlistCurriculum(Long userId,Pageable pageable);
+      Page<WishListCurriculumDTO> findAllWishlistCurriculum(@Param("userId") Long userId,Pageable pageable);
 
       @Query("""
            select  new com.james.LMS.dto.CurriculumChannelDTO(
@@ -227,7 +227,7 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
           join Channel ch on ch.id = c.channel.id
           where c.isActive and ch.isActive and ch.id =:channelId
       """)
-      Page<CurriculumChannelDTO> findAllInChannel(Long channelId,Pageable pageable);
+      Page<CurriculumChannelDTO> findAllInChannel(@Param("channelId") Long channelId,Pageable pageable);
 
 
       @Query("""

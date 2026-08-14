@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -19,7 +20,7 @@ public interface LearningProgressRepository extends JpaRepository<LearningProgre
         from LearningProgress lp
         where lp.userCurriculum.curriculum.id =:curriculumId and lp.userCurriculum.userId =:userId and lp.isActive
     """)
-    Optional<LearningProgress> findByUserIdAndCurriculumId(Long userId, Long curriculumId);
+    Optional<LearningProgress> findByUserIdAndCurriculumId(@Param("userId") Long userId, @Param("curriculumId") Long curriculumId);
 
     @Query("""
         select new com.james.LMS.dto.CurriculumAuditLearningProgressDTO(
@@ -31,7 +32,7 @@ public interface LearningProgressRepository extends JpaRepository<LearningProgre
         from LearningProgress  lp 
         where lp.isActive and lp.userCurriculum.userId =:userId
     """)
-    Slice<CurriculumAuditLearningProgressDTO> findAllByUserId(Long userId ,Pageable pageable);
+    Slice<CurriculumAuditLearningProgressDTO> findAllByUserId(@Param("userId") Long userId ,Pageable pageable);
 
     Slice<LearningProgress> findAllByUserCurriculumUserIdAndIsActiveTrue(Long userId, Pageable pageable);
 }

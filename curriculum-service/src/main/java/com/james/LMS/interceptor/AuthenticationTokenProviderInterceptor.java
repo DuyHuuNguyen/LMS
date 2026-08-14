@@ -35,8 +35,6 @@ public class AuthenticationTokenProviderInterceptor extends OncePerRequestFilter
       throws ServletException, IOException {
     String path = request.getRequestURI();
 
-    String token = this.getJwtTokenFromCookie(request);
-
     boolean isPublicEndPoints =
         PublicEndpointsValidatorUtil.isSwaggerUrl(path)
             || PublicEndpointsValidatorUtil.isPublicEndpoint(path);
@@ -45,6 +43,8 @@ public class AuthenticationTokenProviderInterceptor extends OncePerRequestFilter
       filterChain.doFilter(request, response);
       return;
     }
+
+    String token = this.getJwtTokenFromCookie(request);
 
     try {
       AuthDTO authDTO = this.authService.validToken(token);

@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -17,7 +18,7 @@ public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
     from Wishlist w
     where w.isActive and w.curriculum.id =:curriculumId and w.userId =:userId
     """)
-  Boolean existsWishlistByCurriculum_IdAndIsActiveIsTrueAndUserId(Long curriculumId, Long userId);
+  Boolean existsWishlistByCurriculum_IdAndIsActiveIsTrueAndUserId(@Param("curriculumId") Long curriculumId, @Param("userId") Long userId);
 
   @Query(value = """
     select new com.james.LMS.dto.WishlistDTO(
@@ -28,5 +29,5 @@ public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
     from Wishlist wl 
     where wl.isActive and wl.userId =:userId
     """)
-  Page<WishlistDTO> findByUserId(Long userId, Pageable pageable);
+  Page<WishlistDTO> findByUserId(@Param("userId") Long userId, Pageable pageable);
 }

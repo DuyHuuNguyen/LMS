@@ -38,7 +38,7 @@ public class CurriculumController {
   @Operation(tags = {"Curriculum APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("hasRole('ROLE_USER')")
-  public BaseResponse<CurriculumReviewResponse> reviewCurriculum(@PathVariable Long id) {
+  public BaseResponse<CurriculumReviewResponse> reviewCurriculum(@PathVariable("id") Long id) {
     return curriculumFacade.findCurriculumForReviewById(id);
   }
 
@@ -118,18 +118,17 @@ public class CurriculumController {
   @Operation(tags = {"Curriculum APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("isAuthenticated()")
-  public BaseResponse<Void> addWishlist(@PathVariable Long id) {
+  public BaseResponse<Void> addWishlist(@PathVariable("id") Long id) {
     return this.curriculumFacade.addWishList(id);
   }
 
   @GetMapping("/sessions/{id}")
   @ResponseStatus(HttpStatus.OK)
-  @Operation(
-      tags = {"Curriculum APIs"},
-      summary = "Only purchased, Can use api.")
+  @Operation(tags = {"Curriculum APIs"} , summary = "Api for user study")
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("!hasRole('ROLE_INSTRUCTOR')")
-  public BaseResponse<SessionDetailResponse> findSessionsOfCurriculum(@PathVariable Long id) {
+  public BaseResponse<SessionDetailResponse> findSessionsOfCurriculum(@PathVariable("id") Long id) {
     return this.curriculumFacade.findSessionsOfCurriculum(id);
   }
+
 }

@@ -9,7 +9,7 @@ public class PublicEndpointsValidatorUtil {
           "/api/v1/internal",
           "/actuator/health",
           "/actuator/beans",
-          "/api/v1/channels/internal/id");
+          "/api/v1/channels/internal/channel-id");
 
   public static boolean isSwaggerUrl(String path) {
     return SWAGGER_URLS.stream().anyMatch(path::startsWith);
