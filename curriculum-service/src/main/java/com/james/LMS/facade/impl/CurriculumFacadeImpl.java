@@ -435,8 +435,9 @@ public class CurriculumFacadeImpl implements CurriculumFacade {
         this.sessionService.findAllSessionAndFetchVideosAndExamsByCurriculumId(id);
 
     SessionDetailResponse sessionDetailResponse =
-            SessionDetailResponse.builder().sessionDTOS(this.mapSessionsToSessionDTO(sessions)).build();
-    var lastestWatchingContent =this.lastestWatchingVideoService.findByUserIdAndCurriculumId(principal.getId(),id);
+        SessionDetailResponse.builder().sessionDTOS(this.mapSessionsToSessionDTO(sessions)).build();
+    var lastestWatchingContent =
+        this.lastestWatchingVideoService.findByUserIdAndCurriculumId(principal.getId(), id);
 
     lastestWatchingContent.ifPresent(sessionDetailResponse::addActiveCurrentSessionDTO);
 

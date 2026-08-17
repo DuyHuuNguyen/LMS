@@ -6,6 +6,7 @@ import com.james.LMS.request.StoppedWatchingContentRequest;
 import com.james.LMS.response.BaseResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,15 +18,13 @@ import org.springframework.web.bind.annotation.*;
 public class TrackingBehaviorController {
   private final TrackingBehaviorFacade trackingBehaviorFacade;
 
-  @PostMapping("/stopping-watching")
+  @PostMapping("/stop-watching")
   @ResponseStatus(HttpStatus.OK)
-  @Operation(
-      tags = {"Tracking APIs"},
-      summary = "api demo")
+  @Operation(tags = {"Tracking APIs"})
   @SecurityRequirement(name = SecurityConfig.SECURITY_REQUIREMENT)
   @PreAuthorize("isAuthenticated()")
   public BaseResponse<Void> trackingStoppedWatchingContent(
-      @RequestBody StoppedWatchingContentRequest request) {
+     @Valid @RequestBody StoppedWatchingContentRequest request) {
     return this.trackingBehaviorFacade.trackingStoppedWatchingContent(request);
   }
 }

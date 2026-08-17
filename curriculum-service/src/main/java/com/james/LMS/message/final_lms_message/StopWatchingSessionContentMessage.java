@@ -9,10 +9,11 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class PauseVideoMessage extends BaseQueueMessage {
+public class StopWatchingSessionContentMessage extends BaseQueueMessage {
   private Long curriculumId;
   private Long sessionId;
   private Long userId;
+  private Long contentId;
   private Integer pausedAt;
   private WatchingContentType contentType;
 }

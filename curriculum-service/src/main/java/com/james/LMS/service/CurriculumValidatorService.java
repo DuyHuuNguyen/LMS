@@ -17,4 +17,10 @@ public interface CurriculumValidatorService {
 
   Boolean isPurchasedCurriculum(
       ValidUserPurchasedCurriculumAccessDTO validUserPurchasedCurriculumAccessDTO);
+
+  Boolean isPurchasedCurriculumWithVideoInSession(
+      ValidatePurchasedCurriculumAndContainSessionAndSessionContentDTO dto);
+
+  Boolean isPurchasedCurriculumWithExamInSession(
+      ValidatePurchasedCurriculumAndContainSessionAndSessionContentDTO dto);
 }

@@ -80,6 +80,13 @@ rabbitmq:
     queue-name: qdrant.curriculum.queue
     topic-exchange: qdrant.curriculum.topic.exchange
     routing-key: qdrant.curriculum.routing.key
+  user-stop-watching-content-session:
+    video-queue-name: user.pause.video.queue
+    topic-exchange: user.pause.video.exchange
+    video-routing-key: user.pause.video.routing.key
+
+    exam-queue-name: user.pause.exam.queue
+    exam-routing-key: user.pause.exam.routing.key
 
 ---
 minio:

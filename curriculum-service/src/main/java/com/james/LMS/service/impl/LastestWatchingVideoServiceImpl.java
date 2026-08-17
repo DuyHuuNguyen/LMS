@@ -7,6 +7,8 @@ import com.james.LMS.service.LastestWatchingVideoService;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -14,6 +16,7 @@ public class LastestWatchingVideoServiceImpl implements LastestWatchingVideoServ
   private final LastestWatchingVideoRepository lastestWatchingVideoRepository;
 
   @Override
+  @Transactional(propagation = Propagation.MANDATORY)
   public void save(LastestWatchingVideo lastestWatchingVideo) {
     this.lastestWatchingVideoRepository.save(lastestWatchingVideo);
   }
@@ -29,7 +32,15 @@ public class LastestWatchingVideoServiceImpl implements LastestWatchingVideoServ
   }
 
   @Override
-  public  Optional<ActiveCurrentSessionDTO> findByUserIdAndCurriculumId(Long userId, Long curriculumId) {
-    return this.lastestWatchingVideoRepository.findByUserIdAndCurriculumId(userId,curriculumId);
+  public Optional<ActiveCurrentSessionDTO> findByUserIdAndCurriculumId(
+      Long userId, Long curriculumId) {
+    return this.lastestWatchingVideoRepository.findByUserIdAndCurriculumId(userId, curriculumId);
+  }
+
+  @Override
+  @Transactional(propagation = Propagation.MANDATORY)
+  public void disableActiveCurrentWatchSessionContent(Long userId, Long curriculumId) {
+    this.lastestWatchingVideoRepository.disableActiveCurrentWatchSessionContent(
+        userId, curriculumId);
   }
 }

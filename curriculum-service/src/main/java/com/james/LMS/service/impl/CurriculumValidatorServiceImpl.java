@@ -61,4 +61,16 @@ public class CurriculumValidatorServiceImpl implements CurriculumValidatorServic
       ValidUserPurchasedCurriculumAccessDTO validUserPurchasedCurriculumAccessDTO) {
     return this.curriculumRepository.isPurchasedCurriculum(validUserPurchasedCurriculumAccessDTO);
   }
+
+  @Override
+  public Boolean isPurchasedCurriculumWithVideoInSession(
+      ValidatePurchasedCurriculumAndContainSessionAndSessionContentDTO dto) {
+    return this.curriculumRepository.isPurchasedCurriculumWithVideoInSession(dto);
+  }
+
+  @Override
+  public Boolean isPurchasedCurriculumWithExamInSession(
+      ValidatePurchasedCurriculumAndContainSessionAndSessionContentDTO dto) {
+    return this.curriculumRepository.isPurchasedCurriculumWithExamInSession(dto);
+  }
 }

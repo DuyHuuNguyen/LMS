@@ -56,4 +56,9 @@ public class SessionServiceImpl implements SessionService {
                 .orElseThrow(() -> new EntityNotFoundException(ErrorCode.SESSION_NOT_FOUND)),
         this.newVirtualThreadPerTaskExecutor);
   }
+
+  @Override
+  public Optional<Session> findAndFetchCurriculumById(Long sessionId) {
+    return this.sessionRepository.findAndFetchCurriculumById(sessionId);
+  }
 }

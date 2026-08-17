@@ -12,4 +12,6 @@ public interface LastestWatchingVideoService {
   Optional<LastestWatchingVideo> findByVideoId(Long id);
 
   Optional<ActiveCurrentSessionDTO> findByUserIdAndCurriculumId(Long userId, Long curriculumId);
+
+  void disableActiveCurrentWatchSessionContent(Long userId, Long curriculumId);
 }

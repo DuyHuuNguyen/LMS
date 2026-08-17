@@ -35,4 +35,12 @@ public interface SessionRepository extends JpaRepository<Session, Long> {
     where s.isActive and s.curriculum.id =:curriculumId
     """)
     List<Session> findAllSessionAndFetchVideosAndExamsByCurriculumId(@Param("curriculumId") Long curriculumId);
+
+    @Query("""
+    select s
+    from Session s
+    join  fetch s.curriculum
+    where s.id =:id
+    """)
+    Optional<Session> findAndFetchCurriculumById(@Param("id") Long id);
 }

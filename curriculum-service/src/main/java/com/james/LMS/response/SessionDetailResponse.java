@@ -14,7 +14,7 @@ public class SessionDetailResponse {
   private ActiveCurrentSessionDTO activeCurrentSessionDTO;
   private List<SessionDTO> sessionDTOS;
 
-  public void addActiveCurrentSessionDTO(ActiveCurrentSessionDTO activeCurrentSessionDTO){
+  public void addActiveCurrentSessionDTO(ActiveCurrentSessionDTO activeCurrentSessionDTO) {
     this.activeCurrentSessionDTO = activeCurrentSessionDTO;
   }
 }

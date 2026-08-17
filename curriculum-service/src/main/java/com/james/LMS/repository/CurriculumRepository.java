@@ -241,6 +241,22 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
       """)
       Boolean isPurchasedCurriculum(@Param("dto") ValidUserPurchasedCurriculumAccessDTO dto);
 
+      @Query("""
+          select count(uc) > 0
+          from UserCurriculum uc
+          join Curriculum c on c.id = uc.curriculum.id
+                join Session s on c.id =s.curriculum.id
+                      join Video v on s.id = v.session.id
+          where c.isActive = true
+            and uc.isActive = true
+            and v.isActive = true
+            and s.isActive = true
+            and v.id =:#{#dto.sessionContentId}
+            and s.id =:#{#dto.sessionId}
+            and uc.userId = :#{#dto.userId}
+            and c.id = :#{#dto.curriculumId}
+      """)
+      Boolean  isPurchasedCurriculumWithVideoInSession(@Param("dto") ValidatePurchasedCurriculumAndContainSessionAndSessionContentDTO  dto);
 
       @Query(
           value =
@@ -333,4 +349,21 @@ public interface CurriculumRepository extends JpaRepository<Curriculum, Long> {
           @Param("topicIds") Set<Long> topicIds,
           @Param("applyTopicFilter") boolean applyTopicFilter,
           Pageable pageable);
+
+      @Query("""
+          select count(uc) > 0
+          from UserCurriculum uc
+          join Curriculum c on c.id = uc.curriculum.id
+                join Session s on c.id =s.curriculum.id
+                      join Exam e on s.id = e.session.id
+          where c.isActive = true
+            and uc.isActive = true
+            and e.isActive = true
+            and s.isActive = true
+            and e.id =:#{#dto.sessionContentId}
+            and s.id =:#{#dto.sessionId}
+            and uc.userId = :#{#dto.userId}
+            and c.id = :#{#dto.curriculumId}
+      """)
+      Boolean isPurchasedCurriculumWithExamInSession(@Param("dto") ValidatePurchasedCurriculumAndContainSessionAndSessionContentDTO dto);
 }

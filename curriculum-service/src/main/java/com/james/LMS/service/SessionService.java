@@ -19,4 +19,6 @@ public interface SessionService {
   CompletableFuture<List<Session>> findSessionsFutureByCurriculumId(Long curriculumId);
 
   CompletableFuture<Session> findCompletableFutureSessionById(Long id);
+
+  Optional<Session> findAndFetchCurriculumById(Long sessionId);
 }
